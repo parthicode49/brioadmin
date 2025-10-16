@@ -1,0 +1,102 @@
+
+
+
+
+.sidebarLink {
+  display: flex;
+  color: #260944;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 20px;
+  text-decoration: none;
+  font-size: 14.5px;
+  border-radius: 5px;
+  font-weight: 500;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  
+  
+
+}
+.sidebarLink svg {
+  fill: #c1c1c1;
+  position: relative;
+  top: 2px;
+}
+.sidebarLink:hover {
+  background: linear-gradient(225deg,  var(--gradientColor1) 0%, var(--gradientColor2) 91.25%);
+  text-decoration: none;
+  color: #fff;
+}
+.sidebarLink2 {
+  display: block;
+  color: #5B5B98;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 20px 9px 50px;
+  text-decoration: none;
+  font-size: 14px;
+  border-radius: 5px;
+  font-weight: 500;
+  position: relative;
+  margin-top: .2rem;
+}
+.sidebarLink2::before {
+  content: "";
+  background-color: #818093;
+  width: 6px;
+  height: 6px;
+  border-radius: 100%;
+  position: absolute;
+  left: 30px;
+  top: 16px;
+}
+.sidebarLink2:hover::before {
+  background-color: var(--themeFontColor);
+}
+.sidebarLink2:hover {
+  background: linear-gradient(225deg,  var(--gradientColor1) 0%, var(--gradientColor2) 91.25%);
+  color: #fff;
+}
+
+/* For RTL Style */
+[dir=rtl] .sidebarLink2 {
+  padding: 9px 50px 9px 20px;
+}
+[dir=rtl] .sidebarLink2::before {
+  left: auto;
+  right: 30px;
+}
+
+/* For dark mode */
+[class="dark"] .sidebarLink, [class="leftsidebardark"] .sidebarLink {
+  color: #f3f3f3;
+}
+[class="dark"] .sidebarLink svg, [class="leftsidebardark"] .sidebarLink svg {
+  fill: #f3f3f3;
+}
+[class="dark"] .sidebarLink span, [class="leftsidebardark"] .sidebarLink svg {
+  color: #f3f3f3;
+}
+[class="dark"] .sidebarLink:hover, [class="leftsidebardark"] .sidebarLink svg {
+  color: var(--themeFontColor);
+}
+[class="dark"] .sidebarLink:hover span, [class="leftsidebardark"] .sidebarLink svg {
+  color: var(--themeFontColor);
+}
+[class="dark"] .sidebarLink:hover svg, [class="leftsidebardark"] .sidebarLink svg {
+  fill: var(--themeFontColor);
+}
+
+[class="dark"] .sidebarLink2, [class="leftsidebardark"] .sidebarLink2 {
+  color: var(--darkHeadingTextColor);
+}
+[class="dark"] .sidebarLink2 span, [class="leftsidebardark"] .sidebarLink2 {
+  color: var(--darkHeadingTextColor);
+}
+[class="dark"] .sidebarLink2:hover, [class="leftsidebardark"] .sidebarLink2 {
+  color: var(--themeFontColor);
+}
+[class="dark"] .sidebarLink2:hover span, [class="leftsidebardark"] .sidebarLink2 {
+  color: var(--themeFontColor);
+}
