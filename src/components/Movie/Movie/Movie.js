@@ -75,10 +75,22 @@ const Movie = () => {
   const [castCrewFormStructure, setCastCrewFormStructure] = useState([
     {
       type: "select",
-      name: "cast",
-      title: "Cast",
-      placeholder: "Select Cast",
-      options: [],
+      name: "cast_type",
+      title: "Cast Type",
+      placeholder: "Cast Type",
+      options: [
+        { label: "Actor", value: "Actor" },
+        { label: "Actress", value: "Actress" },
+        { label: "Director", value: "Director" },
+        { label: "Producer", value: "Producer" },
+      ],
+      required: true,
+    },
+    {
+      type: "inputBox",
+      name: "cast_name",
+      title: "Cast Name",
+      placeholder: "Enter Cast name",
       required: true,
     },
     {
@@ -86,6 +98,15 @@ const Movie = () => {
       name: "character_name",
       title: "Character Name",
       placeholder: "Enter Character name",
+      required: true,
+    },
+    {
+      type: "file",
+      name: "cast_image",
+      title: "Cast Image",
+      description: "Upload a (Resolution : 512px x 512px) (JPG, PNG)",
+      accept: "image/*",
+      // size: 6,
       required: true,
     },
   ]);
@@ -129,8 +150,11 @@ const Movie = () => {
   ]);
   // Define table columns
   const tableColumns = [
-    { title: "Cast Name", field: "cast" },
     { title: "Character", field: "character_name" },
+    { title: "Cast", field: "cast_name" },
+    { title: "Type", field: "cast_type" },
+    { title: "image", field: "cast_image" },
+    // { title: "Character", field: "character_name" },
   ];
 
   const tableColumnSubtitle = [
@@ -143,7 +167,7 @@ const Movie = () => {
   ];
 
   const handleSubmit1 = async () => {
-    console.log("dddddddddddddddddddd", formNoti);
+    // console.log("dddddddddddddddddddd", formNoti);
     const data = new FormData();
     Object.keys(formNoti)?.map((key) => data.append(key, formNoti?.[key]));
     const resData = await notification_create(data);
@@ -316,10 +340,10 @@ const Movie = () => {
         {
           type: "date",
           title: "Expiry Time",
-          default: new Date().toISOString().split("T")[0],
+          min: new Date(new Date().setDate(new Date().getDate() + 1)),
           name: "expiry_date",
           placeholder: "Select Date",
-          required: true,
+          // required: true,
           size: "3",
         },
 
@@ -435,14 +459,14 @@ const Movie = () => {
         //   placeholder: "Type Free Preview Duration",
         //   required: true,
         // },
-         {
-          type: "inputBox",
-          name: "asset_id",
-          title: "Movie Asset ID",
-          placeholder: "Paste Movie Asset ID",
-          required: true,
-          size: "4",
-        },
+        //  {
+        //   type: "inputBox",
+        //   name: "asset_id",
+        //   title: "Movie Asset ID",
+        //   placeholder: "Paste Movie Asset ID",
+        //   required: true,
+        //   size: "4",
+        // },
         {
           type: "image",
           name: "poster",
@@ -491,16 +515,16 @@ const Movie = () => {
     },
   ]);
 
-  useMemo(() => {
-    if (casts) {
-      const temp = castCrewFormStructure;
-      temp[0]["options"] = casts?.data?.map((ele) => ({
-        label: ele?.cast_name,
-        value: ele?.cast_name,
-      }));
-      setCastCrewFormStructure([...temp]);
-    }
-  }, [casts]);
+  // useMemo(() => {
+  //   if (casts) {
+  //     const temp = castCrewFormStructure;
+  //     temp[0]["options"] = casts?.data?.map((ele) => ({
+  //       label: ele?.cast_name,
+  //       value: ele?.cast_name,
+  //     }));
+  //     setCastCrewFormStructure([...temp]);
+  //   }
+  // }, [casts]);
   useMemo(() => {
     if (language?.data) {
       const temp = subTitleFormStructure;
@@ -842,7 +866,11 @@ const Movie = () => {
           if (index === 1 && subcategories) {
             const options = form?.category
               ? subcategories.data
-                  .filter((s) => s.category_id === form.category && s?.content_type == "Movie" )
+                  .filter(
+                    (s) =>
+                      s.category_id === form.category &&
+                      s?.content_type == "Movie"
+                  )
                   .map((s) => ({
                     label: s.subcategory_name,
                     value: s.id,
@@ -1151,7 +1179,18 @@ const Movie = () => {
         key !== "audio_file" &&
         data.append(key, form?.[key])
     );
-    data.append("cast", JSON.stringify(form?.cast));
+    // data.append("cast", JSON.stringify(form?.cast));
+    form.cast?.forEach((member, index) => {
+      data.append(`cast[${index}][cast_type]`, member.cast_type);
+      data.append(`cast[${index}][cast_name]`, member.cast_name);
+      data.append(`cast[${index}][character_name]`, member.character_name);
+      data.append(`cast[${index}][id]`, member.id || "");
+
+      // ✅ Append file separately
+      if (member.cast_image instanceof File) {
+        data.append(`cast[${index}][cast_image]`, member.cast_image);
+      }
+    });
     data.append("countrys", JSON.stringify(form?.countrys));
     data.append("user", user?.id);
     if (isEdit) {

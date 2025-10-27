@@ -11,6 +11,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
+import {IMAGE} from "../../../api/index"
 
 const DynamicTable = ({ data, columns, onEdit, onDelete }) => {
   const theme = useTheme();
@@ -91,6 +92,20 @@ const DynamicTable = ({ data, columns, onEdit, onDelete }) => {
         return <p>{value.name}</p>;
       }
     }
+      // ✅ Handle image URL (string case for editing)
+  if (column.field === "cast_image") {
+    if (typeof value === "string" && value !== "") {
+      return (
+        <img
+          src={IMAGE + value}
+          alt={row.cast_name || "cast"}
+          style={{ maxWidth: "100px", maxHeight: "80px", borderRadius: "8px" }}
+        />
+      );
+    }
+    return "-";
+  }
+
 
     return value || "-";
   };

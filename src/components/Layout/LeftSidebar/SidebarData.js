@@ -2,28 +2,28 @@ import React from "react";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
-import dashboard from "../../../images/SliderBanner/dashboard.png"
-import dashboardDark from "../../../images/SliderBanner/dashboard_dark.png"
-import analytics from "../../../images/SliderBanner/analytics.png"
-import analyticsDark from "../../../images/SliderBanner/analytics_dark.png"
-import content from "../../../images/SliderBanner/content.png"
-import contentDark from "../../../images/SliderBanner/content_dark.png"
-import webSeries from "../../../images/SliderBanner/webseries.png"
-import webSeriesDark from "../../../images/SliderBanner/webseries_dark.png"
-import content_owner from "../../../images/SliderBanner/content_owner.png"
-import content_ownerDark from "../../../images/SliderBanner/content_owner_dark.png"
-import slider from "../../../images/SliderBanner/slider.png"
-import sliderDark from "../../../images/SliderBanner/slider_dark.png"
-import customer from "../../../images/SliderBanner/customers.png"
-import customerDark from "../../../images/SliderBanner/customers_dark.png"
-import transition from "../../../images/SliderBanner/transaction.png"
-import transitionDark from "../../../images/SliderBanner/transaction_dark.png"
-import subscription from "../../../images/SliderBanner/subscriptions.png"
-import subscriptionDark from "../../../images/SliderBanner/subscriptions_dark.png"
-import controlPanel from "../../../images/SliderBanner/control_panel.png"
-import controlPanelDark from "../../../images/SliderBanner/control_panel_dark.png"
-import setting from "../../../images/SliderBanner/setting.png"
-import settingDark from "../../../images/SliderBanner/setting_dark.png"
+import dashboard from "../../../images/SliderBanner/dashboard.png";
+import dashboardDark from "../../../images/SliderBanner/dashboard_dark.png";
+import analytics from "../../../images/SliderBanner/analytics.png";
+import analyticsDark from "../../../images/SliderBanner/analytics_dark.png";
+import content from "../../../images/SliderBanner/content.png";
+import contentDark from "../../../images/SliderBanner/content_dark.png";
+import webSeries from "../../../images/SliderBanner/webseries.png";
+import webSeriesDark from "../../../images/SliderBanner/webseries_dark.png";
+import content_owner from "../../../images/SliderBanner/content_owner.png";
+import content_ownerDark from "../../../images/SliderBanner/content_owner_dark.png";
+import slider from "../../../images/SliderBanner/slider.png";
+import sliderDark from "../../../images/SliderBanner/slider_dark.png";
+import customer from "../../../images/SliderBanner/customers.png";
+import customerDark from "../../../images/SliderBanner/customers_dark.png";
+import transition from "../../../images/SliderBanner/transaction.png";
+import transitionDark from "../../../images/SliderBanner/transaction_dark.png";
+import subscription from "../../../images/SliderBanner/subscriptions.png";
+import subscriptionDark from "../../../images/SliderBanner/subscriptions_dark.png";
+import controlPanel from "../../../images/SliderBanner/control_panel.png";
+import controlPanelDark from "../../../images/SliderBanner/control_panel_dark.png";
+import setting from "../../../images/SliderBanner/setting.png";
+import settingDark from "../../../images/SliderBanner/setting_dark.png";
 import { useSelector } from "react-redux";
 export const SidebarData = (darkMode) => {
   const reduxRole = useSelector((state) => state.layout.role);
@@ -36,10 +36,7 @@ export const SidebarData = (darkMode) => {
         title: "Dashboard",
         path: "/dashboard",
         icon: (
-          <img
-            src={darkMode ? dashboard : dashboardDark}
-            height={"20px"}
-          />
+          <img src={darkMode ? dashboard : dashboardDark} height={"20px"} />
         ),
         iconClosed: <KeyboardArrowRightIcon />,
         iconOpened: <KeyboardArrowDownIcon />,
@@ -49,22 +46,17 @@ export const SidebarData = (darkMode) => {
         title: "Analytics",
         path: "/analytics",
         icon: (
-          <img
-            src={darkMode ? analytics : analyticsDark}
-            height={"20px"}
-          />
+          <img src={darkMode ? analytics : analyticsDark} height={"20px"} />
         ),
         iconClosed: <KeyboardArrowRightIcon />,
         iconOpened: <KeyboardArrowDownIcon />,
         access: rights?.["Analytics"]?.["view"],
       },
-     
+
       {
         title: "Content",
         path: "/Movie/",
-        icon: (
-          <img src={darkMode ? content : contentDark} height={"20px"} />
-        ),
+        icon: <img src={darkMode ? content : contentDark} height={"20px"} />,
         iconClosed: <KeyboardArrowRightIcon />,
         iconOpened: <KeyboardArrowDownIcon />,
         access: rights?.["Movie"]?.["view"],
@@ -126,7 +118,7 @@ export const SidebarData = (darkMode) => {
         iconClosed: <KeyboardArrowRightIcon />,
         iconOpened: <KeyboardArrowDownIcon />,
         access: rights?.["Slider Banner"]?.["view"],
-         subNav: [
+        subNav: [
           {
             title: "Create Profile",
             path: "/distributor",
@@ -147,12 +139,7 @@ export const SidebarData = (darkMode) => {
       {
         title: "Slider",
         path: "/slider/",
-        icon: (
-          <img
-            src={darkMode ? slider : sliderDark}
-            height={"20px"}
-          />
-        ),
+        icon: <img src={darkMode ? slider : sliderDark} height={"20px"} />,
         iconClosed: <KeyboardArrowRightIcon />,
         iconOpened: <KeyboardArrowDownIcon />,
         access: rights?.["Slider Banner"]?.["view"],
@@ -177,18 +164,12 @@ export const SidebarData = (darkMode) => {
             path: "/toptenvideos",
             access: rights?.["Web Series"]?.["view"],
           },
-         
         ].filter((e) => e),
       },
       {
         title: "Customers",
         path: "/Customer/",
-        icon: (
-          <img
-            src={darkMode ? customer : customerDark}
-            height={"20px"}
-          />
-        ),
+        icon: <img src={darkMode ? customer : customerDark} height={"20px"} />,
         iconClosed: <KeyboardArrowRightIcon />,
         iconOpened: <KeyboardArrowDownIcon />,
         access: rights?.["Customers"]?.["view"],
@@ -219,10 +200,7 @@ export const SidebarData = (darkMode) => {
         title: "All Transactions",
         path: "/transaction",
         icon: (
-          <img
-            src={darkMode ? transition : transitionDark}
-            height={"20px"}
-          />
+          <img src={darkMode ? transition : transitionDark} height={"20px"} />
         ),
         iconClosed: <KeyboardArrowRightIcon />,
         iconOpened: <KeyboardArrowDownIcon />,
@@ -302,47 +280,47 @@ export const SidebarData = (darkMode) => {
       //   // access: rights?.["Set Series Advertisement"]?.["view"],
       //   access: "true",
       // },
-      // {
-      //   title: "Ad Master",
-      //   onClick: "true",
-      //   path: "/AdForm/AdForm",
-      //   icon: (
-      //     <img
-      //       src={darkMode ? AdvertisementIcon : AdvertisementBlackIcon}
-      //       height={"20px"}
-      //     />
-      //   ),
-      //   iconClosed: <KeyboardArrowRightIcon />,
-      //   iconOpened: <KeyboardArrowDownIcon />,
-      //   access: "true",
-      //   subNav: [
-      //     {
-      //       title: "Ad Submission",
-      //       path: "/AdForm/AdForm/",
-      //       access: rights?.["Ad Submission"]?.["view"],
-      //     },
-      //     {
-      //       title: "Advertisers",
-      //       path: "/advertiser",
-      //       access: rights?.["Advertisers"]?.["view"],
-      //     },
-      //     {
-      //       title: "Create Ad",
-      //       path: "/Advertisers/Advertisement/",
-      //       access: rights?.["Advertisement"]?.["view"],
-      //     },
-      //     {
-      //       title: "Set Ads ( Movie )",
-      //       path: "/SetMovieAdvertisement/SetMovieAdvertisement/",
-      //       access: rights?.["Set Movie Advertisement"]?.["view"],
-      //     },
-      //     {
-      //       title: "Set Ads ( Series )",
-      //       path: "/SetSeriesAdvertisement/SetSeriesAdvertisement/",
-      //       access: rights?.["Set Series Advertisement"]?.["view"],
-      //     },
-      //   ].filter((e) => e),
-      // },
+      {
+        title: "Ad Master",
+        onClick: "true",
+        path: "/AdForm/AdForm",
+        icon: (
+          <img
+            src={darkMode ? controlPanel : controlPanelDark}
+            height={"20px"}
+          />
+        ),
+        iconClosed: <KeyboardArrowRightIcon />,
+        iconOpened: <KeyboardArrowDownIcon />,
+        access: "true",
+        subNav: [
+          {
+            title: "Ad Submission",
+            path: "/AdForm/AdForm/",
+            access: rights?.["Ad Submission"]?.["view"],
+          },
+          {
+            title: "Advertisers",
+            path: "/advertiser",
+            access: rights?.["Advertisers"]?.["view"],
+          },
+          {
+            title: "Create Ad",
+            path: "/Advertisers/Advertisement/",
+            access: rights?.["Advertisement"]?.["view"],
+          },
+          {
+            title: "Set Ads ( Movie )",
+            path: "/SetMovieAdvertisement/SetMovieAdvertisement/",
+            access: rights?.["Set Movie Advertisement"]?.["view"],
+          },
+          {
+            title: "Set Ads ( Series )",
+            path: "/SetSeriesAdvertisement/SetSeriesAdvertisement/",
+            access: rights?.["Set Series Advertisement"]?.["view"],
+          },
+        ].filter((e) => e),
+      },
       {
         title: "Control Panel",
         path: "/Masters/",
@@ -443,12 +421,7 @@ export const SidebarData = (darkMode) => {
       {
         title: "Settings",
         path: "/Settings/",
-        icon: (
-          <img
-            src={darkMode ? setting : settingDark}
-            height={"20px"}
-          />
-        ),
+        icon: <img src={darkMode ? setting : settingDark} height={"20px"} />,
         iconClosed: <KeyboardArrowRightIcon />,
         iconOpened: <KeyboardArrowDownIcon />,
         onClick: "true",
@@ -500,16 +473,13 @@ export const SidebarData = (darkMode) => {
         title: "Dashboard",
         path: "/dashboard",
         icon: (
-          <img
-            src={darkMode ? dashboard : dashboardDark}
-            height={"20px"}
-          />
+          <img src={darkMode ? dashboard : dashboardDark} height={"20px"} />
         ),
         iconClosed: <KeyboardArrowRightIcon />,
         iconOpened: <KeyboardArrowDownIcon />,
         access: "true",
       },
-       {
+      {
         title: "Submit Content",
         path: "/contentform",
         icon: (
@@ -522,27 +492,19 @@ export const SidebarData = (darkMode) => {
         iconOpened: <KeyboardArrowDownIcon />,
         access: rights?.["Movie Submission"]?.["view"],
       },
-       {
+      {
         title: "Movies",
         path: "/movies",
-        icon: (
-          <img
-            src={darkMode ? content : contentDark}
-            height={"20px"}
-          />
-        ),
+        icon: <img src={darkMode ? content : contentDark} height={"20px"} />,
         iconClosed: <KeyboardArrowRightIcon />,
         iconOpened: <KeyboardArrowDownIcon />,
         access: rights?.["Movie Submission"]?.["view"],
       },
-       {
+      {
         title: "Series",
         path: "/series",
         icon: (
-          <img
-            src={darkMode ? webSeries : webSeriesDark}
-            height={"20px"}
-          />
+          <img src={darkMode ? webSeries : webSeriesDark} height={"20px"} />
         ),
         iconClosed: <KeyboardArrowRightIcon />,
         iconOpened: <KeyboardArrowDownIcon />,
@@ -561,21 +523,16 @@ export const SidebarData = (darkMode) => {
       //   iconOpened: <KeyboardArrowDownIcon />,
       //   access: rights?.["Movie Submission"]?.["view"],
       // },
-       {
+      {
         title: "Coupon",
         path: "/distributorcoupon",
-        icon: (
-          <img
-            src={darkMode ? customer  : customerDark}
-            height={"20px"}
-          />
-        ),
+        icon: <img src={darkMode ? customer : customerDark} height={"20px"} />,
         iconClosed: <KeyboardArrowRightIcon />,
         iconOpened: <KeyboardArrowDownIcon />,
         access: rights?.["Movie Submission"]?.["view"],
       },
     ];
-  }else{
-    return[]
+  } else {
+    return [];
   }
 };

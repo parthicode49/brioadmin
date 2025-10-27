@@ -104,8 +104,10 @@ const Series = () => {
   //   }
   // }, [location]);
   const tableColumns = [
-    { title: "Cast Name", field: "cast" },
     { title: "Character", field: "character_name" },
+    { title: "Cast", field: "cast_name" },
+    { title: "Type", field: "cast_type" },
+    { title: "image", field: "cast_image" },
   ];
   const [countryFormStructure, setCountryFormStructure] = useState([
     {
@@ -148,10 +150,22 @@ const Series = () => {
   const [castCrewFormStructure, setCastCrewFormStructure] = useState([
     {
       type: "select",
-      name: "cast",
-      title: "Cast",
-      placeholder: "Select Cast",
-      options: [],
+      name: "cast_type",
+      title: "Cast Type",
+      placeholder: "Cast Type",
+      options: [
+        { label: "Actor", value: "Actor" },
+        { label: "Actress", value: "Actress" },
+        { label: "Director", value: "Director" },
+        { label: "Producer", value: "Producer" },
+      ],
+      required: true,
+    },
+    {
+      type: "inputBox",
+      name: "cast_name",
+      title: "Cast Name",
+      placeholder: "Enter Cast name",
       required: true,
     },
     {
@@ -159,6 +173,15 @@ const Series = () => {
       name: "character_name",
       title: "Character Name",
       placeholder: "Enter Character name",
+      required: true,
+    },
+    {
+      type: "file",
+      name: "cast_image",
+      title: "Cast Image",
+      description: "Upload a (Resolution : 512px x 512px) (JPG, PNG)",
+      accept: "image/*",
+      // size: 6,
       required: true,
     },
   ]);
@@ -499,16 +522,16 @@ const Series = () => {
     //   ],
     // },
   ]);
-  useMemo(() => {
-    if (casts) {
-      const temp = castCrewFormStructure;
-      temp[0]["options"] = casts?.data?.map((ele) => ({
-        label: ele?.cast_name,
-        value: ele?.cast_name,
-      }));
-      setCastCrewFormStructure([...temp]);
-    }
-  }, [casts]);
+  // useMemo(() => {
+  //   if (casts) {
+  //     const temp = castCrewFormStructure;
+  //     temp[0]["options"] = casts?.data?.map((ele) => ({
+  //       label: ele?.cast_name,
+  //       value: ele?.cast_name,
+  //     }));
+  //     setCastCrewFormStructure([...temp]);
+  //   }
+  // }, [casts]);
 
   useEffect(() => {
     if (form?.ownership === "Content Owner") {
@@ -963,8 +986,19 @@ const Series = () => {
         key !== "audio_file" &&
         data.append(key, form?.[key])
     );
-    data.append("cast", JSON.stringify(form?.cast));
+    // data.append("cast", JSON.stringify(form?.cast));
     data.append("countrys", JSON.stringify(form?.countrys));
+        form.cast?.forEach((member, index) => {
+      data.append(`cast[${index}][cast_type]`, member.cast_type);
+      data.append(`cast[${index}][cast_name]`, member.cast_name);
+      data.append(`cast[${index}][character_name]`, member.character_name);
+      data.append(`cast[${index}][id]`, member.id || "");
+
+      // ✅ Append file separately
+      if (member.cast_image instanceof File) {
+        data.append(`cast[${index}][cast_image]`, member.cast_image);
+      }
+    });
     // data.append("subtitle_file", JSON.stringify(form?.subtitle_file));
     // data.append("audio_file", JSON.stringify(form?.audio_file));
     // form.audio_file.forEach((item, index) => {
