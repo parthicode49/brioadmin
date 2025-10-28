@@ -27,6 +27,7 @@ import song from "./song"
 import distributor_dashboard from "./distributorDashboard" 
 import contentLeaving from "./contentLeaving"
 import live_stream from "./livestream"
+import advertisement from "./advertisers"
 export const reducers = combineReducers({
   masters,
   analytics,
@@ -35,6 +36,7 @@ export const reducers = combineReducers({
   otp,
   distributors,
   advertisementspay,
+  advertisement,
   highlight,
   layout,
   distributor_dashboard,

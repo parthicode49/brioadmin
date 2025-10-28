@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const API = axios.create({ baseURL: 'http://209.145.49.67:8000/api/' });
-export const IMAGE = 'http://209.145.49.67:8000/'
+const API = axios.create({ baseURL: 'https://bridge.brionow.online/api/' });
+export const IMAGE = 'https://bridge.brionow.online/'
 
 // const API = axios.create({ baseURL: 'http://164.52.202.121:1341/api/' });
 // export const IMAGE = 'http://164.52.202.121:1341/'
@@ -198,6 +198,8 @@ export const advertise_form_delete = (formData) => API.post('/advertise_form_del
 export const all_advertise_transaction_list = (formData) => API.post('/all_advertise_transaction_list/' , formData)
 // export const advertise_transaction_create =(formData) => API.post('/advertise_transaction_create/',formData)
 
+// export const advertisement_create = (formData) => API.post('/advertisement_create/' , formData)
+
 // Master->Sub Admin
 export const subadmin_create = (formData) => API.post('/subadmin_create/', formData); // Pending
 export const subadmin_update = (formData) => API.post('/sub_admin_update/', formData); // Pending
@@ -359,14 +361,17 @@ export const all_distributor_song_list = (formData) => API.post('/all_distributo
 
 
 // Advertisement
-export const advertisement_create = (formData) => API.post('/advertise_create/', formData);
-export const advertisement_update = (formData) => API.post('/advertise_update/', formData);
+export const advertisement_create = (formData) => API.post('/advertisement_create/', formData);
+export const advertisement_update = (formData) => API.post('/advertisement_update/', formData);
 export const advertisement_delete = (formData) => API.post('/advertise_delete/', formData);
+export const advertisement_list_advertiser = (formData) => API.post('/advertisement_list_advertiser/', formData);
 export const all_advertisement_list = (formData) => API.post('/all_advertise_list/', formData);
 export const set_advertise = (formData) => API.post('/set_advertise/',formData)
 export const set_advertise_list = (formData) =>API.post('/set_advertise_list/' , formData);
 export const set_update_advertise = (formData) => API.post('/set_update_advertise/' ,formData);
 export const set_advertise_delete = (formData) => API.post('/set_advertise_delete/',formData)
+
+export const advertiser_login = (formData) => API.post('/advertiser_login/' , formData)
 
 
 // Customer

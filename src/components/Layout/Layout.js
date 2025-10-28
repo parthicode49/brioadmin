@@ -116,22 +116,27 @@ const Layout = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { login , distributor_login } = bindActionCreators(Action, dispatch);
+  const { login, distributor_login, advertiser_login } = bindActionCreators(
+    Action,
+    dispatch
+  );
   const [active, setActive] = useState(true);
- const [darkMode, setDarkMode] = useState(() => {
-  const storedMode = sessionStorage.getItem("darkMode");
-  return storedMode === "true"; // fallback to false if null
-});
-const userAgent = window.navigator.userAgent;
-const platform = window.navigator.platform;
-const randomString = Math.random().toString(20).substring(2, 14) + Math.random().toString(20).substring(2, 14);
+  const [darkMode, setDarkMode] = useState(() => {
+    const storedMode = sessionStorage.getItem("darkMode");
+    return storedMode === "true"; // fallback to false if null
+  });
+  const userAgent = window.navigator.userAgent;
+  const platform = window.navigator.platform;
+  const randomString =
+    Math.random().toString(20).substring(2, 14) +
+    Math.random().toString(20).substring(2, 14);
 
-const deviceID = `${userAgent}-${platform}-${randomString}`;
-console.log(deviceID ,"sdfdsmkfdfdfklsfklsf")
+  const deviceID = `${userAgent}-${platform}-${randomString}`;
+  console.log(deviceID, "sdfdsmkfdfdfklsfklsf");
   const user = useSelector((state) => state.layout.profile);
   const role = useSelector((state) => state.layout.role);
   const [isLogin, setIsLogin] = useState(true);
-  console.log(role , "darkMode123")
+  console.log(role, "darkMode123");
   const toogleActive = () => {
     setActive(!active);
   };
@@ -141,19 +146,20 @@ console.log(deviceID ,"sdfdsmkfdfdfklsfklsf")
   useEffect(() => {
     const checkUser = async () => {
       const loginDetails = JSON.parse(sessionStorage.getItem("loginDetails"));
-      const loginedDetails = JSON.parse(sessionStorage.getItem("loggedInDetails"));
-      console.log( loginedDetails?.role ,"fddfdsds")
+      const loginedDetails = JSON.parse(
+        sessionStorage.getItem("loggedInDetails")
+      );
+      console.log(loginedDetails?.role, "fddfdsds");
 
       // Dispatch login manually, DO NOT bind it
-      if(loginedDetails?.role == "Distributor"){
-
+      if (loginedDetails?.role == "Distributor") {
         const resData = await distributor_login(
           JSON.parse(sessionStorage.getItem("loginDetails"))
         );
         console.log("Login result:", resData); // ✅ Check what's returned
-  
+
         console.log(resData, "mdsfnjnsfndfsd");
-  
+
         if (resData?.status == 200) {
           dispatch({ type: PROFILE, payload: resData?.data?.data });
           dispatch({ type: LOGGEDIN, payload: true });
@@ -178,7 +184,7 @@ console.log(deviceID ,"sdfdsmkfdfdfklsfklsf")
           //    {
           //   //  data.advertiser != "" ? navigate("/AdForm/AdForm/",{state:{forceShow:true}}) :
           //   setTimeout(()=>{
-  
+
           //     navigate("/Dashboard",{state:{forceShow:true}})
           //   },1000)
           // }
@@ -190,14 +196,14 @@ console.log(deviceID ,"sdfdsmkfdfdfklsfklsf")
           // navigate("/",{state:{forceShow:true}})
           console.log("Login failed");
         }
-      }else{
-                const resData = await login(
+      } else if (loginedDetails?.role == "advertiser") {
+        const resData = await advertiser_login(
           JSON.parse(sessionStorage.getItem("loginDetails"))
         );
         console.log("Login result:", resData); // ✅ Check what's returned
-  
+
         console.log(resData, "mdsfnjnsfndfsd");
-  
+
         if (resData?.status == 200) {
           dispatch({ type: PROFILE, payload: resData?.data?.data });
           dispatch({ type: LOGGEDIN, payload: true });
@@ -222,7 +228,51 @@ console.log(deviceID ,"sdfdsmkfdfdfklsfklsf")
           //    {
           //   //  data.advertiser != "" ? navigate("/AdForm/AdForm/",{state:{forceShow:true}}) :
           //   setTimeout(()=>{
-  
+
+          //     navigate("/Dashboard",{state:{forceShow:true}})
+          //   },1000)
+          // }
+          //     else
+          //     navigate("/Authentication/ChangePassword",{state:{forceShow:true}})
+        } else {
+          sessionStorage.setItem("loggedInDetails", "{}");
+          setIsLogin(false);
+          // navigate("/",{state:{forceShow:true}})
+          console.log("Login failed");
+        }
+      } else {
+        const resData = await login(
+          JSON.parse(sessionStorage.getItem("loginDetails"))
+        );
+        console.log("Login result:", resData); // ✅ Check what's returned
+
+        console.log(resData, "mdsfnjnsfndfsd");
+
+        if (resData?.status == 200) {
+          dispatch({ type: PROFILE, payload: resData?.data?.data });
+          dispatch({ type: LOGGEDIN, payload: true });
+          console.log(resData, "ffdfjfsdfdsfnsfjdfjdsf");
+          setIsLogin(true);
+          dispatch({ type: ROLE, payload: resData?.data?.data?.role });
+          // localStorage.setItem("profile", JSON.stringify(data?.id));
+          // localStorage.setItem("advertiser", JSON.stringify(data?.advertiser[0]));
+          // localStorage.setItem("distributor", JSON.stringify(data?.distributor[0]));
+          // localStorage.setItem("rights", JSON.stringify(data?.Rights[0]));
+          // localStorage.setItem("role", JSON.stringify(data?.id?.userType?.roleName));
+          // localStorage.setItem("loggedIn", "true");
+          sessionStorage.setItem(
+            "loggedInDetails",
+            JSON.stringify(resData?.data?.data)
+          );
+          // sessionStorage.setItem("remember_me", data?.get("remember_me"))
+          sessionStorage.setItem("loginDetails", JSON.stringify(loginDetails));
+          // window.location.reload(false)
+          // console.log(data,"lplp")
+          //    if(resData?.is_login_first_time==false)
+          //    {
+          //   //  data.advertiser != "" ? navigate("/AdForm/AdForm/",{state:{forceShow:true}}) :
+          //   setTimeout(()=>{
+
           //     navigate("/Dashboard",{state:{forceShow:true}})
           //   },1000)
           // }
@@ -254,7 +304,7 @@ console.log(deviceID ,"sdfdsmkfdfdfklsfklsf")
   }, [message?.message]);
   useMemo(() => {
     if (user?.id && role == "Distributor") {
-      dispatch(distributor_unread_count({distributor_id : user?.id}));
+      dispatch(distributor_unread_count({ distributor_id: user?.id }));
     }
   }, [user?.id]);
   const count = useSelector(

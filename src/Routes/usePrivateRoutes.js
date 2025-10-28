@@ -118,6 +118,12 @@ const DistributorDitails = React.lazy(()=>
 const LiveStream = React.lazy(()=>
   import("../components/LiveStream/LiveStream")
 )
+const AdDashboard = React.lazy(()=>
+  import("../components/Dashboard/AdDashboard")
+)
+const AdvertisementAdPannel = React.lazy(()=>
+  import("../components/AdPannel/Advertisement")
+)
 export const usePrivateRoutes = () => {
   const reduxRole = useSelector((state) => state.layout.role);
   const loginedDetails = JSON.parse(sessionStorage.getItem("loggedInDetails"));
@@ -275,7 +281,7 @@ export const usePrivateRoutes = () => {
         Component: <SettingModule />,
       },
     ];
-  } else {
+  } else if (role == "content owner") {
     return [
       {
         path: `/Dashboard`,
@@ -284,6 +290,49 @@ export const usePrivateRoutes = () => {
       {
         path: `/contentform`,
         Component: <ContentForm />,
+      },
+      {
+        path: `/movies`,
+        Component: <DistributorMovies />,
+      },
+      {
+        path: `/movies/detail`,
+        Component: <MovieDetail />,
+      },
+      {
+        path: `/series`,
+        Component: <DistributorSeries />,
+      },
+      {
+        path: `/series/detail`,
+        Component: <SeriesDetail />,
+      },
+      {
+        path: `/song`,
+        Component: <DistributorSong />,
+      },
+      {
+        path: `/song/detail`,
+        Component: <SongDetail />,
+      },
+      {
+        path: `/notification`,
+        Component: <DistributorNotification />,
+      },
+      {
+        path: `/distributorcoupon`,
+        Component: <DistributorCoupon />,
+      },
+    ];
+  }else if (role == "advertiser") {
+    return [
+      {
+        path: `/Dashboard`,
+        Component: <AdDashboard />,
+      },
+      {
+        path: `/advertisement`,
+        Component: <AdvertisementAdPannel />,
       },
       {
         path: `/movies`,

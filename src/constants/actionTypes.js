@@ -74,6 +74,7 @@ export const RAZORPAYRES ="RAZORPAYRES"
 
 // Advertisement
 export const ADVERTISEMENTS = "ADVERTISEMENTS"
+export const ADVERTISEMENTSADLIST = "ADVERTISEMENTSADLIST"
 export const ADPAYMENT="ADPAYMENT"
 export const ADPAY = "ADPAY"
 export const SETAD = "SETAD"

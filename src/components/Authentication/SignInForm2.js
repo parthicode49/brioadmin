@@ -480,7 +480,7 @@ const SignInForm2 = () => {
     if (role === "advertiser") return "Advertiser";
     return "User";
   };
-  const { login, distributor_login } = bindActionCreators(Action, dispatch);
+  const { login, distributor_login , advertiser_login } = bindActionCreators(Action, dispatch);
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -524,6 +524,44 @@ const SignInForm2 = () => {
       }
     } else if (role === "content owner") {
       const resData = await distributor_login({
+        email: data.get("username"),
+        password: data.get("password"),
+        remember_me: data.get("remember_me"),
+      });
+      console.log(resData, "NewResData Chei123");
+      if (resData?.status === 200) {
+        setMsg({ msg: resData?.message, status: true });
+        setOpen(true);
+        dispatch({ type: PROFILE, payload: resData?.data?.data });
+        dispatch({ type: LOGGEDIN, payload: true });
+        dispatch({ type: ROLE, payload: resData?.data?.data?.role });
+        dispatch({ type: MESSAGE, payload: resData?.data });
+        sessionStorage.setItem(
+          "loggedInDetails",
+          JSON.stringify(resData?.data?.data)
+        );
+        sessionStorage.setItem("remember_me", data.get("remember_me"));
+        sessionStorage.setItem("darkMode", false);
+        sessionStorage.setItem(
+          "loginDetails",
+          JSON.stringify({
+            email: data.get("username"),
+            password: data.get("password"),
+            remember_me: data.get("remember_me"),
+          })
+        );
+        setTimeout(() => {
+          navigate("/Dashboard", { state: { forceShow: true } });
+          setMsg({ msg: "", status: null });
+        }, 2000);
+      } else {
+        setMsg({ msg: resData?.message, status: false });
+        // setTimeout(()=>{
+        // setMsg("")
+        // },2000)
+      }
+    }else if (role === "advertiser") {
+      const resData = await advertiser_login({
         email: data.get("username"),
         password: data.get("password"),
         remember_me: data.get("remember_me"),
@@ -782,6 +820,11 @@ const SignInForm2 = () => {
                       value="content owner"
                       control={<BpRadio />}
                       label="Content Owner"
+                    />
+                    <FormControlLabel sx={{ width: '10rem', display: 'flex', justifyContent: 'center', alignItems: 'center', borderWidth: '2px', borderColor: '#EDEDED', borderStyle: 'solid', borderRadius: '12px', py: 1 }}
+                      value="advertiser"
+                      control={<BpRadio />}
+                      label="Advertiser"
                     />
                   </RadioGroup>
                 </FormControl>

@@ -532,7 +532,31 @@ export const SidebarData = (darkMode) => {
         access: rights?.["Movie Submission"]?.["view"],
       },
     ];
-  } else {
+  } else if (role == "advertiser") {
+    return [
+            {
+        title: "Dashboard",
+        path: "/dashboard",
+        icon: (
+          <img src={darkMode ? dashboard : dashboardDark} height={"20px"} />
+        ),
+        iconClosed: <KeyboardArrowRightIcon />,
+        iconOpened: <KeyboardArrowDownIcon />,
+        access: "true",
+      },
+            {
+        title: "Advertisement",
+        path: "/advertisement",
+        icon: (
+          <img src={darkMode ? dashboard : dashboardDark} height={"20px"} />
+        ),
+        iconClosed: <KeyboardArrowRightIcon />,
+        iconOpened: <KeyboardArrowDownIcon />,
+        access: "true",
+      },
+    ];
+  }
+   else {
     return [];
   }
 };

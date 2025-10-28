@@ -69,6 +69,15 @@ export const distributor_login = (formData, navigate) => async (dispatch) => {
     return error?.response?.data;
   }
 };
+export const advertiser_login = (formData, navigate) => async (dispatch) => {
+  try {
+    const data = await api.advertiser_login(formData);
+    return data;
+  } catch (error) {
+    console.log(error);
+    return error?.response?.data;
+  }
+};
 
 export const forgot_password = (formData) => async (dispatch) => {
   try {
