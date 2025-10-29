@@ -8,6 +8,7 @@ import RefundPolicy from '../components/Setting/RefundPolicy';
 import PrivacyPolicy from '../components/Setting/PrivacyPolicy';
 import TermsConditions from '../components/Setting/TermsConditions';
 import AppSetting from '../components/Setting/AppSetting';
+import AdPrice from '../components/Setting/AdPrice';
 function AdvertisementModule() {
   return (
     <div className="App">
@@ -19,6 +20,7 @@ function AdvertisementModule() {
 < Route path='/privacypolicy' element={PrivacyPolicy()}/>
 < Route path='/termsconditions' element={TermsConditions()}/>
 < Route path='/refundpolicy' element={RefundPolicy()}/>
+< Route path='/adprice' element={AdPrice()}/>
 {/* < Route path='/UserLogs' element={<Layout children={UserLogs()}/>}/> */}
 
 {/* < Route path='/UserLogDetails/*' element={<Layout children={UserLogDetails()}/>}/> */}

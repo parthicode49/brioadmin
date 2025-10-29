@@ -12,21 +12,35 @@ const Advertisement = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [save, setSave] = useState(false);
   const [drawer, setDrawer] = useState(false);
-  const { advertisement_create, advertisement_update } = bindActionCreators(
-    Action,
-    dispatch
-  );
+  const [adPrice, setAdPrice] = useState(null);
+  const {
+    advertisement_create,
+    advertisement_update,
+    advertisement_charge_list,
+  } = bindActionCreators(Action, dispatch);
 
   const user = useSelector((state) => state.layout.profile);
   const adv_list = useSelector((state) => state?.advertisement?.ad_list_adv);
   console.log(adv_list, "adv_list123");
+
+  useEffect(() => {
+    const dailyAdPrice = async () => {
+      const resData = await advertisement_charge_list();
+      console.log(resData, "resData123654");
+      if (resData?.data) {
+        setAdPrice(resData?.data?.ad_charge);
+      }
+    };
+    dailyAdPrice();
+  }, []);
+  console.log(adPrice, "adPrice44444");
   useEffect(() => {
     if (user?.id) {
       dispatch(
         Action.advertisement_list_advertiser({ advertiser_id: user?.id })
       );
     }
-  }, [user , save]);
+  }, [user, save]);
 
   useEffect(() => {
     if (adv_list?.data) {
@@ -59,9 +73,12 @@ const Advertisement = () => {
         label: "No Of Views",
       },
       {
-        id: "thumbnail",
-        label: "Image",
-        isImage: true,
+        id: "views_required",
+        label: "Required Views",
+      },
+      {
+        id: "payable_amount",
+        label: "Payable Amount",
       },
       {
         id: "created_at",
@@ -107,10 +124,19 @@ const Advertisement = () => {
         },
         {
           type: "inputBox",
-          name: "no_of_views",
-          title: "No Of Viewa",
-          regex: /^[0-9\s\&]+$/,
+          name: "views_required",
+          title: "Views Required",
+          regex: /^[0-9\s]+$/,
           placeholder: "Enter No Of Views",
+          required: true,
+        },
+        {
+          type: "inputBox",
+          name: "payable_amount",
+          title: "Payable Amount",
+          regex: /^[0-9\s]+$/,
+          placeholder: "Enter Amount",
+          disabled : true,
           required: true,
         },
       ],
@@ -123,42 +149,30 @@ const Advertisement = () => {
           name: "advertise_url",
           title: "Advertise Link",
           placeholder: "Paste Advertise Link",
-          // required: true,
-          size: "9",
-        },
-        {
-          type: "duration",
-          name: "duration",
-          title: "Duration",
-          placeholder: "Type Duration",
-          size: "3",
-          placeholder: "Type Duration",
-          // required: true,
-          //   disabled: true,
-        },
-        {
-          type: "image",
-          name: "poster",
-          title: "Portrait",
-          description: "Image size",
-          image_size: "980 * 1300 PX",
-          accept: "image/*",
-          size: 6,
           required: true,
+          size: "12",
         },
         {
-          type: "image",
-          name: "thumbnail",
-          title: "Landscape",
-          description: "Image size",
-          image_size: "1920 * 1080 PX",
-          accept: "image/*",
-          size: 6,
-          required: true,
+          type: "inputBox",
+          name: "website_url",
+          title: "Website Url",
+          placeholder: "Paste Link",
+          // required: true,
+          size: "12",
         },
+
+
       ],
     },
   ]);
+
+  useEffect(()=>{
+    if(form?.views_required){
+      const amount = Number(form?.views_required) * parseFloat(adPrice)  
+      setForm({...form , payable_amount : amount.toFixed(2)   })
+    }
+  },[form?.views_required])
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData();

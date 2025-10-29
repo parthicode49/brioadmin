@@ -198,7 +198,13 @@ export const advertise_form_delete = (formData) => API.post('/advertise_form_del
 export const all_advertise_transaction_list = (formData) => API.post('/all_advertise_transaction_list/' , formData)
 // export const advertise_transaction_create =(formData) => API.post('/advertise_transaction_create/',formData)
 
-// export const advertisement_create = (formData) => API.post('/advertisement_create/' , formData)
+export const advertisement_charge_list = (formData) => API.post('/advertisement_charge_list/' , formData)
+export const advertisement_charge_update = (formData) => API.post('/advertisement_charge_update/' , formData)
+
+
+export const all_advertisement_list_admin = (formData) => API.post('/all_advertisement_list_admin/' , formData)
+
+
 
 // Master->Sub Admin
 export const subadmin_create = (formData) => API.post('/subadmin_create/', formData); // Pending

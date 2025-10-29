@@ -306,7 +306,7 @@ export const SidebarData = (darkMode) => {
           },
           {
             title: "Create Ad",
-            path: "/Advertisers/Advertisement/",
+            path: "/advertisement/",
             access: rights?.["Advertisement"]?.["view"],
           },
           {
@@ -449,11 +449,11 @@ export const SidebarData = (darkMode) => {
             access: rights?.["Setting"]?.["view"],
           },
 
-          // {
-          //   title: "App Setting",
-          //   path: "/Settings/AppSetting/",
-          //   access: rights?.["Setting"]?.["view"],
-          // },
+          {
+            title: "Ad Price",
+            path: "/setting/adprice/",
+            access: rights?.["Setting"]?.["view"],
+          },
           // {
           //   title: "User Logs",
           //   path: "/Settings/UserLogs/UserLogs",
@@ -547,6 +547,16 @@ export const SidebarData = (darkMode) => {
             {
         title: "Advertisement",
         path: "/advertisement",
+        icon: (
+          <img src={darkMode ? dashboard : dashboardDark} height={"20px"} />
+        ),
+        iconClosed: <KeyboardArrowRightIcon />,
+        iconOpened: <KeyboardArrowDownIcon />,
+        access: "true",
+      },
+            {
+        title: "Payment",
+        path: "/paymenthistory",
         icon: (
           <img src={darkMode ? dashboard : dashboardDark} height={"20px"} />
         ),

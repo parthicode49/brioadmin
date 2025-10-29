@@ -77,6 +77,7 @@ export const ADVERTISEMENTS = "ADVERTISEMENTS"
 export const ADVERTISEMENTSADLIST = "ADVERTISEMENTSADLIST"
 export const ADPAYMENT="ADPAYMENT"
 export const ADPAY = "ADPAY"
+export const ADPRICE = "ADPRICE"
 export const SETAD = "SETAD"
 export const ADDELETE = "ADDELETE"
 

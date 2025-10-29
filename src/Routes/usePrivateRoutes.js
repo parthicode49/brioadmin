@@ -124,6 +124,14 @@ const AdDashboard = React.lazy(()=>
 const AdvertisementAdPannel = React.lazy(()=>
   import("../components/AdPannel/Advertisement")
 )
+const AdPaymentHistory = React.lazy(() => 
+  import("../components/AdPannel/AdPaymentHistory")
+)
+const Advertisement = React.lazy(() =>
+  import("../components/Advertisement/Advertisement")
+)
+
+
 export const usePrivateRoutes = () => {
   const reduxRole = useSelector((state) => state.layout.role);
   const loginedDetails = JSON.parse(sessionStorage.getItem("loggedInDetails"));
@@ -233,6 +241,10 @@ export const usePrivateRoutes = () => {
         Component: <Advertiser />,
       },
       {
+        path: `/advertisement`,
+        Component: <Advertisement />,
+      },
+      {
         path: `/notification`,
         Component: <Notification />,
       },
@@ -335,37 +347,9 @@ export const usePrivateRoutes = () => {
         Component: <AdvertisementAdPannel />,
       },
       {
-        path: `/movies`,
-        Component: <DistributorMovies />,
+        path: `/paymenthistory`,
+        Component: <AdPaymentHistory />,
       },
-      {
-        path: `/movies/detail`,
-        Component: <MovieDetail />,
-      },
-      {
-        path: `/series`,
-        Component: <DistributorSeries />,
-      },
-      {
-        path: `/series/detail`,
-        Component: <SeriesDetail />,
-      },
-      {
-        path: `/song`,
-        Component: <DistributorSong />,
-      },
-      {
-        path: `/song/detail`,
-        Component: <SongDetail />,
-      },
-      {
-        path: `/notification`,
-        Component: <DistributorNotification />,
-      },
-      {
-        path: `/distributorcoupon`,
-        Component: <DistributorCoupon />,
-      },
-    ];
+    ]
   }
 };
