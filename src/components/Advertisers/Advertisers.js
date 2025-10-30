@@ -32,7 +32,7 @@ const Advertisers = () => {
     updateRecord: Action.advertiser_status_update,
     deleteAccess: rights?.["Masters"]?.["delete"] == "true",
     onDeleteText:
-      "If You Delete the Distributor all the Movie and Series of that distributor will also deleted",
+      "Are you Sure?",
     onUpdateText: "Are you Sure?",
     tableHead: [
       {
@@ -41,11 +41,7 @@ const Advertisers = () => {
         link: "/Distributors/DistributerProducts",
         color: "var(--gradientColor2)",
       },
-      {
-        id: "company_logo",
-        label: "Logo",
-        isImage: true,
-      },
+
       {
         id: "company_name",
         label: "Company Name",
@@ -130,29 +126,28 @@ const Advertisers = () => {
         {
           id: "5",
           type: "inputBox",
-          name: "gst_number",
-          title: "GST No",
-          placeholder: "Enter Company GST Number",
+          name: "country",
+          title: "Country",
+          placeholder: "Enter Country Name",
           required: true,
-          isGst: true,
         },
         {
           id: "6",
           type: "inputBox",
-          name: "address",
-          title: "Address",
-          placeholder: "Enter Company Address here",
+          name: "state",
+          title: "State",
+          placeholder: "Enter state",
           required: true,
         },
-        // {
-        //   id: "6",
-        //   type: "inputBox",
-        //   title: "Pay Per View(in Rupee)",
-        //   name: "commission",
-        //   placeholder: "Enter Pay Per View",
-        //   regex: /^[0-9\.]+$/,
-        //   required: true,
-        // },
+        {
+          id: "7",
+          type: "inputBox",
+          title: "Password",
+          name: "password",
+          placeholder: "Enter password",
+          // regex: /^[0-9\.]+$/,
+          required: true,
+        },
         // {
         //   id: "110",
         //   type: "mobile",
@@ -166,63 +161,63 @@ const Advertisers = () => {
         // },
       ],
     },
-    {
-      title: "Contact",
-      fields: [
-        {
-          id: "1",
-          type: "inputBox",
-          name: "contact_person_name",
-          title: "Contact Person",
-          placeholder: "Enter Contact Person Name here",
-          required: true,
-        },
-        {
-          id: "2",
-          type: "mobile",
-          title: "Mobile Number",
-          // maxLength: 12,
-          placeholder: "Enter Contact Person Mobile Number",
-          name: "contact_person_number",
-          isMobile: true,
-          required: true,
-        },
-      ],
-    },
-    {
-      title: "Media",
-      fields: [
-        {
-          id: "8",
-          type: "image",
-          title: "Company Registration Certificate",
-          name: "company_registration_certificate",
-          description: "PDF, DOC, DOCX (Max 5MB)",
-          accept: ".pdf,.doc,.docx",
-          size: 4,
-        },
-        {
-          id: "9",
-          type: "image",
-          title: "Company Logo",
-          name: "company_logo",
-          description: "Upload a Company Logo (JPG, PNG)",
-          accept: "image/*",
-          required: true,
-          display: "block",
-          size: 4,
-        },
-        {
-          id: "10",
-          type: "image",
-          title: "Contract Agreement",
-          name: "contract_agreement",
-          description: "PDF, DOC, DOCX (Max 5MB)",
-          accept: ".pdf,.doc,.docx",
-          size: 4,
-        },
-      ],
-    },
+    // {
+    //   title: "Contact",
+    //   fields: [
+    //     {
+    //       id: "1",
+    //       type: "inputBox",
+    //       name: "contact_person_name",
+    //       title: "Contact Person",
+    //       placeholder: "Enter Contact Person Name here",
+    //       required: true,
+    //     },
+    //     {
+    //       id: "2",
+    //       type: "mobile",
+    //       title: "Mobile Number",
+    //       // maxLength: 12,
+    //       placeholder: "Enter Contact Person Mobile Number",
+    //       name: "contact_person_number",
+    //       isMobile: true,
+    //       required: true,
+    //     },
+    //   ],
+    // },
+    // {
+    //   title: "Media",
+    //   fields: [
+    //     {
+    //       id: "8",
+    //       type: "image",
+    //       title: "Company Registration Certificate",
+    //       name: "company_registration_certificate",
+    //       description: "PDF, DOC, DOCX (Max 5MB)",
+    //       accept: ".pdf,.doc,.docx",
+    //       size: 4,
+    //     },
+    //     {
+    //       id: "9",
+    //       type: "image",
+    //       title: "Company Logo",
+    //       name: "company_logo",
+    //       description: "Upload a Company Logo (JPG, PNG)",
+    //       accept: "image/*",
+    //       required: true,
+    //       display: "block",
+    //       size: 4,
+    //     },
+    //     {
+    //       id: "10",
+    //       type: "image",
+    //       title: "Contract Agreement",
+    //       name: "contract_agreement",
+    //       description: "PDF, DOC, DOCX (Max 5MB)",
+    //       accept: ".pdf,.doc,.docx",
+    //       size: 4,
+    //     },
+    //   ],
+    // },
   ]);
   useMemo(() => {
     if (advertisers_list) {
@@ -231,13 +226,48 @@ const Advertisers = () => {
       setTableData({ ...temp });
     }
   }, [advertisers_list]);
+
+  useEffect(()=>{
+    if(isEdit){
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 6) {
+                return { ...field, display: "block" };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    }else{
+        setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 6) {
+                return { ...field, display: "none" };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    }
+  },[isEdit])
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData();
-    Object.keys(form)?.map((key) => data.append(key, form?.[key]));
-    data.append("user", user?.id);
+    // const data = new FormData();
+    // Object.keys(form)?.map((key) => data.append(key, form?.[key]));
+    // data.append("user", user?.id);
     if (isEdit) {
-      const resData = await advertiser_update(data);
+      const resData = await advertiser_update(form);
       if (resData?.status === 200) {
         setForm({});
         setSave(!save);
@@ -246,7 +276,7 @@ const Advertisers = () => {
         setForm(form);
       }
     } else {
-      const resData = await advertiser_create(data);
+      const resData = await advertiser_create(form);
       if (resData?.status === 200) {
         // setForm({});
         setForm({});

@@ -18,6 +18,7 @@ import { IMAGE } from "../../../api/index";
 import WatchedCustomers from "./WatchedCustomers";
 import EnlargedView from "../../utils/EnlargedView";
 import dayjs from "dayjs";
+import AdInMovie from "./AdInMovie";
 const ProductDetailsContent = () => {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -678,6 +679,7 @@ const ProductDetailsContent = () => {
             <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
               {" "}
               <WatchedCustomers id={location.state?.id} path={path} />
+              <AdInMovie id={location.state?.id} />
             </Grid>
           </>
         )}

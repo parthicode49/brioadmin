@@ -48,6 +48,7 @@ const Advertisement = () => {
 
       temp.tableBody = adv_list?.data?.map((ele) => ({
         ...ele,
+        edit: ele?.approval_status === "Approved",
       }));
 
       setTableData({ ...temp });
@@ -59,6 +60,7 @@ const Advertisement = () => {
     deleteRecord: Action.advertisement_delete,
     updateRecord: Action.advertisement_update,
     deleteAccess: "true",
+    disableDelete: true,
     customisedStatusUpdateMessage: true,
     onDeleteText: "Are you sure want to delete Advertisement?",
     onActiveText: "Are you Sure want to Activate Advertisement?",
@@ -124,19 +126,28 @@ const Advertisement = () => {
         },
         {
           type: "inputBox",
+          name: "payable_amount",
+          title: "Payable Amount",
+          regex: /^[0-9\s]+$/,
+          placeholder: "Enter Amount",
+          required: true,
+        },
+        {
+          type: "inputBox",
           name: "views_required",
           title: "Views Required",
           regex: /^[0-9\s]+$/,
           placeholder: "Enter No Of Views",
           required: true,
+          disabled: true,
         },
         {
           type: "inputBox",
-          name: "payable_amount",
-          title: "Payable Amount",
-          regex: /^[0-9\s]+$/,
+          name: "reject_reason",
+          title: "Reject Reason",
+          // regex: /^[0-9\s]+$/,
           placeholder: "Enter Amount",
-          disabled : true,
+          display: "none",
           required: true,
         },
       ],
@@ -155,30 +166,64 @@ const Advertisement = () => {
         {
           type: "inputBox",
           name: "website_url",
-          title: "Website Url",
+          title: "Redirection Url",
           placeholder: "Paste Link",
           // required: true,
           size: "12",
         },
-
-
       ],
     },
   ]);
 
-  useEffect(()=>{
-    if(form?.views_required){
-      const amount = Number(form?.views_required) * parseFloat(adPrice)  
-      setForm({...form , payable_amount : amount.toFixed(2)   })
+  useEffect(() => {
+    if (form?.payable_amount) {
+      const amount = Number(form?.payable_amount) / parseFloat(adPrice);
+      setForm({ ...form, views_required: amount });
     }
-  },[form?.views_required])
-  
+  }, [form?.payable_amount]);
+
+  useEffect(() => {
+    if (isEdit && form?.approval_status === "Rejected") {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 3) {
+                return { ...field, display: "block" };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    } else {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 3) {
+                return { ...field, display: "none" };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    }
+  }, [form?.approval_status]);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData();
     Object.keys(form)?.map((key) => data.append(key, form?.[key]));
     data.append("advertiser", user?.id);
     if (isEdit) {
+      data.append("approval_status", "Pending");
+      data.append("reject_reason", "");
       const resData = await advertisement_update(data);
       if (resData?.status === 200) {
         setForm({});

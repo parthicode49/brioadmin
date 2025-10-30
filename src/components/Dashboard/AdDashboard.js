@@ -25,7 +25,7 @@ const AdDashboard = () => {
     <Suspense>
       <>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2 }}>
-          <Grid item xs={12} md={12} lg={12} xl={12}>
+          {/* <Grid item xs={12} md={12} lg={12} xl={12}>
             <MovieRevenueGraph />
           </Grid>
           <Grid item xs={12} md={12} lg={12} xl={12}>
@@ -34,18 +34,14 @@ const AdDashboard = () => {
           <Grid item xs={12} md={6} lg={6} xl={6}>
             <SeriesRevenueGraph />
           </Grid>
-          {/* <Grid item xs={12} md={6} lg={6} xl={6}>
-            <SongRevenueGraph />
-          </Grid> */}
+ 
           <Grid item xs={12} md={6} lg={6} xl={6}>
             <HighestWatchedMoviesGraph />
           </Grid>
           <Grid item xs={12} md={6} lg={6} xl={6}>
             <HighestWatchedSeriesGraph />
-          </Grid>
-          {/* <Grid item xs={12} md={6} lg={4} xl={4}>
-            <HighestWatchedSongGraph />
           </Grid> */}
+
         </Grid>
       </>
     </Suspense>

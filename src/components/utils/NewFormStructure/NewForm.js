@@ -2508,7 +2508,7 @@ const NewForm = ({
                             <InputLabel
                               shrink
                               style={{
-                                // fontWeight: "bold",
+                              
                                 marginBottom: "12px",
                                 color: "#151515",
                                 fontSize: "16px",
@@ -2527,16 +2527,10 @@ const NewForm = ({
                             </InputLabel>
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                               <TimeField
-                                // label={value?.title}
                                 name={value?.name}
                                 style={{ width: "100%" }}
                                 disabled={value.disabled || false}
-                                // style={{"-webkit-text-fill-color":value?.color}}
-                                // value={
-                                //   formData?.[value.name]
-                                //     ? getDateFromHours(formData?.[value.name])
-                                //     : null
-                                // }
+
                                 value={
                                   formData?.[value.name]
                                     ? dayjs(
@@ -2544,13 +2538,7 @@ const NewForm = ({
                                       )
                                     : null
                                 }
-                                // value={
-                                //   typeof formData?.[value.name] == "string"
-                                //     ? dayjs(
-                                //         getDateFromHours(formData?.[value.name])
-                                //       )
-                                //     : formData?.[value.name] || ""
-                                // }
+            
                                 onChange={(newValue) => {
                                   setFormData({
                                     ...formData,

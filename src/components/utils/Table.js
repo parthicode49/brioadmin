@@ -1134,7 +1134,7 @@ export default function ListTable({
       )}
       {isDrawerForm && (
         <>
-          <div
+         {!hideAddBtn && <div
             style={{
               width: "100%",
               textAlign: "right",
@@ -1168,7 +1168,7 @@ export default function ListTable({
               <AddIcon sx={{ marginRight: "5px" }} /> Add
             </Button>
             {/* {exportButton && <Grid item>{exportButton}</Grid>} */}
-          </div>
+          </div>}
           <NewForm
             open={openDrawer}
             setOpen={setOpenDrawer}

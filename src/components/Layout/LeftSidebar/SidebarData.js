@@ -24,6 +24,10 @@ import controlPanel from "../../../images/SliderBanner/control_panel.png";
 import controlPanelDark from "../../../images/SliderBanner/control_panel_dark.png";
 import setting from "../../../images/SliderBanner/setting.png";
 import settingDark from "../../../images/SliderBanner/setting_dark.png";
+import adpanel from "../../../images/SliderBanner/ad-panel.png"
+import adpanelDark from "../../../images/SliderBanner/ad-panel_dark.png"
+import payment from "../../../images/SliderBanner/payment.png"
+import paymentDark from "../../../images/SliderBanner/payment_dark.png"
 import { useSelector } from "react-redux";
 export const SidebarData = (darkMode) => {
   const reduxRole = useSelector((state) => state.layout.role);
@@ -286,7 +290,7 @@ export const SidebarData = (darkMode) => {
         path: "/AdForm/AdForm",
         icon: (
           <img
-            src={darkMode ? controlPanel : controlPanelDark}
+            src={darkMode ? adpanel : adpanelDark}
             height={"20px"}
           />
         ),
@@ -294,11 +298,11 @@ export const SidebarData = (darkMode) => {
         iconOpened: <KeyboardArrowDownIcon />,
         access: "true",
         subNav: [
-          {
-            title: "Ad Submission",
-            path: "/AdForm/AdForm/",
-            access: rights?.["Ad Submission"]?.["view"],
-          },
+          // {
+          //   title: "Ad Submission",
+          //   path: "/AdForm/AdForm/",
+          //   access: rights?.["Ad Submission"]?.["view"],
+          // },
           {
             title: "Advertisers",
             path: "/advertiser",
@@ -309,16 +313,16 @@ export const SidebarData = (darkMode) => {
             path: "/advertisement/",
             access: rights?.["Advertisement"]?.["view"],
           },
-          {
-            title: "Set Ads ( Movie )",
-            path: "/SetMovieAdvertisement/SetMovieAdvertisement/",
-            access: rights?.["Set Movie Advertisement"]?.["view"],
-          },
-          {
-            title: "Set Ads ( Series )",
-            path: "/SetSeriesAdvertisement/SetSeriesAdvertisement/",
-            access: rights?.["Set Series Advertisement"]?.["view"],
-          },
+          // {
+          //   title: "Set Ads ( Movie )",
+          //   path: "/SetMovieAdvertisement/SetMovieAdvertisement/",
+          //   access: rights?.["Set Movie Advertisement"]?.["view"],
+          // },
+          // {
+          //   title: "Set Ads ( Series )",
+          //   path: "/SetSeriesAdvertisement/SetSeriesAdvertisement/",
+          //   access: rights?.["Set Series Advertisement"]?.["view"],
+          // },
         ].filter((e) => e),
       },
       {
@@ -548,7 +552,7 @@ export const SidebarData = (darkMode) => {
         title: "Advertisement",
         path: "/advertisement",
         icon: (
-          <img src={darkMode ? dashboard : dashboardDark} height={"20px"} />
+          <img src={darkMode ? adpanel : adpanelDark} height={"20px"} />
         ),
         iconClosed: <KeyboardArrowRightIcon />,
         iconOpened: <KeyboardArrowDownIcon />,
@@ -558,7 +562,7 @@ export const SidebarData = (darkMode) => {
         title: "Payment",
         path: "/paymenthistory",
         icon: (
-          <img src={darkMode ? dashboard : dashboardDark} height={"20px"} />
+          <img src={darkMode ? payment : paymentDark} height={"20px"} />
         ),
         iconClosed: <KeyboardArrowRightIcon />,
         iconOpened: <KeyboardArrowDownIcon />,

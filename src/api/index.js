@@ -203,6 +203,15 @@ export const advertisement_charge_update = (formData) => API.post('/advertisemen
 
 
 export const all_advertisement_list_admin = (formData) => API.post('/all_advertisement_list_admin/' , formData)
+export const advertisement_status_update = (formData) => API.post('/advertisement_status_update/' , formData)
+export const advertisement_in_movie_update = (formData) => API.post('/advertisement_in_movie_update/' , formData)
+export const advertisement_in_movie_delete = (formData) => API.post('/advertisement_in_movie_delete/' , formData)
+export const advertisement_name_id_only = (formData) => API.post('/advertisement_name_id_only/' , formData)
+
+export const advertisement_in_episode_delete = (formData) => API.post('/advertisement_in_episode_delete/' , formData)
+export const advertisement_in_episode_create = (formData) => API.post("/advertisement_in_episode_create/" , formData)
+export const advertisement_in_episode_list_admin = (formData) => API.post("/advertisement_in_episode_list_admin/" , formData)
+export const advertisement_in_episode_update = (formData) => API.post("/advertisement_in_episode_update/" , formData)
 
 
 
@@ -378,6 +387,11 @@ export const set_update_advertise = (formData) => API.post('/set_update_advertis
 export const set_advertise_delete = (formData) => API.post('/set_advertise_delete/',formData)
 
 export const advertiser_login = (formData) => API.post('/advertiser_login/' , formData)
+
+
+// Ad in movie
+export const advertisement_in_movie_create = (formData) => API.post('/advertisement_in_movie_create/', formData)
+export const advertisement_in_movie_list_admin = (formData) => API.post('/advertisement_in_movie_list_admin/', formData)
 
 
 // Customer

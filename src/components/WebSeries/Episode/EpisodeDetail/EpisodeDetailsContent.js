@@ -19,6 +19,7 @@ import WatchedCustomers from "./WatchedCustomers";
 // import DistributorTransaction from "./DistributorTransaction";
 // import ProducerTransaction from "./ProducerTransaction";
 import EnlargedView from "../../../utils/EnlargedView";
+import AdInEpisode from "./AdInEpisode";
 
 const EpisodeDetailsContent = () => {
   const dispatch = useDispatch();
@@ -376,6 +377,7 @@ const EpisodeDetailsContent = () => {
             <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
               {" "}
               <WatchedCustomers id={location.state?.id} path={path} />
+              <AdInEpisode id={location.state?.id} path={path} />
             </Grid>
           </>
         )}

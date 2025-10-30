@@ -9,7 +9,7 @@ import {
   TextField,
   Autocomplete,
   InputLabel,
-    InputAdornment,
+  InputAdornment,
   Paper,
   useTheme,
   Typography,
@@ -64,7 +64,13 @@ const DynamicFormModal = ({
       [name]: value,
     }));
   };
-
+  function getDateFromHours(timeStr) {
+    // Example input: "13:45:00"
+    const [hours, minutes, seconds] = timeStr.split(":").map(Number);
+    const now = new Date();
+    now.setHours(hours, minutes, seconds || 0, 0);
+    return now;
+  }
   // useMemo(()=>{
 
   // },[])
@@ -431,112 +437,109 @@ const DynamicFormModal = ({
                     />
                   </Grid>
                 );
-              case "date" :
-                   return (
-                          <Grid
-                            item
-                            xs={12}
-                            md={12}
-                            lg={field?.size || 12}
-                            key={index + "-grid"}
-                            display={field.display || "block"}
-                          >
-                            <InputLabel
-                              shrink={true}
-                              style={{
-                                marginBottom: "12px",
-                                color: darkMode ? "#ffffff" : "#151515",
-                              }}
-                            >
-                              <span>{field.title}</span>
-                              {field?.required && (
-                                <span
-                                  style={{ color: "red", paddingLeft: "5px" }}
-                                >
-                                  *
-                                </span>
-                              )}
-                            </InputLabel>
+              case "date":
+                return (
+                  <Grid
+                    item
+                    xs={12}
+                    md={12}
+                    lg={field?.size || 12}
+                    key={index + "-grid"}
+                    display={field.display || "block"}
+                  >
+                    <InputLabel
+                      shrink={true}
+                      style={{
+                        marginBottom: "12px",
+                        color: darkMode ? "#ffffff" : "#151515",
+                      }}
+                    >
+                      <span>{field.title}</span>
+                      {field?.required && (
+                        <span style={{ color: "red", paddingLeft: "5px" }}>
+                          *
+                        </span>
+                      )}
+                    </InputLabel>
 
-                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                              <DatePicker
-                                // label={value.placeholder || value.title}
-                                value={
-                                  formData?.[field.name]
-                                    ? dayjs(formData?.[field.name])
-                                    : null
-                                }
-                                  minDate={field.min ? dayjs(field.min) : undefined}
-            maxDate={field.max ? dayjs(field.max) : undefined}
-                                defaultValue={
-                                  formData?.[field.name]
-                                    ? undefined
-                                    : field.default
-                                    ? dayjs(field.default)
-                                    : undefined
-                                }
-                                onChange={(newValue) => {
-                                  setFormData((prev) => ({
-                                    ...prev,
-                                    [field.name]: newValue
-                                      ? dayjs(newValue).format("YYYY-MM-DD")
-                                      : "",
-                                  }));
-                                }}
-                                slots={{
-                                  openPickerIcon: CalendarTodayIcon,
-                                }}
-                                slotProps={{
-                                  textField: {
-                                    fullWidth: true,
-                                    required: field?.required,
-                                    placeholder: field.placeholder,
-                                    InputProps: {
-                                      startAdornment: field?.symbol && (
-                                        <InputAdornment position="start">
-                                          {field.symbol}
-                                        </InputAdornment>
-                                      ),
-                                      sx: {
-                                        borderRadius: 2,
-                                        backgroundColor:
-                                          "var(--themeColorLighterShade)",
-                                        "& .MuiOutlinedInput-notchedOutline": {
-                                          borderColor:
-                                            "var(--themeColorLighterShade) !important",
-                                        },
-                                        "& input:-webkit-autofill": {
-                                          WebkitBoxShadow: darkMode
-                                            ? "0 0 0 100px rgb(22, 22, 22) inset"
-                                            : "0 0 0 100px rgb(255, 255, 255) inset",
-                                          WebkitTextFillColor:
-                                            "var(--themeFontColor)",
-                                        },
-                                      },
-                                    },
-                                  },
-                                  openPickerIcon: {
-                                    sx: { color: "#DE4444" },
-                                  },
-                                }}
-                              />
-                            </LocalizationProvider>
-                            {!allowSubmit &&
-                              field.required &&
-                              !formData[field.name] && (
-                                <Typography
-                                  variant="caption"
-                                  sx={{
-                                    color: "red !important",
-                                    display: "block",
-                                    mb: 1,
-                                  }}
-                                >
-                                  Please fill this field
-                                </Typography>
-                              )}
-                          </Grid>
-                        );  
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker
+                        // label={value.placeholder || value.title}
+                        value={
+                          formData?.[field.name]
+                            ? dayjs(formData?.[field.name])
+                            : null
+                        }
+                        minDate={field.min ? dayjs(field.min) : undefined}
+                        maxDate={field.max ? dayjs(field.max) : undefined}
+                        defaultValue={
+                          formData?.[field.name]
+                            ? undefined
+                            : field.default
+                            ? dayjs(field.default)
+                            : undefined
+                        }
+                        onChange={(newValue) => {
+                          setFormData((prev) => ({
+                            ...prev,
+                            [field.name]: newValue
+                              ? dayjs(newValue).format("YYYY-MM-DD")
+                              : "",
+                          }));
+                        }}
+                        slots={{
+                          openPickerIcon: CalendarTodayIcon,
+                        }}
+                        slotProps={{
+                          textField: {
+                            fullWidth: true,
+                            required: field?.required,
+                            placeholder: field.placeholder,
+                            InputProps: {
+                              startAdornment: field?.symbol && (
+                                <InputAdornment position="start">
+                                  {field.symbol}
+                                </InputAdornment>
+                              ),
+                              sx: {
+                                borderRadius: 2,
+                                backgroundColor:
+                                  "var(--themeColorLighterShade)",
+                                "& .MuiOutlinedInput-notchedOutline": {
+                                  borderColor:
+                                    "var(--themeColorLighterShade) !important",
+                                },
+                                "& input:-webkit-autofill": {
+                                  WebkitBoxShadow: darkMode
+                                    ? "0 0 0 100px rgb(22, 22, 22) inset"
+                                    : "0 0 0 100px rgb(255, 255, 255) inset",
+                                  WebkitTextFillColor: "var(--themeFontColor)",
+                                },
+                              },
+                            },
+                          },
+                          openPickerIcon: {
+                            sx: { color: "#DE4444" },
+                          },
+                        }}
+                      />
+                    </LocalizationProvider>
+                    {!allowSubmit &&
+                      field.required &&
+                      !formData[field.name] && (
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            color: "red !important",
+                            display: "block",
+                            mb: 1,
+                          }}
+                        >
+                          Please fill this field
+                        </Typography>
+                      )}
+                  </Grid>
+                );
               case "select":
                 return (
                   <Grid
@@ -847,86 +850,130 @@ const DynamicFormModal = ({
                       )}
                   </Grid>
                 );
-              case "toggle":
+              // case "toggle":
+              case "duration":
                 return (
                   <Grid
                     item
                     xs={12}
                     md={12}
                     key={index + "-grid"}
-                    lg={field?.size || 6}
+                    lg={field?.size || 12}
                     container
                     direction="row"
                     alignItems={"center"}
                     display={field.display || "block"}
                     style={{ marginTop: "1rem" }}
                   >
-                    <FormControl>
-                      <Box sx={{ marginTop: "20px" }}>
-                        <InputLabel
-                          shrink={true}
-                          style={{
-                            fontWeight: "bold",
-                            color: "#151515",
-                            marginLeft: "-10px",
+                    <InputLabel
+                      shrink
+                      style={{
+                        marginBottom: "12px",
+                        color: "#151515",
+                        fontSize: "16px",
+                        lineHeight: "26px",
+                        textAlign: "left",
+                      }}
+                    >
+                      {field?.title}
+                      {field?.required && (
+                        <span style={{ color: "red", paddingLeft: "5px" }}>
+                          *
+                        </span>
+                      )}
+                    </InputLabel>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <TimeField
+                        name={field?.name}
+                        style={{ width: "100%" }}
+                        disabled={field.disabled || false}
+                        value={
+                          formData?.[field.name]
+                            ? dayjs(getDateFromHours(formData?.[field.name]))
+                            : null
+                        }
+                        onChange={(newValue) => {
+                          setFormData({
+                            ...formData,
+                            [field?.name]:
+                              new Date(newValue)?.getHours() +
+                              ":" +
+                              new Date(newValue)?.getMinutes() +
+                              ":" +
+                              new Date(newValue)?.getSeconds(),
+                            // &&(newValue?.getHours()+":"+newValue?.getMinutes()+":"+newValue?.getSeconds())
+                          });
+                        }}
+                        slotProps={{
+                          textField: {
+                            fullWidth: true,
+                            required: field?.required,
+                            placeholder: field.placeholder,
+                            InputProps: {
+                              startAdornment: field?.symbol && (
+                                <InputAdornment position="start">
+                                  {field.symbol}
+                                </InputAdornment>
+                              ),
+                              sx: {
+                                borderRadius: 2,
+                                backgroundColor:
+                                  "var(--themeColorLighterShade)",
+                                "& .MuiOutlinedInput-notchedOutline": {
+                                  borderColor:
+                                    "var(--themeColorLighterShade) !important",
+                                },
+                                "& input:-webkit-autofill": {
+                                  WebkitBoxShadow: darkMode
+                                    ? "0 0 0 100px rgb(22, 22, 22) inset"
+                                    : "0 0 0 100px rgb(255, 255, 255) inset",
+                                  WebkitTextFillColor: "var(--themeFontColor)",
+                                },
+                              },
+                            },
+                          },
+                          openPickerIcon: {
+                            sx: { color: "#DE4444" },
+                          },
+                        }}
+                        InputProps={{
+                          // style: {
+                          //   "-webkit-text-fill-color": value?.color,
+                          // },
+                          sx: {
+                            borderRadius: 2,
+                            backgroundColor: "var(--themeColorLighterShade)",
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              borderColor:
+                                "var(--themeColorLighterShade)  !important",
+                            },
+                            "& input:-webkit-autofill": {
+                              WebkitBoxShadow: darkMode
+                                ? "0 0 0 100px rgb(22, 22, 22) inset"
+                                : "0 0 0 100px rgb(255, 255, 255) inset", // Red background for autofill
+                              WebkitTextFillColor: "var(--themeFontColor)", // Text color for autofilled content
+                            },
+                          },
+                        }}
+                        format="HH:mm:ss"
+                        placeholder={field?.placeholder}
+                      />
+                    </LocalizationProvider>
+                    {!allowSubmit &&
+                      field.required &&
+                      (!formData[field.name] ||
+                        formData?.[field.name]?.length <= 0) && (
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            color: "red !important",
+                            display: "block",
+                            mb: 1,
                           }}
                         >
-                          {/* Label with Mandatory */}
-                          <span>{field.title}</span>
-                        </InputLabel>
-                      </Box>
-
-                      <RadioGroup
-                        row
-                        aria-labelledby="demo-row-radio-buttons-group-label"
-                        name="row-radio-buttons-group"
-                      >
-                        {field?.options?.map((option, index) => (
-                          <FormControlLabel
-                            key={field.name + index}
-                            value={option.value}
-                            name={field.name}
-                            required={field?.required}
-                            disabled={field.disabled ? true : false}
-                            onChange={(event) => {
-                              setFormData({
-                                ...formData,
-                                [event.target.name]: event.target.value,
-                              });
-                            }}
-                            control={
-                              <Radio
-                                color={option.color}
-                                // required
-
-                                checked={
-                                  formData?.[field.name] != undefined
-                                    ? formData?.[field.name] == option.value
-                                    : option.value == field?.default
-                                }
-                              />
-                            }
-                            label={option.value}
-                          />
-                        ))}
-                      </RadioGroup>
-                    </FormControl>
-                    <div>
-                      {!allowSubmit &&
-                        field.required &&
-                        !formData?.[field.name] && (
-                          <p
-                            style={{
-                              // textAlign: "right",
-                              marginTop: "-1px",
-                              fontSize: "0.75rem",
-                              color: "#DE4444",
-                            }}
-                          >
-                            Please fill this field
-                          </p>
-                        )}
-                    </div>
+                          Please upload a file
+                        </Typography>
+                      )}
                   </Grid>
                 );
               default:

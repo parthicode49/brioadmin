@@ -38,6 +38,15 @@ export const advertisement_delete = (formData) => async (dispatch) => {
     console.log(error);
   }
 };
+export const advertisement_status_update = (formData) => async (dispatch) => {
+  try {
+    const  data  = await api.advertisement_status_update(formData);
+    dispatch({ type: MESSAGE, payload: data?.data });
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
 export const all_advertisement_list_admin = (formData) => async (dispatch) => {
   try {
     const { data } = await api.all_advertisement_list_admin(formData);
