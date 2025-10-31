@@ -4,6 +4,7 @@ import Export from "../utils/Export";
 import { useDispatch, useSelector } from "react-redux";
 import * as Action from "../../actions/Advertiser/advertisement";
 import { bindActionCreators } from "redux";
+import DynamicFormModal from "../utils/NewFormStructure/DynamicFormModal";
 
 const Advertisement = () => {
   const dispatch = useDispatch();
@@ -13,8 +14,17 @@ const Advertisement = () => {
   const user = useSelector((state) => state.layout.profile);
   const [advertisementList, setAdvertisementList] = useState([]);
   const [save, setSave] = useState(false);
-  const { all_advertisement_list_admin, advertisement_update } =
-    bindActionCreators(Action, dispatch);
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formSub, setFormSub] = useState({});
+  const [isModalOpenSub, setIsModalOpenSub] = useState(false);
+  const [adPrice, setAdPrice] = useState(null);
+  const {
+    all_advertisement_list_admin,
+    advertisement_update,
+    advertisement_charge_list,
+    advertisement_payment_create,
+  } = bindActionCreators(Action, dispatch);
 
   useEffect(() => {
     const adData = async () => {
@@ -26,6 +36,16 @@ const Advertisement = () => {
     };
     adData();
   }, [save]);
+  useEffect(() => {
+    const dailyAdPrice = async () => {
+      const resData = await advertisement_charge_list();
+      console.log(resData, "resData123654");
+      if (resData?.data) {
+        setAdPrice(resData?.data?.ad_charge);
+      }
+    };
+    dailyAdPrice();
+  }, []);
 
   console.log(advertisementList, "dfsfddsf");
 
@@ -58,8 +78,18 @@ const Advertisement = () => {
         label: "Required Views",
       },
       {
+        id: "remaining_view",
+        label: "Remaining View",
+      },
+      {
         id: "payable_amount",
         label: "Payable Amount",
+      },
+      {
+        id: "top_up",
+        label: "Top Up",
+        isSpecial: true,
+        align: "left",
       },
       {
         id: "status",
@@ -256,48 +286,129 @@ const Advertisement = () => {
       setForm(form);
     }
   };
+  const handleFormSub = (id) => {
+    setEditingIndex(null);
+    setIsModalOpenSub(true);
+    setIsEdit(false);
+    setFormSub({
+      id: id,
+    });
+  };
   useEffect(() => {
     if (advertisementList?.length > 0) {
       const temp = tableData;
-      temp.tableBody = advertisementList;
+      temp.tableBody = advertisementList?.map((ele) => ({
+        ...ele,
+        top_up: (
+          <div>
+            <button
+              style={{
+                padding: "5px 15px",
+                color: "rgb(238, 127, 37)",
+                background: "transparent",
+                border: "1px solid rgb(238, 127, 37)",
+                borderRadius: "5px",
+              }}
+              onClick={() => handleFormSub(ele?.id)}
+            >
+              Top Up
+            </button>
+          </div>
+        ),
+      }));
       setTableData({ ...temp });
       // setForm({ ...form, sequence: Number(tableData.tableBody[tableData.tableBody.length - 1]?.["sequence"]) + 1 })
     }
   }, [advertisementList]);
 
+  const handleSubmit2 = async () => {
+    const resData = await advertisement_payment_create(formSub);
+    if (resData?.status === 200) {
+      setSave(!save);
+      setFormSub({});
+      setIsModalOpenSub(false);
+    }
+  };
+
+  useEffect(() => {
+    if (formSub?.payable_amount) {
+      const amount = Number(formSub?.payable_amount) / parseFloat(adPrice);
+      setFormSub({ ...formSub, views_required: amount });
+    }
+  }, [formSub?.payable_amount]);
+  const [formStructureSub, setFormStructureSub] = useState(
+    [
+      {
+        type: "inputBox",
+        name: "payable_amount",
+        title: "Payable Amount",
+        regex: /^[0-9\s]+$/,
+        placeholder: "Enter Amount",
+        required: true,
+      },
+      {
+        type: "inputBox",
+        name: "views_required",
+        title: "Views Required",
+        regex: /^[0-9\s]+$/,
+        placeholder: "Enter No Of Views",
+        required: true,
+        disabled: true,
+      },
+    ].filter((e) => e)
+  );
+
   return (
-    <ListTable
-      tableData={tableData}
-      key={"ListTable"}
-      form={form}
-      setForm={setForm}
-      setTableData={setTableData}
-      setIsEdit={setIsEdit}
-      view="view_all"
-      save={save}
-      setSave={setSave}
-      isDrawerForm={true}
-      openDrawer={drawer}
-      setOpenDrawer={setDrawer}
-      formStructure={formStructure}
-      handleSubmit={handleSubmit}
-      hideAddBtn={true}
-      isEdit={isEdit}
-      formTitle={isEdit ? "Edit Advertisement" : "Add Advertisement"}
-      exportButton={
-        <Export
-          fileName={"Category"}
-          isClubed={true}
-          access={"true"}
-          exportData={tableData?.exportData || tableData?.tableBody}
-          headings={tableData.tableHead?.map((value) => value.label)}
-          // api = {"export_episode_list"}
-          // api_data = {episodes?.filter_condition}
-        />
-      }
-      // setForm = {se}
-      // setIsEdit(true)
-    />
+    <>
+      <DynamicFormModal
+        open={isModalOpenSub}
+        onClose={() => {
+          setIsModalOpenSub(false);
+          setFormSub({});
+          setIsEdit(false);
+        }}
+        formStructure={formStructureSub}
+        onSubmit={handleSubmit2}
+        formData={formSub}
+        setFormData={setFormSub}
+        title={"Ad Top Up"}
+        initialData={editingIndex !== null ? tableData[editingIndex] : {}}
+        save={save}
+        setSave={setSave}
+      />
+      <ListTable
+        tableData={tableData}
+        key={"ListTable"}
+        form={form}
+        setForm={setForm}
+        setTableData={setTableData}
+        setIsEdit={setIsEdit}
+        view="view_all"
+        save={save}
+        setSave={setSave}
+        isDrawerForm={true}
+        openDrawer={drawer}
+        setOpenDrawer={setDrawer}
+        formStructure={formStructure}
+        handleSubmit={handleSubmit}
+        hideAddBtn={true}
+        isEdit={isEdit}
+        formTitle={isEdit ? "Edit Advertisement" : "Add Advertisement"}
+        exportButton={
+          <Export
+            fileName={"Category"}
+            isClubed={true}
+            access={"true"}
+            exportData={tableData?.exportData || tableData?.tableBody}
+            headings={tableData.tableHead?.map((value) => value.label)}
+            // api = {"export_episode_list"}
+            // api_data = {episodes?.filter_condition}
+          />
+        }
+        // setForm = {se}
+        // setIsEdit(true)
+      />
+    </>
   );
 };
 

@@ -49,11 +49,11 @@ const Distributor = () => {
         link: "/Distributors/DistributerProducts",
         color: "var(--gradientColor2)",
       },
-      {
-        id: "company_logo",
-        label: "Logo",
-        isImage: true,
-      },
+      // {
+      //   id: "company_logo",
+      //   label: "Logo",
+      //   isImage: true,
+      // },
       {
         id: "company_name",
         label: "Company Name",
@@ -208,35 +208,35 @@ const Distributor = () => {
           isMobile: true,
           required: true,
         },
-        {
-          id: "5",
-          type: "inputBox",
-          name: "gst_number",
-          title: "GST No",
-          placeholder: "Enter Company GST Number",
-          required: true,
-          isGst: true,
-        },
-        {
-          id: "6",
-          type: "inputBox",
-          name: "pan_number",
-          title: "Pan Cart Number",
-          placeholder: "Enter Pan Cart Number",
-          required: true,
-          maxLength:"10",
-          isPancard: true,
-        },
-        {
-          id: "7",
-          type: "inputBox",
-          name: "aadhar_number",
-          title: "Aadhar Cart No",
-          placeholder: "Enter Aadhar Cart Number",
-          regex: /^[0-9\.]+$/,
-          maxLength: "12",
-          required: true,
-        },
+        // {
+        //   id: "5",
+        //   type: "inputBox",
+        //   name: "gst_number",
+        //   title: "GST No",
+        //   placeholder: "Enter Company GST Number",
+        //   required: true,
+        //   isGst: true,
+        // },
+        // {
+        //   id: "6",
+        //   type: "inputBox",
+        //   name: "pan_number",
+        //   title: "Pan Cart Number",
+        //   placeholder: "Enter Pan Cart Number",
+        //   required: true,
+        //   maxLength:"10",
+        //   isPancard: true,
+        // },
+        // {
+        //   id: "7",
+        //   type: "inputBox",
+        //   name: "aadhar_number",
+        //   title: "Aadhar Cart No",
+        //   placeholder: "Enter Aadhar Cart Number",
+        //   regex: /^[0-9\.]+$/,
+        //   maxLength: "12",
+        //   required: true,
+        // },
         {
           id: "8",
           type: "inputBox",
@@ -246,54 +246,54 @@ const Distributor = () => {
           required: true,
           display : "nome"
         },
-        {
-          id: "9",
-          type: "mobile",
-          // options : ["parth" ,"gohel"],
-          title: "Alternative Number",
-          placeholder: "Type your Mobile no. here",
-          name: "alternative_number",
-          required: true,
-          isMobile: true,
-          // disabled: isEdit,
-        },
+        // {
+        //   id: "9",
+        //   type: "mobile",
+        //   // options : ["parth" ,"gohel"],
+        //   title: "Alternative Number",
+        //   placeholder: "Type your Mobile no. here",
+        //   name: "alternative_number",
+        //   required: true,
+        //   isMobile: true,
+        //   // disabled: isEdit,
+        // },
       ],
     },
-    {
-      title: "Media",
-      fields: [
-        {
-          id: "8",
-          type: "image",
-          title: "Company Registration Certificate",
-          name: "company_registration_certificate",
-          description: "PDF, DOC, DOCX (Max 5MB)",
-          accept: ".pdf,.doc,.docx",
-          size: 4,
-        },
-        {
-          id: "9",
-          type: "image",
-          title: "Company Logo",
-          name: "company_logo",
-          description: "Upload a Company Logo (JPG, PNG)",
-          accept: "image/*",
-          image_size : "512px x 512px",
-          required: true,
-          display: "block",
-          size: 4,
-        },
-        {
-          id: "10",
-          type: "image",
-          title: "Contract Agreement",
-          name: "contract_agreement",
-          description: "PDF, DOC, DOCX (Max 5MB)",
-          accept: ".pdf,.doc,.docx",
-          size: 4,
-        },
-      ],
-    },
+    // {
+    //   title: "Media",
+    //   fields: [
+    //     {
+    //       id: "8",
+    //       type: "image",
+    //       title: "Company Registration Certificate",
+    //       name: "company_registration_certificate",
+    //       description: "PDF, DOC, DOCX (Max 5MB)",
+    //       accept: ".pdf,.doc,.docx",
+    //       size: 4,
+    //     },
+    //     {
+    //       id: "9",
+    //       type: "image",
+    //       title: "Company Logo",
+    //       name: "company_logo",
+    //       description: "Upload a Company Logo (JPG, PNG)",
+    //       accept: "image/*",
+    //       image_size : "512px x 512px",
+    //       required: true,
+    //       display: "block",
+    //       size: 4,
+    //     },
+    //     {
+    //       id: "10",
+    //       type: "image",
+    //       title: "Contract Agreement",
+    //       name: "contract_agreement",
+    //       description: "PDF, DOC, DOCX (Max 5MB)",
+    //       accept: ".pdf,.doc,.docx",
+    //       size: 4,
+    //     },
+    //   ],
+    // },
   ]);
   useMemo(() => {
     if (distributors) {
@@ -364,11 +364,11 @@ const Distributor = () => {
     console.log(formStructure , isEdit , "new Coer")
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData();
-    Object.keys(form)?.map((key) => data.append(key, form?.[key]));
-    data.append("user", user?.id);
+    // const data = new FormData();
+    // Object.keys(form)?.map((key) => data.append(key, form?.[key]));
+    // data.append("user", user?.id);
     if (isEdit) {
-      const resData = await distributor_update(data);
+      const resData = await distributor_update(form);
       if (resData?.status === 200) {
         setForm({});
         setSave(!save);
@@ -377,7 +377,7 @@ const Distributor = () => {
         setForm(form);
       }
     } else {
-      const resData = await distributor_create(data);
+      const resData = await distributor_create(form);
       if (resData?.status === 200) {
         // setForm({});
         setForm({});

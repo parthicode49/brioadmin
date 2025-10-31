@@ -9,21 +9,17 @@ export const TableData = () => {
     deleteAccess: rights?.["Web Series"]?.["delete"] == "true",
     tableHead: [
       {
-        id: "thumbnail",
-        label: "Image",
-        isFirstImage: true,
-      },
-      {
         id: "title",
         label: "Series Name",
         link: "details",
         // color:"#4267B2"
       },
       {
-        id: "ownership",
-        label: "Ownership",
-        subText: "distributor_name",
+        id: "thumbnail",
+        label: "Image",
+        isImage: true,
       },
+
       // {
       //   id: 'season',
       //   label: 'Season',
@@ -53,7 +49,7 @@ export const TableData = () => {
       //   id: 'content_advisory',
       //   label: 'Content Type',
       // },
-        {
+      {
         id: "approval_status",
         label: "Approval Status",
         isButtonDisplay: true,
@@ -69,12 +65,12 @@ export const TableData = () => {
         isSpecial: true,
         align: "left",
       },
-      {
-        id: "notification",
-        label: "Notification",
-        isSpecial: true,
-        align: "center",
-      },
+      // {
+      //   id: "notification",
+      //   label: "Notification",
+      //   isSpecial: true,
+      //   align: "center",
+      // },
       {
         id: "edit",
         label: "Update",
@@ -119,9 +115,9 @@ export const TableData = () => {
       },
       {
         id: "3",
-        title: "Ownership",
-        name: "ownership",
-        options: ["In House", "Content Owner"],
+        title: "Approval Status",
+        name: "approval_status",
+        options: ["Approved", "Pending", "Rejected"],
       },
       {
         id: "5",

@@ -34,9 +34,9 @@ const DistributorMovies = React.lazy(() =>
 const ContentForm = React.lazy(() =>
   import("../components/DistributorPanel/ContentForm")
 );
-const DistributorSeries = React.lazy(() =>
-  import("../components/DistributorPanel/DistributorSeries")
-);
+// const DistributorSeries = React.lazy(() =>
+//   import("../components/DistributorPanel/DistributorSeries")
+// );
 const SettingModule = React.lazy(() => import("../modules/SettingModule"));
 // const MovieDetailsModule = React.lazy(() =>
 //   import("../components/MovieDetails/MovieDetails")
@@ -131,6 +131,15 @@ const Advertisement = React.lazy(() =>
   import("../components/Advertisement/Advertisement")
 )
 
+const DistributorMovie = React.lazy(() =>
+  import("../components/DistributorPanel/Movie/Movie")
+)
+const DistributorSeries = React.lazy(() =>
+  import("../components/DistributorPanel/Series/Series")
+)
+const AdPayment = React.lazy(()=>
+  import("../components/Advertisement/AdHistory")
+)
 
 export const usePrivateRoutes = () => {
   const reduxRole = useSelector((state) => state.layout.role);
@@ -245,6 +254,10 @@ export const usePrivateRoutes = () => {
         Component: <Advertisement />,
       },
       {
+        path: `/adpayment`,
+        Component: <AdPayment />,
+      },
+      {
         path: `/notification`,
         Component: <Notification />,
       },
@@ -293,7 +306,7 @@ export const usePrivateRoutes = () => {
         Component: <SettingModule />,
       },
     ];
-  } else if (role == "content owner") {
+  } else if (role == "Distributor") {
     return [
       {
         path: `/Dashboard`,
@@ -305,7 +318,7 @@ export const usePrivateRoutes = () => {
       },
       {
         path: `/movies`,
-        Component: <DistributorMovies />,
+        Component: <DistributorMovie />,
       },
       {
         path: `/movies/detail`,

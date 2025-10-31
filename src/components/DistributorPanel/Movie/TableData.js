@@ -10,16 +10,17 @@ export const TableData = () => {
     onUpdateText: "Are you Sure?",
     tableHead: [
       {
-        id: "thumbnail",
-        label: "Image",
-        isFirstImage: true,
-      },
-      {
         id: "title",
         label: "Name",
         // link: "/movie/moviedetail",
         color: "var(--gradientColor2)",
         // subText: "movie_subcategory"
+      },
+      {
+        id: "thumbnail",
+        label: "Image",
+        isImage: true,
+        // isFirstImage: true,
       },
 
       {
@@ -27,14 +28,14 @@ export const TableData = () => {
         label: "Category",
         subText: "sub_category_list",
       },
-      ,
-     {
-        id: 'ownership',
-        label: 'Ownership',
-         subText: "distributor_name",
+      
+      //   ,
+      //  {
+      //     id: 'ownership',
+      //     label: 'Ownership',
+      //      subText: "distributor_name",
 
-      },
-      ,
+      //   },
       role !== "Distributor" && {
         id: "movie_access1",
         label: "Access",
@@ -95,6 +96,7 @@ export const TableData = () => {
       // },
 
       // role != "Distributor" &&
+
       {
         id: "approval_status",
         label: "Approval Status",
@@ -111,12 +113,12 @@ export const TableData = () => {
         isSpecial: true,
         align: "left",
       },
-      {
-        id: "notification",
-        label: "Notification",
-        isSpecial: true,
-        align: "center",
-      },
+      // {
+      //   id: "notification",
+      //   label: "Notification",
+      //   isSpecial: true,
+      //   align: "center",
+      // },
       {
         id: "edit",
         label: "Update",
@@ -154,24 +156,24 @@ export const TableData = () => {
         requredField: "subcategory_name",
       },
 
-      {
-        id: "3",
-        title: "Ownership",
-        name: "ownership",
-        options: ["In House", "Content Owner"],
-      },
+      // {
+      //   id: "3",
+      //   title: "Ownership",
+      //   name: "ownership",
+      //   options: ["In House", "Content Owner"],
+      // },
       // {
       //     id: "4",
       //     title: "Released Status",
       //     name: "released_status",
       //     options: ["Upcoming", "Released"],
       //   },
-      // {
-      //     id: "5",
-      //     title: "Language",
-      //     name: "movie_language",
-      //     options: ["Upcoming", "Released"],
-      //   },
+      {
+        id: "5",
+        title: "Approval Status",
+        name: "approval_status",
+        options: ["Pending", "Released"],
+      },
       {
         id: "6",
         title: "Status",

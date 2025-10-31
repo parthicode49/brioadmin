@@ -25,7 +25,7 @@ const Series = () => {
   const location = useLocation();
   const role = useSelector((state) => state.layout.role);
   const user = useSelector((state) => state.layout.profile);
-  const series = useSelector((state) => state?.webseries?.series);
+  const series = useSelector((state) => state?.webseries?.series_dis);
   const categories = useSelector((state) => state.masters.categories);
   const subcategories = useSelector((state) => state.masters.subcategories);
   const language = useSelector((state) => state.masters.languages);
@@ -34,7 +34,7 @@ const Series = () => {
   const [usedCountries, setUsedCountries] = useState([]);
   const casts = useSelector((state) => state.masters.casts);
   const [save, setSave] = useState(false);
-  const [form, setForm] = useState({ approval_status: "Approved" });
+  const [form, setForm] = useState({});
   const [isEdit, setIsEdit] = useState(false);
   const [drawer, setDrawer] = useState(false);
   const [formNoti, setFormNoti] = useState({});
@@ -46,7 +46,7 @@ const Series = () => {
   const tempTableData = {
     ...TableData(),
     deleteRecord: Action.series_delete,
-    disableDelete: role !== "Distributor" ? false : true,
+    disableDelete: true,
 
     onDeleteText: [
       "Are you sure want to delete this Series ?",
@@ -70,6 +70,14 @@ const Series = () => {
   //     dispatch(Action.all_series_list(data));
   //   }
   // }, [user?.id, save]);
+
+  useEffect(() => {
+    if (user?.id) {
+      dispatch(
+        Action.all_series_list_distributor({ distributor_id: user?.id })
+      );
+    }
+  }, [user, save]);
 
   useEffect(() => {
     //  if(movies?.statuscode!=200)
@@ -186,72 +194,72 @@ const Series = () => {
     },
   ]);
   const [formStructure, setFormStructure] = useState([
-    {
-      title: "Ownership",
-      fields: [
-        {
-          type: "select",
-          name: "ownership",
-          title: "Series Ownership",
-          placeholder: "Select Series",
+    // {
+    //   title: "Ownership",
+    //   fields: [
+    //     {
+    //       type: "select",
+    //       name: "ownership",
+    //       title: "Series Ownership",
+    //       placeholder: "Select Series",
 
-          options: [
-            { value: "In House", label: "In House" },
-            { value: "Content Owner", label: "Content Owner" },
-          ],
-          required: true,
-        },
-        {
-          type: "select",
-          name: "distributor",
-          title: "Select Content Owner",
-          placeholder: "Select Content Owner",
-          display: "none",
-          options: [],
-          required: true,
-        },
-        {
-          type: "select",
-          name: "content_access",
-          title: "Select Series Access",
-          placeholder: "Select Series Access",
-          options: [
-            { value: "FREE", label: "FREE" },
-            { value: "SVOD", label: "SVOD" },
-            { value: "TVOD", label: "TVOD" },
-          ],
-          required: true,
-        },
-        {
-          type: "inputBox",
-          name: "distributor_commission",
-          title: "Pay Per View (In Rupee)",
-          display: "none",
-          regex: /^(\d{0,1})(\.{0,1})(\d{0,2})$/,
-          placeholder: "Type distribitor commission",
-          required: true,
-        },
-        {
-          type: "inputBox",
-          name: "distributor_tvod_commission",
-          title: "Rent Commission (In Percentage)",
-          display: "none",
-          regex: /^[0-9\.]+$/,
-          maxLength: "2",
-          placeholder: "Type distribitor commission",
-          required: true,
-        },
-        {
-          type: "select",
-          name: "available_for_plan",
-          title: "Select Plan",
-          display: "none",
-          placeholder: "Select Series Plan",
-          options: [],
-          // required: true,
-        },
-      ],
-    },
+    //       options: [
+    //         { value: "In House", label: "In House" },
+    //         { value: "Content Owner", label: "Content Owner" },
+    //       ],
+    //       required: true,
+    //     },
+    //     {
+    //       type: "select",
+    //       name: "distributor",
+    //       title: "Select Content Owner",
+    //       placeholder: "Select Content Owner",
+    //       display: "none",
+    //       options: [],
+    //       required: true,
+    //     },
+    //     {
+    //       type: "select",
+    //       name: "content_access",
+    //       title: "Select Series Access",
+    //       placeholder: "Select Series Access",
+    //       options: [
+    //         { value: "FREE", label: "FREE" },
+    //         { value: "SVOD", label: "SVOD" },
+    //         { value: "TVOD", label: "TVOD" },
+    //       ],
+    //       required: true,
+    //     },
+    //     {
+    //       type: "inputBox",
+    //       name: "distributor_commission",
+    //       title: "Pay Per View (In Rupee)",
+    //       display: "none",
+    //       regex: /^(\d{0,1})(\.{0,1})(\d{0,2})$/,
+    //       placeholder: "Type distribitor commission",
+    //       required: true,
+    //     },
+    //     {
+    //       type: "inputBox",
+    //       name: "distributor_tvod_commission",
+    //       title: "Rent Commission (In Percentage)",
+    //       display: "none",
+    //       regex: /^[0-9\.]+$/,
+    //       maxLength: "2",
+    //       placeholder: "Type distribitor commission",
+    //       required: true,
+    //     },
+    //     {
+    //       type: "select",
+    //       name: "available_for_plan",
+    //       title: "Select Plan",
+    //       display: "none",
+    //       placeholder: "Select Series Plan",
+    //       options: [],
+    //       // required: true,
+    //     },
+    //   ],
+    // },
     {
       title: "Details",
       fields: [
@@ -320,6 +328,18 @@ const Series = () => {
         //   size: "3",
         // },
         {
+          type: "select",
+          name: "content_access",
+          title: "Select Series Access",
+          placeholder: "Select Series Access",
+          options: [
+            { value: "FREE", label: "FREE" },
+            { value: "SVOD", label: "SVOD" },
+            { value: "TVOD", label: "TVOD" },
+          ],
+          required: true,
+        },
+        {
           type: "date",
           title: "Expiry Time",
           default: new Date().toISOString().split("T")[0],
@@ -366,36 +386,12 @@ const Series = () => {
         },
         {
           type: "inputBox",
-          name: "sequence",
-          title: "Sequence",
-          display: "none",
-          regex: /^[0-9\.]+$/,
-          // maxLength: "2",
-          size: "3",
-          placeholder: "Type Sequence",
-          required: true,
-        },
-        {
-          type: "toggle",
-          title: "Approval Status",
-          name: "approval_status",
-          default: "Approved",
-          // required: true,
-          display: "none",
-          size: "3",
-          options: [
-            { value: "Pending", color: "danger" },
-            { value: "Approved", color: "success" },
-            { value: "Rejected", color: "danger" },
-          ],
-        },
-        {
-          type: "inputBox",
           name: "reject_reason",
           title: "Reject Reason",
-          display: "none",
-          placeholder: "Type Reason",
+          disabled: true,
+          placeholder: "Type Reject Reason",
           required: true,
+          display: "none",
         },
         {
           type: "table",
@@ -427,14 +423,6 @@ const Series = () => {
     {
       title: "Media",
       fields: [
-                {
-          type: "inputBox",
-          name: "content_file_link",
-          title: "Content File Link",
-          placeholder: "Paste Content File Link",
-          required: true,
-          size: "12",
-        },
         // {
         //   type: "inputBox",
         //   name: "content_link",
@@ -480,6 +468,16 @@ const Series = () => {
         //   placeholder: "Type here",
         //   required: true,
         // },
+        {
+          type: "inputBox",
+          name: "content_file_link",
+          title: "Content File Link",
+          placeholder: "Paste Content File Link",
+          required: true,
+          size: "12",
+          displayText:
+            "Please upload all video links, trailer links, posters, and thumbnails to the Google Drive folder and share the drive link once done.",
+        },
         {
           type: "image",
           name: "poster",
@@ -563,68 +561,91 @@ const Series = () => {
   //   }
   // }, [casts]);
 
+  // useEffect(() => {
+  //   if (form?.ownership === "Content Owner") {
+  //     setFormStructure((prevFormStructure) =>
+  //       prevFormStructure.map((section) => {
+  //         if (section.title === "Ownership") {
+  //           const updatedFields = section.fields.map((field, index) => {
+  //             if (index === 1) {
+  //               return { ...field, display: "block" };
+  //             }
+  //             if (index == 3) {
+  //               if (form?.content_access === "SVOD") {
+  //                 return { ...field, display: "block" };
+  //               } else {
+  //                 return { ...field, display: "none" };
+  //               }
+  //             }
+  //             if (index == 4) {
+  //               if (form?.content_access === "TVOD") {
+  //                 return { ...field, display: "block" };
+  //               } else {
+  //                 return { ...field, display: "none" };
+  //               }
+  //             }
+  //             return field;
+  //           });
+  //           return { ...section, fields: updatedFields };
+  //         }
+  //         return section;
+  //       })
+  //     );
+  //   } else {
+  //     setFormStructure((prevFormStructure) =>
+  //       prevFormStructure.map((section) => {
+  //         if (section.title === "Ownership") {
+  //           const updatedFields = section.fields.map((field, index) => {
+  //             if (index === 1) {
+  //               return { ...field, display: "none" };
+  //             }
+  //             if (index == 3) {
+  //               return { ...field, display: "none" };
+  //             }
+  //             if (index == 4) {
+  //               return { ...field, display: "none" };
+  //             }
+  //             return field;
+  //           });
+  //           return { ...section, fields: updatedFields };
+  //         }
+  //         return section;
+  //       })
+  //     );
+  //   }
+  // }, [form?.ownership]);
+  // useEffect(() => {
+  //   if (distributors?.data) {
+  //     setFormStructure((prevFormStructure) =>
+  //       prevFormStructure.map((section) => {
+  //         if (section.title === "Ownership") {
+  //           const updatedFields = section.fields.map((field, index) => {
+  //             if (index === 1) {
+  //               return {
+  //                 ...field,
+  //                 options: distributors?.data?.map((ele) => ({
+  //                   label: ele?.distributor_name,
+  //                   value: ele?.id,
+  //                 })),
+  //               };
+  //             }
+  //             return field;
+  //           });
+  //           return { ...section, fields: updatedFields };
+  //         }
+  //         return section;
+  //       })
+  //     );
+  //   }
+  // }, [distributors]);
+
   useEffect(() => {
-    if (
-      form?.approval_status === "Pending" ||
-      form?.approval_status === "Rejected"
-    ) {
-      setFormStructure((prevFormStructure) =>
-        prevFormStructure.map((section) => {
-          if (section.title === "Media") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 0) {
-                return { ...field, display: "block" };
-              }
-
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          if (section.title === "Details") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 10) {
-                return { ...field, display: "block" };
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          return section;
-        })
-      );
-    } else {
-      setFormStructure((prevFormStructure) =>
-        prevFormStructure.map((section) => {
-          if (section.title === "Media") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 0) {
-                return { ...field, display: "none" };
-              }
-
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          if (section.title === "Details") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 10) {
-                return { ...field, display: "none" };
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          return section;
-        })
-      );
-    }
-
-    if (form?.approval_status == "Rejected") {
+    if (form?.approval_status === "Rejected") {
       setFormStructure((prevFormStructure) =>
         prevFormStructure.map((section) => {
           if (section.title === "Details") {
             const updatedFields = section.fields.map((field, index) => {
-              if (index === 11) {
+              if (index == 10) {
                 return { ...field, display: "block" };
               }
               return field;
@@ -639,7 +660,7 @@ const Series = () => {
         prevFormStructure.map((section) => {
           if (section.title === "Details") {
             const updatedFields = section.fields.map((field, index) => {
-              if (index === 11) {
+              if (index == 10) {
                 return { ...field, display: "none" };
               }
               return field;
@@ -652,83 +673,6 @@ const Series = () => {
     }
   }, [form?.approval_status]);
 
-  useEffect(() => {
-    if (form?.ownership === "Content Owner") {
-      setFormStructure((prevFormStructure) =>
-        prevFormStructure.map((section) => {
-          if (section.title === "Ownership") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 1) {
-                return { ...field, display: "block" };
-              }
-              if (index == 3) {
-                if (form?.content_access === "SVOD") {
-                  return { ...field, display: "block" };
-                } else {
-                  return { ...field, display: "none" };
-                }
-              }
-              if (index == 4) {
-                if (form?.content_access === "TVOD") {
-                  return { ...field, display: "block" };
-                } else {
-                  return { ...field, display: "none" };
-                }
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          return section;
-        })
-      );
-    } else {
-      setFormStructure((prevFormStructure) =>
-        prevFormStructure.map((section) => {
-          if (section.title === "Ownership") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 1) {
-                return { ...field, display: "none" };
-              }
-              if (index == 3) {
-                return { ...field, display: "none" };
-              }
-              if (index == 4) {
-                return { ...field, display: "none" };
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          return section;
-        })
-      );
-    }
-  }, [form?.ownership]);
-  useEffect(() => {
-    if (distributors?.data) {
-      setFormStructure((prevFormStructure) =>
-        prevFormStructure.map((section) => {
-          if (section.title === "Ownership") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 1) {
-                return {
-                  ...field,
-                  options: distributors?.data?.map((ele) => ({
-                    label: ele?.distributor_name,
-                    value: ele?.id,
-                  })),
-                };
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          return section;
-        })
-      );
-    }
-  }, [distributors]);
   useEffect(() => {
     setFormStructure((prevFormStructure) =>
       prevFormStructure.map((section) => {
@@ -793,222 +737,222 @@ const Series = () => {
   const subscriptions = useSelector(
     (state) => state?.subscriptions?.subscriptions
   );
-  useEffect(() => {
-    if (isEdit) {
-      setFormStructure((prevFormStructure) =>
-        prevFormStructure.map((section) => {
-          if (section.title === "Details") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 9) {
-                return { ...field, display: "block" };
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          return section;
-        })
-      );
-    } else {
-      setFormStructure((prevFormStructure) =>
-        prevFormStructure.map((section) => {
-          if (section.title === "Details") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 9) {
-                return { ...field, display: "none" };
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          return section;
-        })
-      );
-    }
-  }, [isEdit]);
-  useEffect(() => {
-    if (subscriptions?.data) {
-      setFormStructure((prevFormStructure) =>
-        prevFormStructure.map((section) => {
-          if (section.title === "Ownership") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 5) {
-                return {
-                  ...field,
-                  options: subscriptions?.data?.map((ele) => ({
-                    label: ele?.plan_name,
-                    value: ele?.id,
-                  })),
-                };
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          return section;
-        })
-      );
-    }
-  }, [subscriptions]);
-  useEffect(() => {
-    if (isEdit) {
-      setFormStructure((prevFormStructure) =>
-        prevFormStructure.map((section) => {
-          if (section.title === "Details") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 9) {
-                return { ...field, display: "block" };
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          return section;
-        })
-      );
-    } else {
-      setFormStructure((prevFormStructure) =>
-        prevFormStructure.map((section) => {
-          if (section.title === "Details") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 9) {
-                return { ...field, display: "none" };
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          return section;
-        })
-      );
-    }
-  }, [isEdit]);
+  // useEffect(() => {
+  //   if (isEdit) {
+  //     setFormStructure((prevFormStructure) =>
+  //       prevFormStructure.map((section) => {
+  //         if (section.title === "Details") {
+  //           const updatedFields = section.fields.map((field, index) => {
+  //             if (index === 9) {
+  //               return { ...field, display: "block" };
+  //             }
+  //             return field;
+  //           });
+  //           return { ...section, fields: updatedFields };
+  //         }
+  //         return section;
+  //       })
+  //     );
+  //   } else {
+  //     setFormStructure((prevFormStructure) =>
+  //       prevFormStructure.map((section) => {
+  //         if (section.title === "Details") {
+  //           const updatedFields = section.fields.map((field, index) => {
+  //             if (index === 9) {
+  //               return { ...field, display: "none" };
+  //             }
+  //             return field;
+  //           });
+  //           return { ...section, fields: updatedFields };
+  //         }
+  //         return section;
+  //       })
+  //     );
+  //   }
+  // }, [isEdit]);
+  // useEffect(() => {
+  //   if (subscriptions?.data) {
+  //     setFormStructure((prevFormStructure) =>
+  //       prevFormStructure.map((section) => {
+  //         if (section.title === "Ownership") {
+  //           const updatedFields = section.fields.map((field, index) => {
+  //             if (index === 5) {
+  //               return {
+  //                 ...field,
+  //                 options: subscriptions?.data?.map((ele) => ({
+  //                   label: ele?.plan_name,
+  //                   value: ele?.id,
+  //                 })),
+  //               };
+  //             }
+  //             return field;
+  //           });
+  //           return { ...section, fields: updatedFields };
+  //         }
+  //         return section;
+  //       })
+  //     );
+  //   }
+  // }, [subscriptions]);
+  // useEffect(() => {
+  //   if (isEdit) {
+  //     setFormStructure((prevFormStructure) =>
+  //       prevFormStructure.map((section) => {
+  //         if (section.title === "Details") {
+  //           const updatedFields = section.fields.map((field, index) => {
+  //             if (index === 9) {
+  //               return { ...field, display: "block" };
+  //             }
+  //             return field;
+  //           });
+  //           return { ...section, fields: updatedFields };
+  //         }
+  //         return section;
+  //       })
+  //     );
+  //   } else {
+  //     setFormStructure((prevFormStructure) =>
+  //       prevFormStructure.map((section) => {
+  //         if (section.title === "Details") {
+  //           const updatedFields = section.fields.map((field, index) => {
+  //             if (index === 9) {
+  //               return { ...field, display: "none" };
+  //             }
+  //             return field;
+  //           });
+  //           return { ...section, fields: updatedFields };
+  //         }
+  //         return section;
+  //       })
+  //     );
+  //   }
+  // }, [isEdit]);
 
-  useEffect(() => {
-    setFormStructure((prevFormStructure) => {
-      const hasRentSection = prevFormStructure.some(
-        (section) => section.title === "Rent"
-      );
+  // useEffect(() => {
+  //   setFormStructure((prevFormStructure) => {
+  //     const hasRentSection = prevFormStructure.some(
+  //       (section) => section.title === "Rent"
+  //     );
 
-      // If TVOD, and Rent section doesn't exist -> add it
-      if (form?.content_access === "TVOD" && !hasRentSection) {
-        return [
-          ...prevFormStructure,
-          {
-            title: "Rent",
-            fields: [
-              {
-                id: "10",
-                type: "inputBox",
-                title: `Available Days`,
-                placeholder: "Type Series Available Days",
-                name: "tvod_available_days",
-                regex: /^[0-9\.]+$/,
-                maxLength: "2",
-                required: true,
-              },
-              {
-                type: "country_table",
-                countryFormStructure: countryFormStructure,
-                tableColumns: tableColumnsForCountry,
-                name: "countrys",
-                formTitle: isEdit ? "Edit Country" : "Add Country",
-                title: "Resume/CV",
-                description: "PDF, DOC, DOCX (Max 5MB)",
-                accept: ".pdf,.doc,.docx",
-                size: 6,
-                required: true,
-              },
-            ],
-          },
-        ];
-      }
+  //     // If TVOD, and Rent section doesn't exist -> add it
+  //     if (form?.content_access === "TVOD" && !hasRentSection) {
+  //       return [
+  //         ...prevFormStructure,
+  //         {
+  //           title: "Rent",
+  //           fields: [
+  //             {
+  //               id: "10",
+  //               type: "inputBox",
+  //               title: `Available Days`,
+  //               placeholder: "Type Series Available Days",
+  //               name: "tvod_available_days",
+  //               regex: /^[0-9\.]+$/,
+  //               maxLength: "2",
+  //               required: true,
+  //             },
+  //             {
+  //               type: "country_table",
+  //               countryFormStructure: countryFormStructure,
+  //               tableColumns: tableColumnsForCountry,
+  //               name: "countrys",
+  //               formTitle: isEdit ? "Edit Country" : "Add Country",
+  //               title: "Resume/CV",
+  //               description: "PDF, DOC, DOCX (Max 5MB)",
+  //               accept: ".pdf,.doc,.docx",
+  //               size: 6,
+  //               required: true,
+  //             },
+  //           ],
+  //         },
+  //       ];
+  //     }
 
-      // If not TVOD, and Rent section exists -> remove it
-      if (form?.content_access !== "TVOD" && hasRentSection) {
-        return prevFormStructure.filter((section) => section.title !== "Rent");
-      }
+  //     // If not TVOD, and Rent section exists -> remove it
+  //     if (form?.content_access !== "TVOD" && hasRentSection) {
+  //       return prevFormStructure.filter((section) => section.title !== "Rent");
+  //     }
 
-      return prevFormStructure; // no change needed
-    });
-    if (form?.ownership === "Content Owner") {
-      setFormStructure((prevFormStructure) =>
-        prevFormStructure.map((section) => {
-          if (section.title === "Ownership") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index == 3) {
-                if (form?.content_access === "SVOD") {
-                  return { ...field, display: "block" };
-                } else {
-                  return { ...field, display: "none" };
-                }
-              }
-              if (index == 4) {
-                if (form?.content_access === "TVOD") {
-                  return { ...field, display: "block" };
-                } else {
-                  return { ...field, display: "none" };
-                }
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          return section;
-        })
-      );
-    } else {
-      setFormStructure((prevFormStructure) =>
-        prevFormStructure.map((section) => {
-          if (section.title === "Ownership") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index == 3) {
-                return { ...field, display: "none" };
-              }
-              if (index == 4) {
-                return { ...field, display: "none" };
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          return section;
-        })
-      );
-    }
+  //     return prevFormStructure; // no change needed
+  //   });
+  //   if (form?.ownership === "Content Owner") {
+  //     setFormStructure((prevFormStructure) =>
+  //       prevFormStructure.map((section) => {
+  //         if (section.title === "Ownership") {
+  //           const updatedFields = section.fields.map((field, index) => {
+  //             if (index == 3) {
+  //               if (form?.content_access === "SVOD") {
+  //                 return { ...field, display: "block" };
+  //               } else {
+  //                 return { ...field, display: "none" };
+  //               }
+  //             }
+  //             if (index == 4) {
+  //               if (form?.content_access === "TVOD") {
+  //                 return { ...field, display: "block" };
+  //               } else {
+  //                 return { ...field, display: "none" };
+  //               }
+  //             }
+  //             return field;
+  //           });
+  //           return { ...section, fields: updatedFields };
+  //         }
+  //         return section;
+  //       })
+  //     );
+  //   } else {
+  //     setFormStructure((prevFormStructure) =>
+  //       prevFormStructure.map((section) => {
+  //         if (section.title === "Ownership") {
+  //           const updatedFields = section.fields.map((field, index) => {
+  //             if (index == 3) {
+  //               return { ...field, display: "none" };
+  //             }
+  //             if (index == 4) {
+  //               return { ...field, display: "none" };
+  //             }
+  //             return field;
+  //           });
+  //           return { ...section, fields: updatedFields };
+  //         }
+  //         return section;
+  //       })
+  //     );
+  //   }
 
-    if (form?.content_access === "SVOD") {
-      setFormStructure((prevFormStructure) =>
-        prevFormStructure.map((section) => {
-          if (section.title === "Ownership") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 5) {
-                return { ...field, display: "block" };
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          return section;
-        })
-      );
-    } else {
-      setFormStructure((prevFormStructure) =>
-        prevFormStructure.map((section) => {
-          if (section.title === "Ownership") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 5) {
-                return { ...field, display: "none" };
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          return section;
-        })
-      );
-    }
-  }, [form?.content_access]);
+  //   if (form?.content_access === "SVOD") {
+  //     setFormStructure((prevFormStructure) =>
+  //       prevFormStructure.map((section) => {
+  //         if (section.title === "Ownership") {
+  //           const updatedFields = section.fields.map((field, index) => {
+  //             if (index === 5) {
+  //               return { ...field, display: "block" };
+  //             }
+  //             return field;
+  //           });
+  //           return { ...section, fields: updatedFields };
+  //         }
+  //         return section;
+  //       })
+  //     );
+  //   } else {
+  //     setFormStructure((prevFormStructure) =>
+  //       prevFormStructure.map((section) => {
+  //         if (section.title === "Ownership") {
+  //           const updatedFields = section.fields.map((field, index) => {
+  //             if (index === 5) {
+  //               return { ...field, display: "none" };
+  //             }
+  //             return field;
+  //           });
+  //           return { ...section, fields: updatedFields };
+  //         }
+  //         return section;
+  //       })
+  //     );
+  //   }
+  // }, [form?.content_access]);
   const handleForm = (id, image) => {
     setEditingIndex(null);
     setIsModalOpen(true);
@@ -1045,6 +989,7 @@ const Series = () => {
             style={{ marginRight: "5px", cursor: "pointer" }}
           />
         ),
+        edit: value?.approval_status === "Approved",
         // language: ele?.language?.language_name,
         // genre: ele?.genre?.map((value) => value?.genre_title),
         // series_distributor: ele?.series_distributor?.name,
@@ -1060,6 +1005,30 @@ const Series = () => {
       setTableData({ ...temp });
     }
   }, [series]);
+
+  // useEffect(() => {
+  //   if (role) {
+  //     const tempTableData = {
+  //       ...TableData(),
+  //       deleteRecord: Action.series_delete,
+  //       disableDelete: role !== "Distributor" ? false : true,
+
+  //       onDeleteText: [
+  //         "Are you sure want to delete this Series ?",
+  //         "The Customer Will not be able to see this Series once you delete it.",
+  //       ],
+  //       customisedStatusUpdateMessage: true,
+  //       onActiveText: "Are you sure want to Activate the Series ?",
+  //       onInactiveText: [
+  //         "Are you sure want to Inactivate the Series ?",
+  //         "The Customer Will not be able to see this Series once you Inactivate it.",
+  //       ],
+  //       updateRecord: Action.series_status_update,
+  //     };
+  //     setTableData({ ...tempTableData });
+  //   }
+  // }, [role]);
+
   useMemo(() => {
     if (categories?.data) {
       // const temp = formStructure
@@ -1131,6 +1100,10 @@ const Series = () => {
     // });
 
     data.append("user", user?.id);
+    data.append("ownership", "Content Owner");
+    data.append("distributor", user?.id);
+    data.append("approval_status", "Pending");
+    data.append("reject_reason", "");
     if (isEdit) {
       const resData = await series_update(data);
       if (resData?.status === 200) {
@@ -1226,9 +1199,6 @@ const Series = () => {
         setTableData={setTableData}
         setIsEdit={setIsEdit}
         view="view_all"
-        isLoadingData={true}
-        loadApi={Action.all_series_list}
-        totalCount={series?.series_count}
         save={save}
         setSave={setSave}
         isDrawerForm={true}

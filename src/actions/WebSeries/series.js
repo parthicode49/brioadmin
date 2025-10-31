@@ -3,6 +3,7 @@ import {
   SERIES,
   SERIES_LIST_LOADING,
   SERIESDETAILS,
+  SERIESDIS,
   SERIESNAME,
 } from "../../constants/actionTypes";
 import * as api from "../../api/index.js";
@@ -50,6 +51,15 @@ export const all_series_list = (formData) => async (dispatch) => {
     const { data } = await api.all_series_list(formData);
 
     dispatch({ type: SERIES, payload: data });
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const all_series_list_distributor = (formData) => async (dispatch) => {
+  try {
+    const { data } = await api.all_series_list_distributor(formData);
+
+    dispatch({ type: SERIESDIS, payload: data });
   } catch (error) {
     console.log(error);
   }

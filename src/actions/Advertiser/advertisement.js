@@ -5,6 +5,8 @@ import {
   ADPAY,
   ADVERTISEMENTSADLIST,
   ADPRICE,
+  ADPAYMENTHISTORY,
+  ADPAYMENTHISTORYDIS,
 } from "../../constants/actionTypes";
 import * as api from "../../api/index.js";
 
@@ -19,6 +21,7 @@ export const advertisement_create = (formData) => async (dispatch) => {
     return error?.response?.data;
   }
 };
+
 
 export const advertisement_update = (formData) => async (dispatch) => {
   try {
@@ -45,6 +48,40 @@ export const advertisement_status_update = (formData) => async (dispatch) => {
     return data;
   } catch (error) {
     console.log(error);
+  }
+};
+
+export const advertisement_payment_create = (formData) => async (dispatch) => {
+  try {
+    const data = await api.advertisement_payment_create(formData);
+    dispatch({ type: MESSAGE, payload: data?.data });
+
+    return data;
+  } catch (error) {
+    dispatch({ type: MESSAGE, payload: error?.response?.data });
+    return error?.response?.data;
+  }
+};
+export const advertisement_payment_list_admin = (formData) => async (dispatch) => {
+  try {
+    const data = await api.advertisement_payment_list_admin(formData);
+    dispatch({ type: ADPAYMENTHISTORY, payload: data?.data });
+
+    return data;
+  } catch (error) {
+    dispatch({ type: MESSAGE, payload: error?.response?.data });
+    return error?.response?.data;
+  }
+};
+export const advertisement_payment_list_advertiser = (formData) => async (dispatch) => {
+  try {
+    const data = await api.advertisement_payment_list_advertiser(formData);
+    dispatch({ type: ADPAYMENTHISTORYDIS, payload: data?.data });
+
+    return data;
+  } catch (error) {
+    dispatch({ type: MESSAGE, payload: error?.response?.data });
+    return error?.response?.data;
   }
 };
 export const all_advertisement_list_admin = (formData) => async (dispatch) => {

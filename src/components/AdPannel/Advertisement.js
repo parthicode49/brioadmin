@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import * as Action from "../../actions/Advertiser/advertisement";
 import { bindActionCreators } from "redux";
 import Export from "../utils/Export";
+import DynamicFormModal from "../utils/NewFormStructure/DynamicFormModal";
 
 const Advertisement = () => {
   const dispatch = useDispatch();
@@ -12,11 +13,16 @@ const Advertisement = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [save, setSave] = useState(false);
   const [drawer, setDrawer] = useState(false);
+    const [isModalOpenSub, setIsModalOpenSub] = useState(false);
   const [adPrice, setAdPrice] = useState(null);
+    const [editingIndex, setEditingIndex] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+      const [formSub, setFormSub] = useState({});
   const {
     advertisement_create,
     advertisement_update,
     advertisement_charge_list,
+    advertisement_payment_create
   } = bindActionCreators(Action, dispatch);
 
   const user = useSelector((state) => state.layout.profile);
@@ -41,7 +47,14 @@ const Advertisement = () => {
       );
     }
   }, [user, save]);
-
+  const handleFormSub = (id) => {
+    setEditingIndex(null);
+    setIsModalOpenSub(true);
+    setIsEdit(false);
+    setFormSub({
+      id: id,
+    });
+  };
   useEffect(() => {
     if (adv_list?.data) {
       const temp = tableData;
@@ -49,6 +62,22 @@ const Advertisement = () => {
       temp.tableBody = adv_list?.data?.map((ele) => ({
         ...ele,
         edit: ele?.approval_status === "Approved",
+        top_up: (
+          <div>
+            <button
+              style={{
+                padding: "5px 15px",
+                color: "rgb(238, 127, 37)",
+                background: "transparent",
+                border: "1px solid rgb(238, 127, 37)",
+                borderRadius: "5px",
+              }}
+              onClick={() => handleFormSub(ele?.id)}
+            >
+              Top Up
+            </button>
+          </div>
+        ),
       }));
 
       setTableData({ ...temp });
@@ -75,6 +104,10 @@ const Advertisement = () => {
         label: "No Of Views",
       },
       {
+        id: "remaining_view",
+        label: "Remaining View",
+      },
+      {
         id: "views_required",
         label: "Required Views",
       },
@@ -82,6 +115,12 @@ const Advertisement = () => {
         id: "payable_amount",
         label: "Payable Amount",
       },
+      // {
+      //   id: "top_up",
+      //   label: "Top Up",
+      //   isSpecial: true,
+      //   align: "left",
+      // },
       {
         id: "created_at",
         label: "Created At",
@@ -181,6 +220,34 @@ const Advertisement = () => {
       setForm({ ...form, views_required: amount });
     }
   }, [form?.payable_amount]);
+  useEffect(() => {
+    if (formSub?.payable_amount) {
+      const amount = Number(formSub?.payable_amount) / parseFloat(adPrice);
+      setFormSub({ ...formSub, views_required: amount });
+    }
+  }, [formSub?.payable_amount]);
+
+   const [formStructureSub, setFormStructureSub] = useState(
+      [
+        {
+          type: "inputBox",
+          name: "payable_amount",
+          title: "Payable Amount",
+          regex: /^[0-9\s]+$/,
+          placeholder: "Enter Amount",
+          required: true,
+        },
+        {
+          type: "inputBox",
+          name: "views_required",
+          title: "Views Required",
+          regex: /^[0-9\s]+$/,
+          placeholder: "Enter No Of Views",
+          required: true,
+          disabled: true,
+        },
+      ].filter((e) => e)
+    );
 
   useEffect(() => {
     if (isEdit && form?.approval_status === "Rejected") {
@@ -244,9 +311,35 @@ const Advertisement = () => {
       }
     }
   };
+
+  const handleSubmit2 = async () =>{
+    const resData = await advertisement_payment_create(formSub)
+    if(resData?.status === 200){
+       setSave(!save);
+       setFormSub({})
+       setIsModalOpenSub(false);
+    }
+  }
+
   return (
     <div>
       {" "}
+            <DynamicFormModal
+        open={isModalOpenSub}
+        onClose={() => {
+          setIsModalOpenSub(false);
+          setFormSub({});
+          setIsEdit(false);
+        }}
+        formStructure={formStructureSub}
+        onSubmit={handleSubmit2}
+        formData={formSub}
+        setFormData={setFormSub}
+        title={"Ad Top Up"}
+        initialData={editingIndex !== null ? tableData[editingIndex] : {}}
+        save={save}
+        setSave={setSave}
+      />
       <ListTable
         tableData={tableData}
         key={"ListTable"}

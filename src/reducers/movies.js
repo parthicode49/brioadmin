@@ -4,6 +4,8 @@ const moviesReducer = (state = { moviesData: null }, action) => {
   switch (action.type) {
     case actionType.MOVIES:
       return { ...state, movies: action.payload };
+    case actionType.DISMOVIES:
+      return { ...state, dis_movies: action.payload };
     case actionType.MOVIE:
       return { ...state, movie: action.payload };
     case actionType.MOVIELISTLOADING:

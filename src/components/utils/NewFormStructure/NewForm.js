@@ -847,7 +847,10 @@ const NewForm = ({
                                     >
                                       Invalid GST number format
                                     </p>
-                                  ))
+                                  )) ||
+                                  (value?.displayText && 
+                                    <p>{value?.displayText}</p>
+                                  )
                               }
                               onChange={(event) => {
                                 const updatedValue = event.target.value;

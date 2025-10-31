@@ -200,6 +200,9 @@ export const all_advertise_transaction_list = (formData) => API.post('/all_adver
 
 export const advertisement_charge_list = (formData) => API.post('/advertisement_charge_list/' , formData)
 export const advertisement_charge_update = (formData) => API.post('/advertisement_charge_update/' , formData)
+export const advertisement_payment_list_admin = (formData) => API.post('/advertisement_payment_list_admin/' , formData)
+export const advertisement_payment_create = (formData) => API.post('/advertisement_payment_create/' , formData)
+export const advertisement_payment_list_advertiser = (formData) => API.post('/advertisement_payment_list_advertiser/' , formData)
 
 
 export const all_advertisement_list_admin = (formData) => API.post('/all_advertisement_list_admin/' , formData)
@@ -301,6 +304,7 @@ export const subtitle_delete = (formData) => API.post("/subtitle_delete/" ,formD
 export const audio_file_delete = (formData) => API.post("/audio_file_delete/" ,formData);
 export const all_movie_name_list  =(formData) => API.post("/only_movie_id_name/",formData);
 export const all_movie_list_admin_loadless  =(formData) => API.post("/all_movie_list_admin_loadless/",formData);
+export const all_movie_list_distributor  =(formData) => API.post("/all_movie_list_distributor/",formData);
 
 
 // Movie->Upcoming Movie
@@ -350,6 +354,7 @@ export const all_series_list = (formData) => API.post('/all_series_list_admin/',
 export const series_details_admin = (formData) => API.post('/series_detail_admin/' , formData)
 export const only_series_name = (formData) => API.post('/only_series_id_name/' , formData)
 export const all_series_list_admin_loadless = (formData) => API.post('/all_series_list_admin_loadless/' , formData)
+export const all_series_list_distributor = (formData) => API.post('/all_series_list_distributor/' , formData)
 
 // Web Series->Season
 export const season_create = (formData) => API.post('/season_create/', formData);

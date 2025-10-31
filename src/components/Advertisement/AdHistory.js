@@ -4,35 +4,34 @@ import { useDispatch, useSelector } from "react-redux";
 import * as Action from "../../actions/Advertiser/advertisement";
 import { bindActionCreators } from "redux";
 
-const AdPaymentHistory = () => {
+const AdHistory = () => {
   const dispatch = useDispatch();
-    const user = useSelector((state) => state.layout.profile);
-  const { advertisement_payment_list_advertiser } = bindActionCreators(
+  const user = useSelector((state) => state.layout.profile);
+  const { advertisement_payment_list_admin } = bindActionCreators(
     Action,
     dispatch
   );
 
-  const [adHistory , setAdHistory ] = useState([])
-  useEffect(()=>{
-    const dataHistory = async () =>{
-      const resData = await advertisement_payment_list_advertiser({advertiser_id : user?.id})
+  const [adHistory, setAdHistory] = useState([]);
+  useEffect(() => {
+    const dataHistory = async () => {
+      const resData = await advertisement_payment_list_admin({});
       if(resData?.status == 200){
         setAdHistory(resData?.data?.data)
       }
-    } 
-    if (user?.id){
+      console.log(resData, "Reererer");
+    };
 
-      dataHistory()
+    dataHistory();
+  }, [user]);
+  useEffect(() => {
+    if (adHistory) {
+      const temp = tableData;
+
+      temp.tableBody = adHistory || []
+      setTableData({ ...temp });
     }
-  },[user])
-    useEffect(() => {
-      if (adHistory) {
-        const temp = tableData;
-  
-        temp.tableBody = adHistory || []
-        setTableData({ ...temp });
-      }
-    }, [adHistory]);
+  }, [adHistory]);
 
   const [tableData, setTableData] = useState({
     tableTitle: "Payment History",
@@ -51,10 +50,10 @@ const AdPaymentHistory = () => {
         label: "Product Name",
         // subText: "mobileNumber",
       },
-      // {
-      //   id: "advertiser_name",
-      //   label: "Advertiser Name",
-      // },
+      {
+        id: "advertiser_name",
+        label: "Advertiser Name",
+      },
       {
         id: "added_view",
         label: "Views",
@@ -68,23 +67,7 @@ const AdPaymentHistory = () => {
     ],
     tableBody: [],
     filterColumn: [
-      // {
-      //   id: "1",
-      //   title: "Complaint Type",
-      //   name: "complaint_type",
-      //   options: [
-      //     "Player is Not Working",
-      //     "Payment Done But Movie Is Not Working",
-      //     "Content is Not Appropriate",
-      //     "Other issue",
-      //   ],
-      // },
-      // {
-      //   id: "2",
-      //   title: "Status",
-      //   name: "status",
-      //   options: ["Open", "Close"],
-      // },
+
     ],
     // isDateRangeFilter: "created_at",
   });
@@ -97,4 +80,4 @@ const AdPaymentHistory = () => {
   );
 };
 
-export default AdPaymentHistory;
+export default AdHistory;

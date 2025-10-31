@@ -23,6 +23,8 @@ const webseriesReducer = (state = { webseriesData: null }, action) => {
 			return {...state,seasons: action.payload};
 			case actionType.EPSUBTITLEDELETE:
 			return {...state,seasons: action.payload};
+			case actionType.SERIESDIS:
+			return {...state,series_dis: action.payload};
 	
 			case actionType.SERIESDETAILS:
 				return { ...state, series_detail: action.payload };

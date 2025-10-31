@@ -313,11 +313,11 @@ export const SidebarData = (darkMode) => {
             path: "/advertisement/",
             access: rights?.["Advertisement"]?.["view"],
           },
-          // {
-          //   title: "Set Ads ( Movie )",
-          //   path: "/SetMovieAdvertisement/SetMovieAdvertisement/",
-          //   access: rights?.["Set Movie Advertisement"]?.["view"],
-          // },
+          {
+            title: "Ad Payment",
+            path: "/adpayment",
+            access: rights?.["Set Movie Advertisement"]?.["view"],
+          },
           // {
           //   title: "Set Ads ( Series )",
           //   path: "/SetSeriesAdvertisement/SetSeriesAdvertisement/",
@@ -483,19 +483,19 @@ export const SidebarData = (darkMode) => {
         iconOpened: <KeyboardArrowDownIcon />,
         access: "true",
       },
-      {
-        title: "Submit Content",
-        path: "/contentform",
-        icon: (
-          <img
-            src={darkMode ? content_owner : content_ownerDark}
-            height={"20px"}
-          />
-        ),
-        iconClosed: <KeyboardArrowRightIcon />,
-        iconOpened: <KeyboardArrowDownIcon />,
-        access: rights?.["Movie Submission"]?.["view"],
-      },
+      // {
+      //   title: "Submit Content",
+      //   path: "/contentform",
+      //   icon: (
+      //     <img
+      //       src={darkMode ? content_owner : content_ownerDark}
+      //       height={"20px"}
+      //     />
+      //   ),
+      //   iconClosed: <KeyboardArrowRightIcon />,
+      //   iconOpened: <KeyboardArrowDownIcon />,
+      //   access: rights?.["Movie Submission"]?.["view"],
+      // },
       {
         title: "Movies",
         path: "/movies",
@@ -527,14 +527,14 @@ export const SidebarData = (darkMode) => {
       //   iconOpened: <KeyboardArrowDownIcon />,
       //   access: rights?.["Movie Submission"]?.["view"],
       // },
-      {
-        title: "Coupon",
-        path: "/distributorcoupon",
-        icon: <img src={darkMode ? customer : customerDark} height={"20px"} />,
-        iconClosed: <KeyboardArrowRightIcon />,
-        iconOpened: <KeyboardArrowDownIcon />,
-        access: rights?.["Movie Submission"]?.["view"],
-      },
+      // {
+      //   title: "Coupon",
+      //   path: "/distributorcoupon",
+      //   icon: <img src={darkMode ? customer : customerDark} height={"20px"} />,
+      //   iconClosed: <KeyboardArrowRightIcon />,
+      //   iconOpened: <KeyboardArrowDownIcon />,
+      //   access: rights?.["Movie Submission"]?.["view"],
+      // },
     ];
   } else if (role == "advertiser") {
     return [

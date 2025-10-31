@@ -28,7 +28,7 @@ import DynamicFormModal from "../../utils/NewFormStructure/DynamicFormModal";
 const Movie = () => {
   const navigate = useNavigate();
   const role = useSelector((state) => state.layout.role);
-  const [form, setForm] = useState({ approval_status: "Approved" });
+  const [form, setForm] = useState({});
   const [formNoti, setFormNoti] = useState({});
   const [form1, setForm1] = useState({});
   const [isEdit, setIsEdit] = useState(false);
@@ -58,7 +58,7 @@ const Movie = () => {
     updateRecord: Action.movie_status_update,
   };
   const user = useSelector((state) => state.layout.profile);
-  const movies = useSelector((state) => state?.movies?.movies);
+  const movies = useSelector((state) => state?.movies?.dis_movies);
   const categories = useSelector((state) => state.masters.categories);
   const subcategories = useSelector((state) => state.masters.subcategories);
   const genre = useSelector((state) => state.masters.genre);
@@ -71,6 +71,11 @@ const Movie = () => {
   );
   const [usedCountries, setUsedCountries] = useState([]);
   const [tableData, setTableData] = useState({ ...tempTableData });
+
+  useEffect(() => {
+    if (user?.id)
+      dispatch(Action.all_movie_list_distributor({ distributor_id: user?.id }));
+  }, [user , save]);
 
   const [castCrewFormStructure, setCastCrewFormStructure] = useState([
     {
@@ -202,72 +207,72 @@ const Movie = () => {
     { value: "3", label: "PArth3" },
   ];
   const [formStructure, setFormStructure] = useState([
-    {
-      title: "Ownership",
-      fields: [
-        {
-          type: "select",
-          name: "ownership",
-          title: "Movie Ownership",
-          placeholder: "Select Ownership",
-          options: [
-            { value: "In House", label: "In House" },
-            { value: "Content Owner", label: "Content Owner" },
-          ],
-          required: true,
-        },
+    // {
+    //   title: "Ownership",
+    //   fields: [
+    //     {
+    //       type: "select",
+    //       name: "ownership",
+    //       title: "Movie Ownership",
+    //       placeholder: "Select Ownership",
+    //       options: [
+    //         { value: "In House", label: "In House" },
+    //         { value: "Content Owner", label: "Content Owner" },
+    //       ],
+    //       required: true,
+    //     },
 
-        {
-          type: "select",
-          name: "distributor",
-          title: "Select Content Owner",
-          placeholder: "Select Content Owner",
-          display: "none",
-          options: [],
-          required: true,
-        },
-        {
-          type: "select",
-          name: "content_access",
-          title: "Select Movie Access",
-          placeholder: "Select Movie Access",
-          options: [
-            { value: "FREE", label: "FREE" },
-            { value: "SVOD", label: "SVOD" },
-            { value: "TVOD", label: "TVOD" },
-          ],
-          required: true,
-        },
-        {
-          type: "inputBox",
-          name: "distributor_commission",
-          title: "Pay Per View (In Rupee)",
-          display: "none",
-          regex: /^(\d{0,1})(\.{0,1})(\d{0,2})$/,
-          placeholder: "Type Content Owner commission",
-          required: true,
-        },
-        {
-          type: "inputBox",
-          name: "distributor_tvod_commission",
-          title: "Rent Commission (In Percentage)",
-          display: "none",
-          regex: /^[0-9\.]+$/,
-          maxLength: "2",
-          placeholder: "Type Content Owner commission",
-          required: true,
-        },
-        {
-          type: "select",
-          name: "available_for_plan",
-          title: "Select Plan",
-          display: "none",
-          placeholder: "Select Movie Plan",
-          options: [],
-          // required: true,
-        },
-      ],
-    },
+    //     {
+    //       type: "select",
+    //       name: "distributor",
+    //       title: "Select Content Owner",
+    //       placeholder: "Select Content Owner",
+    //       display: "none",
+    //       options: [],
+    //       required: true,
+    //     },
+    //     {
+    //       type: "select",
+    //       name: "content_access",
+    //       title: "Select Movie Access",
+    //       placeholder: "Select Movie Access",
+    //       options: [
+    //         { value: "FREE", label: "FREE" },
+    //         { value: "SVOD", label: "SVOD" },
+    //         { value: "TVOD", label: "TVOD" },
+    //       ],
+    //       required: true,
+    //     },
+    //     {
+    //       type: "inputBox",
+    //       name: "distributor_commission",
+    //       title: "Pay Per View (In Rupee)",
+    //       display: "none",
+    //       regex: /^(\d{0,1})(\.{0,1})(\d{0,2})$/,
+    //       placeholder: "Type Content Owner commission",
+    //       required: true,
+    //     },
+    //     {
+    //       type: "inputBox",
+    //       name: "distributor_tvod_commission",
+    //       title: "Rent Commission (In Percentage)",
+    //       display: "none",
+    //       regex: /^[0-9\.]+$/,
+    //       maxLength: "2",
+    //       placeholder: "Type Content Owner commission",
+    //       required: true,
+    //     },
+    //     {
+    //       type: "select",
+    //       name: "available_for_plan",
+    //       title: "Select Plan",
+    //       display: "none",
+    //       placeholder: "Select Movie Plan",
+    //       options: [],
+    //       // required: true,
+    //     },
+    //   ],
+    // },
     {
       title: "Details",
       fields: [
@@ -314,7 +319,18 @@ const Movie = () => {
           options: [],
           required: true,
         },
-
+        {
+          type: "select",
+          name: "content_access",
+          title: "Select Movie Access",
+          placeholder: "Select Movie Access",
+          options: [
+            { value: "FREE", label: "FREE" },
+            { value: "SVOD", label: "SVOD" },
+            { value: "TVOD", label: "TVOD" },
+          ],
+          required: true,
+        },
         // {
         //   type: "date",
         //   variant: "date",
@@ -375,35 +391,10 @@ const Movie = () => {
         },
         {
           type: "inputBox",
-          name: "sequence",
-          title: "Sequence",
-          display: "none",
-          regex: /^[0-9\.]+$/,
-          // maxLength: "2",
-          // size: "3",
-          placeholder: "Type Sequence",
-          required: true,
-        },
-        {
-          type: "toggle",
-          title: "Approval Status",
-          name: "approval_status",
-          default: "Approved",
-          // required: true,
-          display: "none",
-          size: "3",
-          options: [
-            { value: "Pending", color: "danger" },
-            { value: "Approved", color: "success" },
-            { value: "Rejected", color: "danger" },
-          ],
-        },
-        {
-          type: "inputBox",
           name: "reject_reason",
           title: "Reject Reason",
-          display: "none",
-          placeholder: "Type Reason",
+          disabled: true,
+          placeholder: "Type Reject Reason",
           required: true,
         },
         {
@@ -443,43 +434,36 @@ const Movie = () => {
           placeholder: "Paste Content File Link",
           required: true,
           size: "12",
+          displayText : "Please upload all video links, trailer links, posters, and thumbnails to the Google Drive folder and share the drive link once done."
         },
-        {
-          type: "inputBox",
-          name: "content_link",
-          title: "Movie Link",
-          placeholder: "Paste Movie Link (.M3U8)",
-          required: true,
-          size: "9",
-        },
-        {
-          type: "duration",
-          name: "durations",
-          title: "Movie Duration",
-          placeholder: "Type Movie Duration",
-          size: "3",
-          placeholder: "Type Duration",
-          required: true,
-          disabled: true,
-        },
-        {
-          type: "inputBox",
-          name: "content_trailer_link",
-          title: "Movie Trailer Link",
-          placeholder: "Paste Movie Trailer Link (.M3U8)",
-          // required: true,
-          size: "9",
-        },
-        {
-          type: "duration",
-          name: "trailer_durations",
-          title: "Movie Trailer Duration",
-          placeholder: "Type Movie Trailer Duration",
-          size: "3",
-          placeholder: "Type Movie Trailer Duration",
-          // required: true,
-          disabled: true,
-        },
+        // {
+        //   type: "duration",
+        //   name: "durations",
+        //   title: "Movie Duration",
+        //   placeholder: "Type Movie Duration",
+        //   size: "3",
+        //   placeholder: "Type Duration",
+        //   required: true,
+        //   disabled: true,
+        // },
+        // {
+        //   type: "inputBox",
+        //   name: "content_trailer_link",
+        //   title: "Movie Trailer Link",
+        //   placeholder: "Paste Movie Trailer Link (.M3U8)",
+        //   // required: true,
+        //   size: "9",
+        // },
+        // {
+        //   type: "duration",
+        //   name: "trailer_durations",
+        //   title: "Movie Trailer Duration",
+        //   placeholder: "Type Movie Trailer Duration",
+        //   size: "3",
+        //   placeholder: "Type Movie Trailer Duration",
+        //   // required: true,
+        //   disabled: true,
+        // },
         // {
         //   type: "duration",
         //   name: "free_preview_durations",
@@ -555,118 +539,6 @@ const Movie = () => {
   //     setCastCrewFormStructure([...temp]);
   //   }
   // }, [casts]);
-
-  useEffect(() => {
-    if (
-      form?.approval_status === "Pending" ||
-      form?.approval_status === "Rejected"
-    ) {
-      setFormStructure((prevFormStructure) =>
-        prevFormStructure.map((section) => {
-          if (section.title === "Media") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 0) {
-                return { ...field, display: "block" };
-              }
-              if (index === 1) {
-                return { ...field, display: "none" };
-              }
-              if (index === 2) {
-                return { ...field, display: "none" };
-              }
-              if (index === 3) {
-                return { ...field, display: "none" };
-              }
-              if (index === 4) {
-                return { ...field, display: "none" };
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          if (section.title === "Details") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 9) {
-                return { ...field, display: "block" };
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          return section;
-        })
-      );
-    } else {
-      setFormStructure((prevFormStructure) =>
-        prevFormStructure.map((section) => {
-          if (section.title === "Media") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 0) {
-                return { ...field, display: "none" };
-              }
-              if (index === 1) {
-                return { ...field, display: "block" };
-              }
-              if (index === 2) {
-                return { ...field, display: "block" };
-              }
-              if (index === 3) {
-                return { ...field, display: "block" };
-              }
-              if (index === 4) {
-                return { ...field, display: "block" };
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          if (section.title === "Details") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 9) {
-                return { ...field, display: "none" };
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          return section;
-        })
-      );
-    }
-
-    if (form?.approval_status == "Rejected") {
-      setFormStructure((prevFormStructure) =>
-        prevFormStructure.map((section) => {
-          if (section.title === "Details") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 10) {
-                return { ...field, display: "block" };
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          return section;
-        })
-      );
-    } else {
-      setFormStructure((prevFormStructure) =>
-        prevFormStructure.map((section) => {
-          if (section.title === "Details") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 10) {
-                return { ...field, display: "none" };
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          return section;
-        })
-      );
-    }
-  }, [form?.approval_status]);
-
   useMemo(() => {
     if (language?.data) {
       const temp = subTitleFormStructure;
@@ -853,67 +725,150 @@ const Movie = () => {
       notification_image: image,
     });
   };
-  useEffect(() => {
-    if (form?.ownership === "Content Owner") {
-      setFormStructure((prevFormStructure) =>
-        prevFormStructure.map((section) => {
-          if (section.title === "Ownership") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 1) {
-                return { ...field, display: "block" };
-              }
-              if (index == 3) {
-                if (form?.content_access === "SVOD") {
-                  return { ...field, display: "block" };
-                } else {
-                  return { ...field, display: "none" };
-                }
-              }
-              if (index == 4) {
-                if (form?.content_access === "TVOD") {
-                  return { ...field, display: "block" };
-                } else {
-                  return { ...field, display: "none" };
-                }
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          return section;
-        })
-      );
-    } else {
-      setFormStructure((prevFormStructure) =>
-        prevFormStructure?.map((section) => {
-          if (section.title === "Ownership") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 1) {
-                return { ...field, display: "none" };
-              }
-              if (index == 3) {
-                return { ...field, display: "none" };
-              }
-              if (index == 4) {
-                return { ...field, display: "none" };
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          return section;
-        })
-      );
-    }
-  }, [form?.ownership]);
+  // useEffect(() => {
+  //   if (form?.ownership === "Content Owner") {
+  //     setFormStructure((prevFormStructure) =>
+  //       prevFormStructure.map((section) => {
+  //         if (section.title === "Ownership") {
+  //           const updatedFields = section.fields.map((field, index) => {
+  //             if (index === 1) {
+  //               return { ...field, display: "block" };
+  //             }
+  //             if (index == 3) {
+  //               if (form?.content_access === "SVOD") {
+  //                 return { ...field, display: "block" };
+  //               } else {
+  //                 return { ...field, display: "none" };
+  //               }
+  //             }
+  //             if (index == 4) {
+  //               if (form?.content_access === "TVOD") {
+  //                 return { ...field, display: "block" };
+  //               } else {
+  //                 return { ...field, display: "none" };
+  //               }
+  //             }
+  //             return field;
+  //           });
+  //           return { ...section, fields: updatedFields };
+  //         }
+  //         return section;
+  //       })
+  //     );
+  //   } else {
+  //     setFormStructure((prevFormStructure) =>
+  //       prevFormStructure?.map((section) => {
+  //         if (section.title === "Ownership") {
+  //           const updatedFields = section.fields.map((field, index) => {
+  //             if (index === 1) {
+  //               return { ...field, display: "none" };
+  //             }
+  //             if (index == 3) {
+  //               return { ...field, display: "none" };
+  //             }
+  //             if (index == 4) {
+  //               return { ...field, display: "none" };
+  //             }
+  //             return field;
+  //           });
+  //           return { ...section, fields: updatedFields };
+  //         }
+  //         return section;
+  //       })
+  //     );
+  //   }
+  // }, [form?.ownership]);
+
+  // useEffect(() => {
+  //   if (isEdit) {
+  //     setFormStructure((prevFormStructure) =>
+  //       prevFormStructure.map((section) => {
+  //         if (section.title === "Details") {
+  //           const updatedFields = section.fields.map((field, index) => {
+  //             if (index === 8) {
+  //               return { ...field, display: "block" };
+  //             }
+  //             return field;
+  //           });
+  //           return { ...section, fields: updatedFields };
+  //         }
+  //         return section;
+  //       })
+  //     );
+  //   } else {
+  //     setFormStructure((prevFormStructure) =>
+  //       prevFormStructure.map((section) => {
+  //         if (section.title === "Details") {
+  //           const updatedFields = section.fields.map((field, index) => {
+  //             if (index === 8) {
+  //               return { ...field, display: "none" };
+  //             }
+  //             return field;
+  //           });
+  //           return { ...section, fields: updatedFields };
+  //         }
+  //         return section;
+  //       })
+  //     );
+  //   }
+  // }, [isEdit]);
+
+  // useEffect(() => {
+  //   if (distributors?.data) {
+  //     setFormStructure((prevFormStructure) =>
+  //       prevFormStructure.map((section) => {
+  //         if (section.title === "Ownership") {
+  //           const updatedFields = section.fields.map((field, index) => {
+  //             if (index === 1) {
+  //               return {
+  //                 ...field,
+  //                 options: distributors?.data?.map((ele) => ({
+  //                   label: ele?.distributor_name,
+  //                   value: ele?.id,
+  //                 })),
+  //               };
+  //             }
+  //             return field;
+  //           });
+  //           return { ...section, fields: updatedFields };
+  //         }
+  //         return section;
+  //       })
+  //     );
+  //   }
+  // }, [distributors]);
+  // useEffect(() => {
+  //   if (subscriptions?.data) {
+  //     setFormStructure((prevFormStructure) =>
+  //       prevFormStructure.map((section) => {
+  //         if (section.title === "Ownership") {
+  //           const updatedFields = section.fields.map((field, index) => {
+  //             if (index === 5) {
+  //               return {
+  //                 ...field,
+  //                 options: subscriptions?.data?.map((ele) => ({
+  //                   label: ele?.plan_name,
+  //                   value: ele?.id,
+  //                 })),
+  //               };
+  //             }
+  //             return field;
+  //           });
+  //           return { ...section, fields: updatedFields };
+  //         }
+  //         return section;
+  //       })
+  //     );
+  //   }
+  // }, [subscriptions]);
 
   useEffect(() => {
-    if (isEdit) {
+    if (form?.approval_status === "Rejected") {
       setFormStructure((prevFormStructure) =>
         prevFormStructure.map((section) => {
           if (section.title === "Details") {
             const updatedFields = section.fields.map((field, index) => {
-              if (index === 8) {
+              if (index == 9) {
                 return { ...field, display: "block" };
               }
               return field;
@@ -923,12 +878,12 @@ const Movie = () => {
           return section;
         })
       );
-    } else {
-      setFormStructure((prevFormStructure) =>
+    }else{
+        setFormStructure((prevFormStructure) =>
         prevFormStructure.map((section) => {
           if (section.title === "Details") {
             const updatedFields = section.fields.map((field, index) => {
-              if (index === 8) {
+              if (index == 9) {
                 return { ...field, display: "none" };
               }
               return field;
@@ -939,56 +894,8 @@ const Movie = () => {
         })
       );
     }
-  }, [isEdit]);
+  }, [form?.approval_status]);
 
-  useEffect(() => {
-    if (distributors?.data) {
-      setFormStructure((prevFormStructure) =>
-        prevFormStructure.map((section) => {
-          if (section.title === "Ownership") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 1) {
-                return {
-                  ...field,
-                  options: distributors?.data?.map((ele) => ({
-                    label: ele?.distributor_name,
-                    value: ele?.id,
-                  })),
-                };
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          return section;
-        })
-      );
-    }
-  }, [distributors]);
-  useEffect(() => {
-    if (subscriptions?.data) {
-      setFormStructure((prevFormStructure) =>
-        prevFormStructure.map((section) => {
-          if (section.title === "Ownership") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 5) {
-                return {
-                  ...field,
-                  options: subscriptions?.data?.map((ele) => ({
-                    label: ele?.plan_name,
-                    value: ele?.id,
-                  })),
-                };
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          return section;
-        })
-      );
-    }
-  }, [subscriptions]);
   useEffect(() => {
     setFormStructure((prevFormStructure) =>
       prevFormStructure?.map((section) => {
@@ -1051,134 +958,134 @@ const Movie = () => {
     );
   }, [categories, language, Advisory, subcategories, form?.category]);
 
-  useEffect(() => {
-    setFormStructure((prevFormStructure) => {
-      const hasRentSection = prevFormStructure?.some(
-        (section) => section.title === "Country Wise Price"
-      );
+  // useEffect(() => {
+  //   setFormStructure((prevFormStructure) => {
+  //     const hasRentSection = prevFormStructure?.some(
+  //       (section) => section.title === "Country Wise Price"
+  //     );
 
-      // If TVOD, and Rent section doesn't exist -> add it
-      if (form?.content_access === "TVOD" && !hasRentSection) {
-        return [
-          ...prevFormStructure,
-          {
-            title: "Country Wise Price",
-            fields: [
-              {
-                id: "10",
-                type: "inputBox",
-                title: `Available Days`,
-                placeholder: "Type Movie Available Days",
-                name: "tvod_available_days",
-                regex: /^[0-9\.]+$/,
-                maxLength: "2",
-                required: true,
-              },
-              {
-                type: "country_table",
-                countryFormStructure: countryFormStructure,
-                tableColumns: tableColumnsForCountry,
-                name: "countrys",
-                formTitle: isEdit ? "Edit Country" : "Add Country",
-                title: "Resume/CV",
-                description: "PDF, DOC, DOCX (Max 5MB)",
-                accept: ".pdf,.doc,.docx",
-                size: 6,
-                required: true,
-              },
-            ],
-          },
-        ];
-      }
+  //     // If TVOD, and Rent section doesn't exist -> add it
+  //     if (form?.content_access === "TVOD" && !hasRentSection) {
+  //       return [
+  //         ...prevFormStructure,
+  //         {
+  //           title: "Country Wise Price",
+  //           fields: [
+  //             {
+  //               id: "10",
+  //               type: "inputBox",
+  //               title: `Available Days`,
+  //               placeholder: "Type Movie Available Days",
+  //               name: "tvod_available_days",
+  //               regex: /^[0-9\.]+$/,
+  //               maxLength: "2",
+  //               required: true,
+  //             },
+  //             {
+  //               type: "country_table",
+  //               countryFormStructure: countryFormStructure,
+  //               tableColumns: tableColumnsForCountry,
+  //               name: "countrys",
+  //               formTitle: isEdit ? "Edit Country" : "Add Country",
+  //               title: "Resume/CV",
+  //               description: "PDF, DOC, DOCX (Max 5MB)",
+  //               accept: ".pdf,.doc,.docx",
+  //               size: 6,
+  //               required: true,
+  //             },
+  //           ],
+  //         },
+  //       ];
+  //     }
 
-      // If not TVOD, and Rent section exists -> remove it
-      if (form?.content_access !== "TVOD" && hasRentSection) {
-        return prevFormStructure.filter(
-          (section) => section.title !== "Country Wise Price"
-        );
-      }
+  //     // If not TVOD, and Rent section exists -> remove it
+  //     if (form?.content_access !== "TVOD" && hasRentSection) {
+  //       return prevFormStructure.filter(
+  //         (section) => section.title !== "Country Wise Price"
+  //       );
+  //     }
 
-      return prevFormStructure; // no change needed
-    });
+  //     return prevFormStructure; // no change needed
+  //   });
 
-    if (form?.ownership === "Content Owner") {
-      setFormStructure((prevFormStructure) =>
-        prevFormStructure.map((section) => {
-          if (section.title === "Ownership") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index == 3) {
-                if (form?.content_access === "SVOD") {
-                  return { ...field, display: "block" };
-                } else {
-                  return { ...field, display: "none" };
-                }
-              }
-              if (index == 4) {
-                if (form?.content_access === "TVOD") {
-                  return { ...field, display: "block" };
-                } else {
-                  return { ...field, display: "none" };
-                }
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          return section;
-        })
-      );
-    } else {
-      setFormStructure((prevFormStructure) =>
-        prevFormStructure.map((section) => {
-          if (section.title === "Ownership") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index == 3) {
-                return { ...field, display: "none" };
-              }
-              if (index == 4) {
-                return { ...field, display: "none" };
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          return section;
-        })
-      );
-    }
+  //   if (form?.ownership === "Content Owner") {
+  //     setFormStructure((prevFormStructure) =>
+  //       prevFormStructure.map((section) => {
+  //         if (section.title === "Ownership") {
+  //           const updatedFields = section.fields.map((field, index) => {
+  //             if (index == 3) {
+  //               if (form?.content_access === "SVOD") {
+  //                 return { ...field, display: "block" };
+  //               } else {
+  //                 return { ...field, display: "none" };
+  //               }
+  //             }
+  //             if (index == 4) {
+  //               if (form?.content_access === "TVOD") {
+  //                 return { ...field, display: "block" };
+  //               } else {
+  //                 return { ...field, display: "none" };
+  //               }
+  //             }
+  //             return field;
+  //           });
+  //           return { ...section, fields: updatedFields };
+  //         }
+  //         return section;
+  //       })
+  //     );
+  //   } else {
+  //     setFormStructure((prevFormStructure) =>
+  //       prevFormStructure.map((section) => {
+  //         if (section.title === "Ownership") {
+  //           const updatedFields = section.fields.map((field, index) => {
+  //             if (index == 3) {
+  //               return { ...field, display: "none" };
+  //             }
+  //             if (index == 4) {
+  //               return { ...field, display: "none" };
+  //             }
+  //             return field;
+  //           });
+  //           return { ...section, fields: updatedFields };
+  //         }
+  //         return section;
+  //       })
+  //     );
+  //   }
 
-    if (form?.content_access === "SVOD") {
-      setFormStructure((prevFormStructure) =>
-        prevFormStructure.map((section) => {
-          if (section.title === "Ownership") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 5) {
-                return { ...field, display: "block" };
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          return section;
-        })
-      );
-    } else {
-      setFormStructure((prevFormStructure) =>
-        prevFormStructure.map((section) => {
-          if (section.title === "Ownership") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 5) {
-                return { ...field, display: "none" };
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          return section;
-        })
-      );
-    }
-  }, [form?.content_access]);
+  //   if (form?.content_access === "SVOD") {
+  //     setFormStructure((prevFormStructure) =>
+  //       prevFormStructure.map((section) => {
+  //         if (section.title === "Ownership") {
+  //           const updatedFields = section.fields.map((field, index) => {
+  //             if (index === 5) {
+  //               return { ...field, display: "block" };
+  //             }
+  //             return field;
+  //           });
+  //           return { ...section, fields: updatedFields };
+  //         }
+  //         return section;
+  //       })
+  //     );
+  //   } else {
+  //     setFormStructure((prevFormStructure) =>
+  //       prevFormStructure.map((section) => {
+  //         if (section.title === "Ownership") {
+  //           const updatedFields = section.fields.map((field, index) => {
+  //             if (index === 5) {
+  //               return { ...field, display: "none" };
+  //             }
+  //             return field;
+  //           });
+  //           return { ...section, fields: updatedFields };
+  //         }
+  //         return section;
+  //       })
+  //     );
+  //   }
+  // }, [form?.content_access]);
   const [formStructureNoti, setFormStructureNoti] = useState(
     [
       {
@@ -1277,11 +1184,13 @@ const Movie = () => {
           />
           // </Link>
         ),
+        edit : value?.approval_status === "Approved",
         released_status:
           new Date(value?.release_date) > new Date()
             ? "Upcoming"
             : value?.release_date,
       }));
+
       setTableData({ ...temp });
       setForm({ ...form });
     }
@@ -1313,6 +1222,7 @@ const Movie = () => {
     event.preventDefault();
     console.log(form, "New Folemm");
     const data = new FormData();
+
     Object.keys(form)?.map(
       (key) =>
         key !== "cast" &&
@@ -1335,6 +1245,10 @@ const Movie = () => {
     });
     data.append("countrys", JSON.stringify(form?.countrys));
     data.append("user", user?.id);
+    data.append("ownership", "Content Owner");
+    data.append("distributor", user?.id);
+    data.append("approval_status", "Pending");
+    data.append("reject_reason", "");
     if (isEdit) {
       const resData = await movie_update(data);
       if (resData?.status === 200) {
@@ -1385,9 +1299,9 @@ const Movie = () => {
         setTableData={setTableData}
         setIsEdit={setIsEdit}
         view="view_all"
-        isLoadingData={true}
-        loadApi={Action.all_movie_list}
-        totalCount={movies?.movie_count}
+        // isLoadingData={true}
+        // loadApi={Action.all_movie_list}
+        // totalCount={movies?.movie_count}
         save={save}
         setSave={setSave}
         // isCountry={true}
