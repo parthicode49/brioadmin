@@ -6,29 +6,33 @@ import * as Action from "../../actions/Advertiser/advertisement";
 import { bindActionCreators } from "redux";
 import Export from "../utils/Export";
 import DynamicFormModal from "../utils/NewFormStructure/DynamicFormModal";
+import StripePayment from "../Advertisement/Stripe/StripePayment";
+import { useNavigate } from "react-router-dom";
+import EnlargedView from "../utils/EnlargedView";
 
 const Advertisement = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [form, setForm] = useState({});
   const [isEdit, setIsEdit] = useState(false);
   const [save, setSave] = useState(false);
   const [drawer, setDrawer] = useState(false);
-    const [isModalOpenSub, setIsModalOpenSub] = useState(false);
+  const [isModalOpenSub, setIsModalOpenSub] = useState(false);
   const [adPrice, setAdPrice] = useState(null);
-    const [editingIndex, setEditingIndex] = useState(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-      const [formSub, setFormSub] = useState({});
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formSub, setFormSub] = useState({});
+  const [open, setOpen] = useState(false);
+  const [content, setContent] = useState("");
   const {
     advertisement_create,
     advertisement_update,
     advertisement_charge_list,
-    advertisement_payment_create
+    advertisement_payment_create,
   } = bindActionCreators(Action, dispatch);
 
   const user = useSelector((state) => state.layout.profile);
   const adv_list = useSelector((state) => state?.advertisement?.ad_list_adv);
-  console.log(adv_list, "adv_list123");
-
   useEffect(() => {
     const dailyAdPrice = async () => {
       const resData = await advertisement_charge_list();
@@ -47,12 +51,27 @@ const Advertisement = () => {
       );
     }
   }, [user, save]);
-  const handleFormSub = (id) => {
+  const handleFormSub = (id, product_name) => {
+    console.log("New Code ");
     setEditingIndex(null);
     setIsModalOpenSub(true);
     setIsEdit(false);
     setFormSub({
       id: id,
+      ad_name: product_name,
+    });
+  };
+  const newPaymentGateway = (data) => {
+    console.log("Redirecting to payment...", data);
+    navigate("/stripe-payment", {
+      state: {
+        price: Number(data?.payable_amount),
+        currency_code: "USD",
+        email: user?.email,
+        ad_name: data?.product_name,
+        required_view: data?.views_required,
+        ad_id: data?.id,
+      },
     });
   };
   useEffect(() => {
@@ -72,10 +91,88 @@ const Advertisement = () => {
                 border: "1px solid rgb(238, 127, 37)",
                 borderRadius: "5px",
               }}
-              onClick={() => handleFormSub(ele?.id)}
+              onClick={() =>
+                ele?.approval_status === "Approved"
+                  ? ele?.payment_status === "Paid" ? handleFormSub(ele?.id, ele?.product_name) : (setOpen(true), setContent("First Pay For Advertisement before adding Top Up"))
+                  : (setOpen(true), setContent("Advertisement should be Approved before adding extra views"))
+              }
             >
               Top Up
             </button>
+          </div>
+        ),
+        payment: (
+          <div>
+            {ele?.payment_status === "Paid" ? (
+              <button
+                disabled
+                style={{
+                  padding: "10px 24px",
+                  color: "#10b981",
+                  background: "#ecfdf5",
+                  border: "1px solid #10b981",
+                  borderRadius: "6px",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  cursor: "not-allowed",
+                  opacity: "0.9",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                }}
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M20 6L9 17l-5-5" />
+                </svg>
+                Paid
+              </button>
+            ) : (
+              <button
+                style={{
+                  padding: "10px 24px",
+                  color: "#ff6b00",
+                  background: "transparent",
+                  border: "1px solid #ff6b00",
+                  borderRadius: "6px",
+                  fontSize: "14px",
+                  fontWeight: "550",
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                }}
+                onClick={() =>
+                  ele?.approval_status === "Approved"
+                    ? newPaymentGateway(ele)
+                    : (setOpen(true),
+                      setContent(
+                        "Payment Cannot be done until your Advertisement is Approved"
+                      ))
+                }
+                onMouseEnter={(e) => {
+                  e.target.style.background = "#ff6b00";
+                  e.target.style.color = "white";
+                  e.target.style.transform = "translateY(-1px)";
+                  e.target.style.boxShadow =
+                    "0 4px 12px rgba(255, 107, 0, 0.25)";
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = "transparent";
+                  e.target.style.color = "#ff6b00";
+                  e.target.style.transform = "translateY(0)";
+                  e.target.style.boxShadow = "none";
+                }}
+              >
+                Pay Now & Activate Ad
+              </button>
+            )}
           </div>
         ),
       }));
@@ -115,12 +212,18 @@ const Advertisement = () => {
         id: "payable_amount",
         label: "Payable Amount",
       },
-      // {
-      //   id: "top_up",
-      //   label: "Top Up",
-      //   isSpecial: true,
-      //   align: "left",
-      // },
+      {
+        id: "payment",
+        label: "Payment",
+        isSpecial: true,
+        align: "left",
+      },
+      {
+        id: "top_up",
+        label: "Top Up",
+        isSpecial: true,
+        align: "left",
+      },
       {
         id: "created_at",
         label: "Created At",
@@ -227,27 +330,27 @@ const Advertisement = () => {
     }
   }, [formSub?.payable_amount]);
 
-   const [formStructureSub, setFormStructureSub] = useState(
-      [
-        {
-          type: "inputBox",
-          name: "payable_amount",
-          title: "Payable Amount",
-          regex: /^[0-9\s]+$/,
-          placeholder: "Enter Amount",
-          required: true,
-        },
-        {
-          type: "inputBox",
-          name: "views_required",
-          title: "Views Required",
-          regex: /^[0-9\s]+$/,
-          placeholder: "Enter No Of Views",
-          required: true,
-          disabled: true,
-        },
-      ].filter((e) => e)
-    );
+  const [formStructureSub, setFormStructureSub] = useState(
+    [
+      {
+        type: "inputBox",
+        name: "payable_amount",
+        title: "Payable Amount",
+        regex: /^[0-9\s]+$/,
+        placeholder: "Enter Amount",
+        required: true,
+      },
+      {
+        type: "inputBox",
+        name: "views_required",
+        title: "Views Required",
+        regex: /^[0-9\s]+$/,
+        placeholder: "Enter No Of Views",
+        required: true,
+        disabled: true,
+      },
+    ].filter((e) => e)
+  );
 
   useEffect(() => {
     if (isEdit && form?.approval_status === "Rejected") {
@@ -312,19 +415,31 @@ const Advertisement = () => {
     }
   };
 
-  const handleSubmit2 = async () =>{
-    const resData = await advertisement_payment_create(formSub)
-    if(resData?.status === 200){
-       setSave(!save);
-       setFormSub({})
-       setIsModalOpenSub(false);
-    }
-  }
+  const handleSubmit2 = async () => {
+    console.log(formSub, "formSub123");
+    navigate("/stripe-payment", {
+      state: {
+        price: Number(formSub?.payable_amount),
+        currency_code: "USD",
+        email: user?.email,
+        ad_name: formSub?.ad_name,
+        required_view: formSub?.views_required,
+        ad_id: formSub?.id,
+      },
+    });
+    // const resData = await advertisement_payment_create(formSub);
+    // if (resData?.status === 200) {
+    //   setSave(!save);
+    //   setFormSub({});
+    //   setIsModalOpenSub(false);
+    // }
+  };
 
   return (
     <div>
       {" "}
-            <DynamicFormModal
+      <EnlargedView open={open} setOpen={setOpen} content={content} />
+      <DynamicFormModal
         open={isModalOpenSub}
         onClose={() => {
           setIsModalOpenSub(false);

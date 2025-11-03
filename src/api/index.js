@@ -216,6 +216,10 @@ export const advertisement_in_episode_create = (formData) => API.post("/advertis
 export const advertisement_in_episode_list_admin = (formData) => API.post("/advertisement_in_episode_list_admin/" , formData)
 export const advertisement_in_episode_update = (formData) => API.post("/advertisement_in_episode_update/" , formData)
 
+// Payment Gateway
+export const get_payment_metadata = (formData) => API.post('/get_payment_metadata_admin/', formData)
+// export const transaction_create = (formData) => API.post('/transaction_create/', formData)
+
 
 
 // Master->Sub Admin

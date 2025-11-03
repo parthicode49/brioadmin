@@ -584,8 +584,10 @@ const NewForm = ({
   //     }));
   //   }
   // }, [tableData1]);
-  useMemo(() => {
-    if (tableData1 && casts?.data) {
+
+  console.log(tableData1 , "tableData1123")
+  useEffect(() => {
+    if (tableData1?.length > 0 && casts?.data) {
       const updatedCast = tableData1?.map((item) => {
         const matchedCast = casts.data.find((c) => c.cast_name === item.cast);
         return {
@@ -607,7 +609,7 @@ const NewForm = ({
       setTableData1(formData?.cast);
       setTableDataCountry(formData?.countrys);
     }
-  }, [isEdit]);
+  }, [isEdit , open]);
   useMemo(() => {
     if (tableDataCountry && countries?.data) {
       const updatedCountry = tableDataCountry?.map((item) => {

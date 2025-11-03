@@ -86,6 +86,12 @@ const Advertisement = () => {
         label: "Payable Amount",
       },
       {
+        id: "payment_status1",
+        label: "Payment Status",
+        isSpecial: true,
+        align: "left",
+      },
+      {
         id: "top_up",
         label: "Top Up",
         isSpecial: true,
@@ -125,6 +131,12 @@ const Advertisement = () => {
         title: "Status",
         name: "status",
         options: ["Active", "Inactive"],
+      },
+      {
+        id: "3",
+        title: "Payment Status",
+        name: "payment_status",
+        options: ["Paid", "Unpaid"],
       },
     ],
   });
@@ -299,6 +311,49 @@ const Advertisement = () => {
       const temp = tableData;
       temp.tableBody = advertisementList?.map((ele) => ({
         ...ele,
+        payment_status1:
+          ele?.payment_status === "Paid" ? (
+            <button
+              disabled
+              style={{
+                padding: "10px 24px",
+                color: "#10b981",
+                background: "#ecfdf5",
+                border: "1px solid #10b981",
+                borderRadius: "6px",
+                fontSize: "14px",
+                fontWeight: "500",
+                cursor: "not-allowed",
+                opacity: "0.9",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+              }}
+            >
+              Paid
+            </button>
+          ) : (
+            <button
+              disabled
+              style={{
+                padding: "10px 24px",
+                color: "#ff6b00",
+                background: "#fdf1ecff",
+                border: "1px solid #ff6b00",
+                borderRadius: "6px",
+                fontSize: "14px",
+                fontWeight: "500",
+                cursor: "not-allowed",
+                opacity: "0.9",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+              }}
+            >
+              Unpaid
+            </button>
+          ),
+        payment_status: ele?.payment_status === "Paid" ? "Paid" : "Unpaid",
         top_up: (
           <div>
             <button

@@ -17,6 +17,8 @@ export const DARKMODE = "DARKMODE"
 // Top 10 video
 export const TOP_TEN_VIDEOS = 'TOP_TEN_VIDEOS'
 
+//
+export const PAYMENT = "PAYMENT"
 
 
 // Masters

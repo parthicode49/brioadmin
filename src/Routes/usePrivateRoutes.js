@@ -3,6 +3,8 @@ import React from "react";
 import Movie from "../components/Movie/Movie/Movie";
 import MastersModule from "../modules/MastersModule";
 import { useSelector } from "react-redux";
+import StripePayment from "../components/Advertisement/Stripe/StripePayment";
+import PaymentSuccess from "../components/Advertisement/Stripe/PaymentSuccess";
 const Dashboard = React.lazy(() => import("../components/Dashboard/Dashboard"));
 const Distributor = React.lazy(() => import("../modules/DistributorsModule"));
 const Series = React.lazy(() =>
@@ -362,6 +364,14 @@ export const usePrivateRoutes = () => {
       {
         path: `/paymenthistory`,
         Component: <AdPaymentHistory />,
+      },
+      {
+        path: `/stripe-payment`,
+        Component: <StripePayment />,
+      },
+      {
+        path: `/payment-success`,
+        Component: <PaymentSuccess />,
       },
     ]
   }

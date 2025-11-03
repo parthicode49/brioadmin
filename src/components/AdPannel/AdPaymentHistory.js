@@ -6,33 +6,34 @@ import { bindActionCreators } from "redux";
 
 const AdPaymentHistory = () => {
   const dispatch = useDispatch();
-    const user = useSelector((state) => state.layout.profile);
+  const user = useSelector((state) => state.layout.profile);
   const { advertisement_payment_list_advertiser } = bindActionCreators(
     Action,
     dispatch
   );
 
-  const [adHistory , setAdHistory ] = useState([])
-  useEffect(()=>{
-    const dataHistory = async () =>{
-      const resData = await advertisement_payment_list_advertiser({advertiser_id : user?.id})
-      if(resData?.status == 200){
-        setAdHistory(resData?.data?.data)
+  const [adHistory, setAdHistory] = useState([]);
+  useEffect(() => {
+    const dataHistory = async () => {
+      const resData = await advertisement_payment_list_advertiser({
+        advertiser_id: user?.id,
+      });
+      if (resData?.status == 200) {
+        setAdHistory(resData?.data?.data);
       }
-    } 
-    if (user?.id){
-
-      dataHistory()
+    };
+    if (user?.id) {
+      dataHistory();
     }
-  },[user])
-    useEffect(() => {
-      if (adHistory) {
-        const temp = tableData;
-  
-        temp.tableBody = adHistory || []
-        setTableData({ ...temp });
-      }
-    }, [adHistory]);
+  }, [user]);
+  useEffect(() => {
+    if (adHistory) {
+      const temp = tableData;
+
+      temp.tableBody = adHistory || [];
+      setTableData({ ...temp });
+    }
+  }, [adHistory]);
 
   const [tableData, setTableData] = useState({
     tableTitle: "Payment History",
@@ -51,10 +52,10 @@ const AdPaymentHistory = () => {
         label: "Product Name",
         // subText: "mobileNumber",
       },
-      // {
-      //   id: "advertiser_name",
-      //   label: "Advertiser Name",
-      // },
+      {
+        id: "payment_id",
+        label: "Payment ID",
+      },
       {
         id: "added_view",
         label: "Views",
@@ -64,7 +65,6 @@ const AdPaymentHistory = () => {
         id: "paid_amount",
         label: "Payable Amount",
       },
-
     ],
     tableBody: [],
     filterColumn: [

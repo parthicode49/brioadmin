@@ -46,7 +46,7 @@ export default function Transaction() {
       // 	link: "/Customer/CustomerDetail/CustomerDetail",
       // 	color: "var(--gradientColor2)"
       // },
-            {
+      {
         id: "date",
         label: "Payment Date",
         subText: "time",
@@ -73,7 +73,6 @@ export default function Transaction() {
         label: "Payment ID",
         subText: "gateway",
       },
-
 
       {
         id: "deviceId",
@@ -217,6 +216,8 @@ export default function Transaction() {
         id: ele?.user,
         payment_status: ele?.status,
         name: ele?.user?.firstName + " " + ele?.user?.lastName,
+        deviceId : ele?.transaction_type === "Advertisement" ? "Advertiser Panel" : ele?.deviceId ? ele?.deviceId : " - ", 
+        location : ele?.location ? ele?.location : " - ",
         payment_amount: parseFloat(ele?.payment_amount).toFixed(2),
         time: getTime(ele?.created_at),
         date: getDate(ele?.created_at),
@@ -228,9 +229,28 @@ export default function Transaction() {
           >
             {ele?.mobile_no ? ele?.mobile_no : ele?.email}
           </Link>
-        ) :  <s style={{color:"var(--themeFontColor)"}}>{ele?.mobile_no ? ele?.mobile_no : ele?.email}</s>,
+        ) : ele?.transaction_type === "Advertisement" ? (
+          <span style={{ color: "var(--themeFontColor)" }}>
+            <p>{ele?.advertiser?.name} </p>
+            <p>{ele?.advertiser?.email} </p>
+            <p>{ele?.advertiser?.mobile_number} </p>
+          </span>
+        ) : (
+          <s style={{ color: "var(--themeFontColor)" }}>
+            {ele?.mobile_no ? ele?.mobile_no : ele?.email}
+          </s>
+        ),
         plan1:
-          ele?.transaction_type == "SVOD" ? (
+          ele?.transaction_type === "Advertisement" ? (
+            <>
+              <p style={{ color: "var(--themeFontColor)" }}>
+                {ele?.transaction_type}
+              </p>
+              <p style={{ color: "var(--themeFontColor)" }}>
+                {"( " + "Views" + " - " + ele?.added_view + " )"}
+              </p>
+            </>
+          ) : ele?.transaction_type == "SVOD" ? (
             <p style={{ color: "var(--themeFontColor)" }}>
               {ele?.plan?.plan_name}
             </p>
@@ -254,21 +274,25 @@ export default function Transaction() {
             style={{ color: "green", height: "50px" }}
             onClick={() => handleWhatsAppClick(ele?.mobile_no)}
           />
-        ) : <p style={{color:"var(--themeFontColor)"}}>-</p> ,
-        notification: ele?.user ?(
+        ) : (
+          <p style={{ color: "var(--themeFontColor)" }}>-</p>
+        ),
+        notification: ele?.user ? (
           // <Link
           //   to="/Notifications/CreateNotifications/"
           //   state={{ customer: ele?.user_id, send: "nofitication" }}
           // >
-            <img
-              src={notification_icon}
-              alt="Notifications"
-              height={"25px"}
-               onClick={() => handleForm(ele?.user)}
-              style={{ marginRight: "5px" , cursor:"pointer" }}
-            />
+          <img
+            src={notification_icon}
+            alt="Notifications"
+            height={"25px"}
+            onClick={() => handleForm(ele?.user)}
+            style={{ marginRight: "5px", cursor: "pointer" }}
+          />
+        ) : (
           // </Link>
-        ) :  <p style={{color:"var(--themeFontColor)"}}>-</p>,
+          <p style={{ color: "var(--themeFontColor)" }}>-</p>
+        ),
       }));
       setTableData({ ...temp });
     }
@@ -298,7 +322,6 @@ export default function Transaction() {
   };
   return (
     <>
-
       <DynamicFormModal
         open={isModalOpen}
         onClose={() => {

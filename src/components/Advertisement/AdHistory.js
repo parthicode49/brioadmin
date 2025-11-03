@@ -51,6 +51,11 @@ const AdHistory = () => {
         // subText: "mobileNumber",
       },
       {
+        id: "payment_id",
+        label: "Payment ID",
+        // subText: "mobileNumber",
+      },
+      {
         id: "advertiser_name",
         label: "Advertiser Name",
       },

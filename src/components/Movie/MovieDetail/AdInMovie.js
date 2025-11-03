@@ -23,6 +23,8 @@ const AdInMovie = ({ id }) => {
   const [adInMovieData, setAdInMovieData] = useState([]);
   const [adData, setAdData] = useState([]);
 
+
+
   useEffect(() => {
     if (id) {
       const apiData = async () => {
@@ -140,7 +142,7 @@ const AdInMovie = ({ id }) => {
     if (isEdit) {
       const resData = await advertisement_in_movie_update(form);
       if (resData?.status === 200) {
-        setForm({});
+        setForm({movie: id});
         setSave(!save);
         setIsModalOpen(false);
       } else {
@@ -150,7 +152,7 @@ const AdInMovie = ({ id }) => {
       const resData = await advertisement_in_movie_create(form);
       if (resData?.status === 200) {
         // setForm({});
-        setForm({});
+        setForm({movie: id});
         setSave(!save);
         setIsModalOpen(false);
       } else {
