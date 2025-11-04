@@ -15,7 +15,7 @@ export const subadmin_create = (formData) => async (dispatch) => {
 
 export const subadmin_update = (formData) => async (dispatch) => {
   try {
-    const { data } = await api.subadmin_update(formData);
+    const  data  = await api.subadmin_update(formData);
     dispatch({ type: MESSAGE, payload: data?.data });
     return data;
   } catch (error) {
@@ -45,6 +45,15 @@ export const all_module_listing = (formData) => async (dispatch) => {
     const { data } = await api.all_module_listing(formData);
 
     dispatch({ type: MODULES, payload: data });
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const subadmin_status_update = (formData) => async (dispatch) => {
+  try {
+    const { data } = await api.subadmin_status_update(formData);
+
+    dispatch({ type: MESSAGE, payload: data });
   } catch (error) {
     console.log(error);
   }

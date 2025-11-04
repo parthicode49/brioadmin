@@ -50,7 +50,7 @@ const Advertisement = () => {
   console.log(advertisementList, "dfsfddsf");
 
   const [tableData, setTableData] = useState({
-    tableTitle: "Advertisement",
+    tableTitle: "Advertisements",
     // deleteRecord: Action.top_ten_delete,
     updateRecord: Action.advertisement_status_update,
     customisedStatusUpdateMessage: true,
@@ -82,8 +82,8 @@ const Advertisement = () => {
         label: "Remaining View",
       },
       {
-        id: "payable_amount",
-        label: "Payable Amount",
+        id: "payable_amount1",
+        label: "Payable Amount ($)",
       },
       {
         id: "payment_status1",
@@ -91,12 +91,12 @@ const Advertisement = () => {
         isSpecial: true,
         align: "left",
       },
-      {
-        id: "top_up",
-        label: "Top Up",
-        isSpecial: true,
-        align: "left",
-      },
+      // {
+      //   id: "top_up",
+      //   label: "Top Up",
+      //   isSpecial: true,
+      //   align: "left",
+      // },
       {
         id: "status",
         label: "Status",
@@ -164,9 +164,10 @@ const Advertisement = () => {
         {
           type: "inputBox",
           name: "payable_amount",
-          title: "Payable Amount",
+          title: "Payable Amount ($)",
           regex: /^[0-9\s]+$/,
           placeholder: "Enter Amount",
+          symbol : "$",
           disabled: true,
           required: true,
         },
@@ -354,6 +355,7 @@ const Advertisement = () => {
             </button>
           ),
         payment_status: ele?.payment_status === "Paid" ? "Paid" : "Unpaid",
+        payable_amount1 : "$ " + ele?.payable_amount,
         top_up: (
           <div>
             <button

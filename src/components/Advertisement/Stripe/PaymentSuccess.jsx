@@ -56,7 +56,7 @@ export default function PaymentSuccess() {
       const { paymentIntent } = await stripe.retrievePaymentIntent(
         clientSecret
       );
-      console.log(paymentIntent, "paymentIntent1113");
+      console.log(paymentIntent, clientSecret,"paymentIntent1113");
       if (paymentIntent) {
         const resData = await get_payment_metadata({
           payment_intent: paymentIntent.id,

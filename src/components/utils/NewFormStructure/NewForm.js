@@ -616,6 +616,8 @@ const NewForm = ({
         const matchedCountry = countries?.data?.find(
           (c) => c.country_name === item.country
         );
+
+        console.log( matchedCountry, "dfdsfdfsdfdsfd")
         return {
           ...item,
           country_id: matchedCountry?.id || null, // Assign null if not found
@@ -2755,7 +2757,7 @@ const NewForm = ({
                 }}
                 onClick={(e) => handleFormSubmit(e)}
               >
-                <SaveIcon /> <span style={{ paddingLeft: "5px" }}>save</span>
+                <SaveIcon /> <span style={{ paddingLeft: "5px" }}>{isEdit ? "Update" : "Submit"}</span>
               </Button>
               {isConfirmBtn && (
                 <Button

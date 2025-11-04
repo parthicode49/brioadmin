@@ -128,11 +128,11 @@ export const SidebarData = (darkMode) => {
             path: "/distributor",
             access: rights?.["Web Series"]?.["view"],
           },
-          {
-            title: "Acruired Content",
-            path: "/contentform",
-            access: rights?.["Web Series"]?.["view"],
-          },
+          // {
+          //   title: "Acruired Content",
+          //   path: "/contentform",
+          //   access: rights?.["Web Series"]?.["view"],
+          // },
           {
             title: "Content Leaving",
             path: "/leavingsoon",
@@ -193,11 +193,11 @@ export const SidebarData = (darkMode) => {
             path: "/complaints",
             access: rights?.["Customers"]?.["view"],
           },
-          {
-            title: "Promocode",
-            path: "/promocode",
-            access: rights?.["Customers"]?.["view"],
-          },
+          // {
+          //   title: "Promocode",
+          //   path: "/promocode",
+          //   access: rights?.["Customers"]?.["view"],
+          // },
         ].filter((e) => e),
       },
       {
@@ -309,7 +309,7 @@ export const SidebarData = (darkMode) => {
             access: rights?.["Advertisers"]?.["view"],
           },
           {
-            title: "Create Ad",
+            title: "Advertisements",
             path: "/advertisement/",
             access: rights?.["Advertisement"]?.["view"],
           },
@@ -404,11 +404,11 @@ export const SidebarData = (darkMode) => {
             path: "/masters/contentadvisory",
             access: rights?.["Masters"]?.["view"],
           },
-          // {
-          //   title: "Sub Admin",
-          //   path: "/masters/subadmin",
-          //   access: rights?.["Masters"]?.["view"],
-          // },
+          {
+            title: "Sub Admin",
+            path: "/masters/subadmin",
+            access: rights?.["Masters"]?.["view"],
+          },
           // {
           //   title: "Payment Gateways",
           //   path: "/Masters/PaymentGateWay",

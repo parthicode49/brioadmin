@@ -1129,6 +1129,7 @@ export default function ListTable({
             setFormData={setForm}
             title={formTitle}
             initialData={initialData}
+            isEdit={isEdit}
           />
         </>
       )}
@@ -1213,7 +1214,7 @@ export default function ListTable({
                 ? tableData?.column_sum &&
                   tableData?.column_sum?.title +
                     " : " +
-                    "₹" +
+                    "$ " +
                     results
                       ?.map((ele) => Number(ele?.[tableData?.column_sum?.name]))
                       .reduce((sum, i) => sum + i, 0)
@@ -1221,7 +1222,7 @@ export default function ListTable({
                 : tableData?.column_sum &&
                   "Total Amount" +
                     " : " +
-                    parseFloat(total_transaction_amount).toFixed(2)
+                   "$ "+ parseFloat(total_transaction_amount).toFixed(2)
             }
             person_name={
               tableData?.person_name &&

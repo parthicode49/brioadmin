@@ -3,7 +3,7 @@ import { useState, useMemo, useEffect } from "react";
 import ListTable from "../utils/Table";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import * as Action from "../../actions/Masters/subadmin"
+import * as Action from "../../actions/Masters/subadmin";
 import { bindActionCreators } from "redux";
 
 const SubAdmin = () => {
@@ -12,92 +12,42 @@ const SubAdmin = () => {
   const user = useSelector((state) => state.layout.profile);
   const [form, setForm] = useState({});
   const [isEdit, setIsEdit] = useState(false);
-  const {subadmin_create ,subadmin_update} = bindActionCreators(Action , dispatch)
+  const { subadmin_create, subadmin_update } = bindActionCreators(
+    Action,
+    dispatch
+  );
   const [save, setSave] = useState(false);
   const [drawer, setDrawer] = useState(false);
   const [content, setContent] = useState();
-  const subadmins = useSelector((state) => state?.masters?.subadmins)
+  const subadmins = useSelector((state) => state?.masters?.subadmins);
   const tempTableData = {
     tableTitle: "Sub Admin",
-    //   deleteRecord: Action.coupon_delete,
-    // updateRecord: coupon_update,
+    deleteRecord: Action.subadmin_delete,
+    updateRecord: Action.subadmin_status_update,
+    disableDelete : true,
     deleteAccess: "true",
     onDeleteText: "Are you sure want to delete?",
     onUpdateText: "Are you Sure?",
     tableHead: [
       {
-        id: "promocode",
-        label: "Promo code",
-        subText: "promocode_title",
+        id: "name",
+        label: "Sub Admin",
         // link: "/Coupon/PromocodeHistory",
         color: "var(--gradientColor2)",
       },
       {
-        id: "promocode_type",
-        label: "Promo code Type",
-        subText: "type_name",
+        id: "email",
+        label: "Email",
       },
       {
-        id: "ownership",
-        label: "Ownership",
-        subText: "distributor_name",
+        id: "status",
+        label: "Status",
       },
 
-      {
-        id: "actual_amount1",
-        label: "Actual Amount",
-      },
-      {
-        id: "discount_amount1",
-        label: "Discount",
-        subText: "discount_type",
-      },
-      {
-        id: "payable1",
-        label: "Payable",
-      },
-      {
-        id: "user_limit_coupon",
-        label: "Limit",
-        isSpecial: true,
-        align: "left",
-      },
-      {
-        id: "used_count_coupon",
-        label: "Used",
-        isSpecial: true,
-        align: "left",
-      },
-      {
-        id: "remaining_coupon",
-        label: "Remaining",
-        isSpecial: true,
-        align: "left",
-      },
-      {
-        id: "expired_on",
-        label: "Validity",
-        isSpecial: true,
-        align: "left",
-      },
-      {
-        id: "statuscus",
-        label: "Status",
-        isSpecial: true,
-        align: "left",
-      },
-      {
-        id: "info",
-        label: "Info",  
-        isSpecial: true,
-        align: "left",
-      },
       {
         id: "edit",
         label: "Update",
         isNewForm: true,
-        access: "true",
-        ErrorMsg: "You can not edit PromoCode",
       },
       // {
       // 	id: "promocode_image",
@@ -115,9 +65,9 @@ const SubAdmin = () => {
       },
     ],
   };
-  useEffect(()=>{
-    dispatch(Action.all_subadmin_list())
-  },[])
+  useEffect(() => {
+    dispatch(Action.all_subadmin_list());
+  }, [save]);
   const [tableData, setTableData] = useState({ ...tempTableData });
   const [formStructure, setFormStructure] = useState([
     {
@@ -129,7 +79,7 @@ const SubAdmin = () => {
           title: "Name",
           placeholder: "Type Sub Admin Name",
           required: true,
-          regex: /^[a-zA-Z0-9\.]+$/,
+          // regex: /^[a-zA-Z0-9\.s]+$/,
         },
         {
           id: "3",
@@ -141,16 +91,16 @@ const SubAdmin = () => {
           name: "email",
           required: true,
         },
-        {
-          id: "4",
-          type: "mobile",
-          title: "Mobile Number",
-          // maxLength: 12,
-          placeholder: "Enter Mobile Number",
-          name: "mobile_number",
-          isMobile: true,
-          required: true,
-        },
+        // {
+        //   id: "4",
+        //   type: "mobile",
+        //   title: "Mobile Number",
+        //   // maxLength: 12,
+        //   placeholder: "Enter Mobile Number",
+        //   name: "mobile_number",
+        //   isMobile: true,
+        //   required: true,
+        // },
       ],
     },
     {
@@ -218,7 +168,7 @@ const SubAdmin = () => {
         },
         {
           type: "headind_ad",
-          title: "Songs",
+          title: "Live Stream",
           margin: "25px",
           size: "3",
         },
@@ -398,7 +348,7 @@ const SubAdmin = () => {
         },
         {
           type: "headind_ad",
-          title: "Song Slider",
+          title: "Ad Master",
           margin: "25px",
           size: "3",
         },
@@ -599,13 +549,25 @@ const SubAdmin = () => {
       ],
     },
   ]);
-  useMemo(()=>{
-     if (subadmins?.data) {
-        const temp = tableData;
-        temp.tableBody = subadmins?.data || []
-         setTableData({ ...temp });
-      }
-  },[subadmins])
+  useMemo(() => {
+    if (subadmins?.data) {
+      const temp = tableData;
+      const main_content = [];
+      subadmins?.data.map((ele) => {
+        const content_file = {};
+        ele?.rights &&
+          ele?.rights?.map((value, index) => {
+            content_file["content_value_" + index] = value?.content_value;
+          });
+        main_content.push(content_file);
+      });
+      temp.tableBody = subadmins?.data?.map((ele, index) => ({
+        ...ele,
+        ...main_content[index],
+      }));
+      setTableData({ ...temp });
+    }
+  }, [subadmins]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -614,7 +576,7 @@ const SubAdmin = () => {
       content_0: "Dashboard",
       content_1: "Analytics",
       content_2: "Movies",
-      content_3: "Songs",
+      content_3: "Live Stream",
       content_4: "Series",
       content_5: "Season",
       content_6: "Episode",
@@ -623,7 +585,7 @@ const SubAdmin = () => {
       content_9: "Acruired Content",
       content_10: "Content Leaving Soon",
       content_11: "Slider",
-      content_12: "Song Slider",
+      content_12: "Ad Master",
       content_13: "Promotions",
       content_14: "Top Ten Video",
       content_15: "Customers",
@@ -632,12 +594,12 @@ const SubAdmin = () => {
       content_18: "Transactions",
       content_19: "Subscriptions",
       content_20: "Control Panel",
-      content_21: "Setting"
+      content_21: "Setting",
     };
-    setForm(updatedForm)
-    console.log(updatedForm ,"New Form Chech")
+    setForm(updatedForm);
+    console.log(updatedForm, "New Form Chech");
     if (isEdit) {
-      const resData = await subadmin_update(form);
+      const resData = await subadmin_update(updatedForm);
       if (resData?.status === 200) {
         setForm({});
         setSave(!save);
@@ -665,7 +627,6 @@ const SubAdmin = () => {
       setForm={setForm}
       setTableData={setTableData}
       setIsEdit={setIsEdit}
-      create_new={"/Coupon/EditCoupon"}
       save={save}
       setSave={setSave}
       isDrawerForm={true}

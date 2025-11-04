@@ -182,7 +182,7 @@ const Series = () => {
       description: "Upload a (Resolution : 512px x 512px) (JPG, PNG)",
       accept: "image/*",
       // size: 6,
-      required: true,
+      // required: true,
     },
   ]);
   const [formStructure, setFormStructure] = useState([

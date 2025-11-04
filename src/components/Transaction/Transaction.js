@@ -37,7 +37,7 @@ export default function Transaction() {
     disableDelete: true,
     column_sum: {
       name: "payment_amount",
-      title: "Total Amount",
+      title: "Total Amount ($)",
     },
     tableHead: [
       // {
@@ -67,6 +67,8 @@ export default function Transaction() {
       {
         id: "payment_amount",
         label: "Amount",
+        isSpecial: true,
+        align: "left",
       },
       {
         id: "payment_id",
@@ -110,12 +112,12 @@ export default function Transaction() {
         options: ["TVOD", "SVOD"],
         default: location?.state,
       },
-      // {
-      //   id: "1",
-      //   title: "Payment Status",
-      //   name: "status",
-      //   options: ["Success", "Failed"],
-      // },
+      {
+        id: "1",
+        name: "transaction_type",
+        title: "Transaction Type",
+        options: ["Advertisement", "SVOD", "TVOD"],
+      },
     ],
     isDateRangeFilter: "created_at",
   });
@@ -216,9 +218,34 @@ export default function Transaction() {
         id: ele?.user,
         payment_status: ele?.status,
         name: ele?.user?.firstName + " " + ele?.user?.lastName,
-        deviceId : ele?.transaction_type === "Advertisement" ? "Advertiser Panel" : ele?.deviceId ? ele?.deviceId : " - ", 
-        location : ele?.location ? ele?.location : " - ",
-        payment_amount: parseFloat(ele?.payment_amount).toFixed(2),
+        deviceId:
+          ele?.transaction_type === "Advertisement"
+            ? "Advertiser Panel"
+            : ele?.deviceId
+            ? ele?.deviceId
+            : " - ",
+        location: ele?.location ? ele?.location : " - ",
+        payment_amount: (
+          <div style={{color: "var(--themeFontColor)"}}>
+            {ele?.usd_payment_amount ? (
+              <>
+                <p>
+                  {ele?.currency_symbol +
+                    " " +
+                    parseFloat(ele?.payment_amount).toFixed(2)}
+                </p>
+                <p>{"$ " + parseFloat(ele?.usd_payment_amount).toFixed(2)}</p>{" "}
+              </>
+            ) : (
+              <p>
+                {ele?.currency_symbol +
+                  " " +
+                  parseFloat(ele?.payment_amount).toFixed(2)}
+              </p>
+            )}
+          </div>
+        ),
+        // payment_amount: parseFloat(ele?.payment_amount).toFixed(2),
         time: getTime(ele?.created_at),
         date: getDate(ele?.created_at),
         user_name: ele?.user ? (
@@ -298,7 +325,6 @@ export default function Transaction() {
     }
   }, [transactions]);
   const handleSubmit1 = async () => {
-    console.log("dddddddddddddddddddd", formNoti);
     const data = new FormData();
     Object.keys(formNoti)?.map((key) => data.append(key, formNoti?.[key]));
     const resData = await notification_create(data);

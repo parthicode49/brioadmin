@@ -271,7 +271,8 @@ const Advertisement = () => {
           name: "payable_amount",
           title: "Payable Amount",
           regex: /^[0-9\s]+$/,
-          placeholder: "Enter Amount",
+          placeholder: "Enter Amount ($)",
+          symbol : "$",
           required: true,
         },
         {
@@ -304,6 +305,7 @@ const Advertisement = () => {
           placeholder: "Paste Advertise Link",
           required: true,
           size: "12",
+          displayText : "Please upload all video links, trailer links, posters, and thumbnails to the Google Drive / Dropbox folder and share the drive link once done."
         },
         {
           type: "inputBox",
@@ -312,6 +314,7 @@ const Advertisement = () => {
           placeholder: "Paste Link",
           // required: true,
           size: "12",
+          displayText : "If you wish for customers to easily view your site, you can include your website link (not required)."
         },
       ],
     },
@@ -337,7 +340,8 @@ const Advertisement = () => {
         name: "payable_amount",
         title: "Payable Amount",
         regex: /^[0-9\s]+$/,
-        placeholder: "Enter Amount",
+         placeholder: "  Enter Amount ($)",
+          symbol : "$",
         required: true,
       },
       {

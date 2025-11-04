@@ -51,11 +51,11 @@ const Subscriptions = () => {
         label: "Total Subscriptions",
       },
       {
-        id: "india_price",
+        id: "us_price",
         label: "Actual Price",
       },
       {
-        id: "india_discount_price",
+        id: "us_discount_price",
         label: "Discount Price",
       },
       {
@@ -303,8 +303,8 @@ const Subscriptions = () => {
       temp.tableBody = subscriptions?.data?.map((value, index) => ({
         ...value,
         ...main_content[index],
-        india_price : parseFloat(value?.india_price).toFixed(2),
-        india_discount_price : parseFloat(value?.india_discount_price).toFixed(2),
+        us_price : "$ " +  parseFloat(value?.us_price).toFixed(2),
+        us_discount_price : "$ " +  parseFloat(value?.us_discount_price).toFixed(2),
       }));
       setTableData({ ...temp });
       setForm({ ...form });

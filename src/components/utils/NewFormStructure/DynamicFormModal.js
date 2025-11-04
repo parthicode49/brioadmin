@@ -38,6 +38,7 @@ const DynamicFormModal = ({
   setFormData,
   initialData,
   title,
+  isEdit,
   // darkMode = false,
 }) => {
   const theme = useTheme();
@@ -396,6 +397,11 @@ const DynamicFormModal = ({
                         ))
                       }
                       InputProps={{
+                        startAdornment: field?.symbol && (
+                          <InputAdornment color="secondary">
+                            {field?.symbol}
+                          </InputAdornment>
+                        ),
                         sx: {
                           borderRadius: 2,
                           backgroundColor: "var(--themeColorLighterShade)",
@@ -1018,7 +1024,7 @@ const DynamicFormModal = ({
             },
           }}
         >
-          Save
+          {isEdit ? "Update" : "Submit"}
         </Button>
       </DialogActions>
     </Dialog>

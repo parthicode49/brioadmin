@@ -250,6 +250,7 @@ const Category = () => {
         form={form}
         setForm={setForm}
         setTableData={setTableData}
+        isEdit={isEdit}
         setIsEdit={setIsEdit}
         view="view_all"
         create_new={"/masters/category/editcategory"}

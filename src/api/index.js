@@ -224,9 +224,10 @@ export const get_payment_metadata = (formData) => API.post('/get_payment_metadat
 
 // Master->Sub Admin
 export const subadmin_create = (formData) => API.post('/subadmin_create/', formData); // Pending
-export const subadmin_update = (formData) => API.post('/sub_admin_update/', formData); // Pending
-export const subadmin_delete = (formData) => API.post('/sub_admin_delete/', formData); // Pending
+export const subadmin_update = (formData) => API.post('/subadmin_update/', formData); // Pending
+export const subadmin_delete = (formData) => API.post('/subadmin_delete/', formData); // Pending
 export const all_subadmin_list = (formData) => API.post('/all_subadmin_list_admin/', formData); // Pending
+export const subadmin_status_update = (formData) => API.post('/subadmin_status_update/', formData); // Pending
 export const all_module_listing = (formData) => API.post('/all_module_listing/', formData);
 
 // Live Streaming->TV Category

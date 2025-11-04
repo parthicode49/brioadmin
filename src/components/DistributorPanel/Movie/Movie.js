@@ -112,7 +112,7 @@ const Movie = () => {
       description: "Upload a (Resolution : 512px x 512px) (JPG, PNG)",
       accept: "image/*",
       // size: 6,
-      required: true,
+      // required: true,
     },
   ]);
   const [subTitleFormStructure, setSubTitleFormStructure] = useState([
@@ -353,15 +353,15 @@ const Movie = () => {
         //   size: "3",
         // },
 
-        {
-          type: "date",
-          title: "Expiry Time",
-          min: new Date(new Date().setDate(new Date().getDate() + 1)),
-          name: "expiry_date",
-          placeholder: "Select Date",
-          // required: true,
-          size: "3",
-        },
+        // {
+        //   type: "date",
+        //   title: "Expiry Time",
+        //   min: new Date(new Date().setDate(new Date().getDate() + 1)),
+        //   name: "expiry_date",
+        //   placeholder: "Select Date",
+        //   // required: true,
+        //   size: "3",
+        // },
 
         {
           type: "toggle",
@@ -377,18 +377,18 @@ const Movie = () => {
             { value: "IOS", color: "danger" },
           ],
         },
-        {
-          type: "select",
-          name: "movie_type",
-          title: "Select Movie Type",
-          placeholder: "Select Type",
-          // size: "3",
-          options: [
-            { label: "Exclusive", value: "Exclusive" },
-            { label: "Non-Exclusive", value: "Non-Exclusive" },
-          ],
-          required: true,
-        },
+        // {
+        //   type: "select",
+        //   name: "movie_type",
+        //   title: "Select Movie Type",
+        //   placeholder: "Select Type",
+        //   // size: "3",
+        //   options: [
+        //     { label: "Exclusive", value: "Exclusive" },
+        //     { label: "Non-Exclusive", value: "Non-Exclusive" },
+        //   ],
+        //   required: true,
+        // },
         {
           type: "inputBox",
           name: "reject_reason",
@@ -434,7 +434,7 @@ const Movie = () => {
           placeholder: "Paste Content File Link",
           required: true,
           size: "12",
-          displayText : "Please upload all video links, trailer links, posters, and thumbnails to the Google Drive folder and share the drive link once done."
+          displayText : "Please upload all video links, trailer links, posters, and thumbnails to the Google Drive / Dropbox folder and share the drive link once done."
         },
         // {
         //   type: "duration",
@@ -868,7 +868,7 @@ const Movie = () => {
         prevFormStructure.map((section) => {
           if (section.title === "Details") {
             const updatedFields = section.fields.map((field, index) => {
-              if (index == 9) {
+              if (index == 7) {
                 return { ...field, display: "block" };
               }
               return field;
@@ -883,7 +883,7 @@ const Movie = () => {
         prevFormStructure.map((section) => {
           if (section.title === "Details") {
             const updatedFields = section.fields.map((field, index) => {
-              if (index == 9) {
+              if (index == 7) {
                 return { ...field, display: "none" };
               }
               return field;

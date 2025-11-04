@@ -30,7 +30,10 @@ const AdPaymentHistory = () => {
     if (adHistory) {
       const temp = tableData;
 
-      temp.tableBody = adHistory || [];
+      temp.tableBody = adHistory?.map((ele)=>({
+        ...ele,
+        paid_amount : "$ " +  ele?.paid_amount
+      })) || [];
       setTableData({ ...temp });
     }
   }, [adHistory]);
@@ -63,7 +66,7 @@ const AdPaymentHistory = () => {
 
       {
         id: "paid_amount",
-        label: "Payable Amount",
+        label: "Paid Amount ($)",
       },
     ],
     tableBody: [],
