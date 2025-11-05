@@ -15,8 +15,11 @@ import { all_category_list } from "../../actions/Masters/category";
 import { all_language_list } from "../../actions/Masters/language";
 import Hls from "hls.js";
 import { all_cast_list } from "../../actions/Masters/cast";
+import { useAccessControl } from "../utils/useAccessControl";
 
 const ComingSoon = () => {
+  const { canView, canEdit, isReadOnly } = useAccessControl("Coming Soon");
+  console.log(canView, canEdit, isReadOnly, "vvvvvvvvv")
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.layout.profile);

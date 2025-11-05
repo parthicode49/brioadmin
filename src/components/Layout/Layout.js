@@ -105,6 +105,7 @@ import {
   LOGGEDIN,
   MESSAGE,
   PROFILE,
+  RIGHTS,
   ROLE,
 } from "./../../constants/actionTypes";
 import { distributor_unread_count } from "../../actions/notification";
@@ -141,6 +142,8 @@ const Layout = ({ children }) => {
     setActive(!active);
   };
   const message = useSelector((state) => state.layout.message);
+  const rights = useSelector((state) => state.layout?.rights);
+  console.log(rights, "rights778899");
   const [open, setOpen] = useState(false);
   const [show, setShow] = useState(false);
   useEffect(() => {
@@ -163,7 +166,7 @@ const Layout = ({ children }) => {
         if (resData?.status == 200) {
           dispatch({ type: PROFILE, payload: resData?.data?.data });
           dispatch({ type: LOGGEDIN, payload: true });
-          console.log(resData, "ffdfjfsdfdsfnsfjdfjdsf");
+
           setIsLogin(true);
           dispatch({ type: ROLE, payload: resData?.data?.data?.role });
           // localStorage.setItem("profile", JSON.stringify(data?.id));
@@ -251,6 +254,12 @@ const Layout = ({ children }) => {
         if (resData?.status == 200) {
           dispatch({ type: PROFILE, payload: resData?.data?.data });
           dispatch({ type: LOGGEDIN, payload: true });
+          if (resData?.data?.data?.role == "Sub Admin") {
+            dispatch({
+              type: RIGHTS,
+              payload: resData?.data?.data?.master_rights,
+            });
+          }
           console.log(resData, "ffdfjfsdfdsfnsfjdfjdsf");
           setIsLogin(true);
           dispatch({ type: ROLE, payload: resData?.data?.data?.role });

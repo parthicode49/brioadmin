@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 
-export const TableData = () => {
+export const TableData = (canEdit) => {
   const rights = useSelector((state) => state.layout.rights);
   const role = useSelector((state) => state.layout.role);
 
@@ -69,7 +69,7 @@ export const TableData = () => {
         isSpecial: true,
         align: "left",
       },
-      {
+     canEdit && {
         id: "notification",
         label: "Notification",
         isSpecial: true,
@@ -86,7 +86,7 @@ export const TableData = () => {
       //   label: 'Update',
       //   access: rights?.["Web Series"]?.["edit"] == "true"
       // },
-    ],
+    ].filter(Boolean),
     tableBody: [],
     filterColumn: [
       // {

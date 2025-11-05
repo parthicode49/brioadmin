@@ -4,8 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import Export from "../../../utils/Export";
 import * as Action from "../../../../actions/Advertiser/adinepisode";
 import { bindActionCreators } from "redux";
+import { useAccessControl } from "../../../utils/useAccessControl";
 
 const AdInEpisode = ({ id }) => {
+    const { canEdit} = useAccessControl("Episode");
   const dispatch = useDispatch();
   const {
     advertisement_in_episode_create,
@@ -168,6 +170,7 @@ const AdInEpisode = ({ id }) => {
       view="view_all"
       save={save}
       setSave={setSave}
+      canEdit={canEdit}
       isModalOpen={isModalOpen}
       setIsModalOpen={setIsModalOpen}
       isPopUpNewTable={true}

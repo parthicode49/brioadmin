@@ -418,7 +418,7 @@ import { InputAdornment } from "@mui/material";
 import LoginImg from "../../images/login_background.png";
 import * as Action from "../../actions/authenticate";
 import { bindActionCreators } from "redux";
-import { LOGGEDIN, MESSAGE, PROFILE, ROLE } from "../../constants/actionTypes";
+import { LOGGEDIN, MESSAGE, PROFILE, RIGHTS, ROLE } from "../../constants/actionTypes";
 
 const BpIcon = styled('span')(({ theme }) => ({
   borderRadius: '50%',
@@ -495,6 +495,9 @@ const SignInForm2 = () => {
         setMsg({ msg: resData?.message, status: true });
         setOpen(true);
         dispatch({ type: PROFILE, payload: resData?.data?.data });
+        if( resData?.data?.data?.role == "Sub Admin"){
+          dispatch({ type: RIGHTS, payload: resData?.data?.data?.master_rights });
+        }
         dispatch({ type: LOGGEDIN, payload: true });
         dispatch({ type: ROLE, payload: resData?.data?.data?.role });
         dispatch({ type: MESSAGE, payload: resData?.data });
@@ -834,7 +837,7 @@ const SignInForm2 = () => {
         </Grid>
         {/* </div> */}
       </Grid>
-      <Snackbar
+      {/* <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
         open={open}
         autoHideDuration={3000}
@@ -843,7 +846,7 @@ const SignInForm2 = () => {
         <Alert severity="info" variant="filled" color="success">
           {msg?.msg || logoutMessage}
         </Alert>
-      </Snackbar>
+      </Snackbar> */}
     </>
   );
 };

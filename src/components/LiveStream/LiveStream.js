@@ -5,8 +5,11 @@ import { bindActionCreators } from "redux";
 import { useDispatch, useSelector } from "react-redux";
 import Export from "../utils/Export";
 import { live_stream_category_list } from "../../actions/Masters/livestremcategory";
+import { useAccessControl } from "../utils/useAccessControl";
 
 const LiveStream = () => {
+   const { canView, canEdit, isReadOnly } = useAccessControl("Live Stream");
+   console.log(canEdit , "llllllll")
   const dispatch = useDispatch();
   const [form, setForm] = useState({});
   const [isEdit, setIsEdit] = useState(false);
@@ -313,6 +316,7 @@ const LiveStream = () => {
         formStructure={formStructure}
         handleSubmit={handleSubmit}
         form={form}
+        canEdit={canEdit}
         isEdit={isEdit}
         formTitle={isEdit ? "Edit Live Stream" : "Add Live Stream"}
         exportButton={

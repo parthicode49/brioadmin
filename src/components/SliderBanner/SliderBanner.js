@@ -14,8 +14,10 @@ import * as Action from "../../actions/sliderbanner";
 import Export from "../utils/Export";
 import dayjs from "dayjs";
 import { bindActionCreators } from "redux";
+import { useAccessControl } from "../utils/useAccessControl";
 
 const SliderBanner = () => {
+    const { canEdit } = useAccessControl("Slider");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.layout.profile);
@@ -449,6 +451,7 @@ const SliderBanner = () => {
         formStructure={formStructure}
         handleSubmit={handleSubmit}
         form={form}
+        canEdit={canEdit}
         isEdit={isEdit}
         formTitle={isEdit ? "Edit Slider" : "Add Slider"}
         exportButton={

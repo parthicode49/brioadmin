@@ -24,17 +24,39 @@ import controlPanel from "../../../images/SliderBanner/control_panel.png";
 import controlPanelDark from "../../../images/SliderBanner/control_panel_dark.png";
 import setting from "../../../images/SliderBanner/setting.png";
 import settingDark from "../../../images/SliderBanner/setting_dark.png";
-import adpanel from "../../../images/SliderBanner/ad-panel.png"
-import adpanelDark from "../../../images/SliderBanner/ad-panel_dark.png"
-import payment from "../../../images/SliderBanner/payment.png"
-import paymentDark from "../../../images/SliderBanner/payment_dark.png"
+import adpanel from "../../../images/SliderBanner/ad-panel.png";
+import adpanelDark from "../../../images/SliderBanner/ad-panel_dark.png";
+import payment from "../../../images/SliderBanner/payment.png";
+import paymentDark from "../../../images/SliderBanner/payment_dark.png";
 import { useSelector } from "react-redux";
 export const SidebarData = (darkMode) => {
   const reduxRole = useSelector((state) => state.layout.role);
   const loginedDetails = JSON.parse(sessionStorage.getItem("loggedInDetails"));
   const role = reduxRole || loginedDetails?.role;
-  const rights = useSelector((state) => state.layout.rights);
-  if (role == "Admin") {
+  const reduxRights = useSelector((state) => state?.layout?.rights);
+  const rights = reduxRights || loginedDetails?.master_rights;
+
+  const getAccessLevel = (contentName) => {
+    if (!rights || !Array.isArray(rights)) {
+      console.log("Rights is not an array or undefined");
+      return "All Access"; // Default for Admin
+    }
+
+    const right = rights.find((r) => r.content === contentName);
+    console.log(
+      `Access for ${contentName}:`,
+      right?.content_value || "Not Found"
+    );
+    return right?.content_value || "All Access";
+  };
+  // console.log(getAccessLevel("Movies"), "getAccessLevel77");
+  // Helper function to check if route is accessible
+  const isAccessible = (contentName) => {
+    const accessLevel = getAccessLevel(contentName);
+    return accessLevel !== "No Access";
+  };
+
+  if (role == "Admin" || role == "Sub Admin") {
     return [
       {
         title: "Dashboard",
@@ -44,7 +66,8 @@ export const SidebarData = (darkMode) => {
         ),
         iconClosed: <KeyboardArrowRightIcon />,
         iconOpened: <KeyboardArrowDownIcon />,
-        access: "true",
+        access: getAccessLevel("Dashboard"),
+        contentName: "Dashboard",
       },
       {
         title: "Analytics",
@@ -54,7 +77,8 @@ export const SidebarData = (darkMode) => {
         ),
         iconClosed: <KeyboardArrowRightIcon />,
         iconOpened: <KeyboardArrowDownIcon />,
-        access: rights?.["Analytics"]?.["view"],
+        access: getAccessLevel("Analytics"),
+        contentName: "Analytics",
       },
 
       {
@@ -63,22 +87,25 @@ export const SidebarData = (darkMode) => {
         icon: <img src={darkMode ? content : contentDark} height={"20px"} />,
         iconClosed: <KeyboardArrowRightIcon />,
         iconOpened: <KeyboardArrowDownIcon />,
-        access: rights?.["Movie"]?.["view"],
+        access: "true",
         subNav: [
           {
             title: "Movie",
             path: "/movie",
-            access: rights?.["Movie"]?.["view"],
+            access: getAccessLevel("Movies"),
+            contentName: "Movies",
           },
           {
             title: "Live Stream",
             path: "/livestream",
-            access: rights?.["Movie"]?.["view"],
+            access: getAccessLevel("Live Stream"),
+            contentName: "Live Stream",
           },
           {
             title: "Coming Soon",
             path: "/comingsoon",
-            access: rights?.["Movie"]?.["view"],
+            access: getAccessLevel("Coming Soon"),
+            contentName: "Coming Soon",
           },
         ],
       },
@@ -91,22 +118,25 @@ export const SidebarData = (darkMode) => {
         ),
         iconClosed: <KeyboardArrowRightIcon />,
         iconOpened: <KeyboardArrowDownIcon />,
-        access: rights?.["Web Series"]?.["view"],
+        access: "true",
         subNav: [
           {
             title: "Series",
             path: "/series",
-            access: rights?.["Web Series"]?.["view"],
+            access: getAccessLevel("Series"),
+            contentName: "Series",
           },
           {
             title: "Season",
             path: "/season",
-            access: rights?.["Web Series"]?.["view"],
+            access: getAccessLevel("Season"),
+            contentName: "Season",
           },
           {
             title: "Episode",
             path: "/episode",
-            access: rights?.["Web Series"]?.["view"],
+            access: getAccessLevel("Episode"),
+            contentName: "Episode",
           },
         ].filter((e) => e),
       },
@@ -121,12 +151,13 @@ export const SidebarData = (darkMode) => {
         ),
         iconClosed: <KeyboardArrowRightIcon />,
         iconOpened: <KeyboardArrowDownIcon />,
-        access: rights?.["Slider Banner"]?.["view"],
+        access: "true",
         subNav: [
           {
             title: "Create Profile",
             path: "/distributor",
-            access: rights?.["Web Series"]?.["view"],
+            access: getAccessLevel("Content Owner"),
+            contentName: "Content Owner",
           },
           // {
           //   title: "Acruired Content",
@@ -136,7 +167,8 @@ export const SidebarData = (darkMode) => {
           {
             title: "Content Leaving",
             path: "/leavingsoon",
-            access: rights?.["Web Series"]?.["view"],
+            access: getAccessLevel("Content Leaving Soon"),
+            contentName: "Content Leaving Soon",
           },
         ].filter((e) => e),
       },
@@ -151,7 +183,8 @@ export const SidebarData = (darkMode) => {
           {
             title: "Slider",
             path: "/slider",
-            access: rights?.["Web Series"]?.["view"],
+            access: getAccessLevel("Slider"),
+            contentName: "Slider",
           },
           // {
           //   title: "Song Slider",
@@ -161,12 +194,14 @@ export const SidebarData = (darkMode) => {
           {
             title: "Promotion",
             path: "/promotion",
-            access: rights?.["Web Series"]?.["view"],
+            access: getAccessLevel("Promotions"),
+            contentName: "Promotions",
           },
           {
             title: "Top Ten Video",
             path: "/toptenvideos",
-            access: rights?.["Web Series"]?.["view"],
+            access: getAccessLevel("Top Ten Video"),
+            contentName: "Top Ten Video",
           },
         ].filter((e) => e),
       },
@@ -176,12 +211,13 @@ export const SidebarData = (darkMode) => {
         icon: <img src={darkMode ? customer : customerDark} height={"20px"} />,
         iconClosed: <KeyboardArrowRightIcon />,
         iconOpened: <KeyboardArrowDownIcon />,
-        access: rights?.["Customers"]?.["view"],
+        access: "true",
         subNav: [
           {
             title: "All Customer",
             path: "/customer/",
-            access: rights?.["Customers"]?.["view"],
+            access: getAccessLevel("Customers"),
+            contentName: "Customers",
           },
           // {
           //   title: "Premium Customer",
@@ -191,7 +227,8 @@ export const SidebarData = (darkMode) => {
           {
             title: "Complaints",
             path: "/complaints",
-            access: rights?.["Customers"]?.["view"],
+            access: getAccessLevel("Complaints"),
+            contentName: "Complaints",
           },
           // {
           //   title: "Promocode",
@@ -208,7 +245,8 @@ export const SidebarData = (darkMode) => {
         ),
         iconClosed: <KeyboardArrowRightIcon />,
         iconOpened: <KeyboardArrowDownIcon />,
-        access: rights?.["Transactions"]?.["view"],
+        access: getAccessLevel("Transactions"),
+        contentName: "Transactions",
       },
       {
         title: "Subscription",
@@ -221,7 +259,8 @@ export const SidebarData = (darkMode) => {
         ),
         iconClosed: <KeyboardArrowRightIcon />,
         iconOpened: <KeyboardArrowDownIcon />,
-        access: rights?.["Transactions"]?.["view"],
+        access: getAccessLevel("Subscriptions"),
+        contentName: "Subscriptions",
       },
       // {
       //   title: "Promotion",
@@ -288,15 +327,11 @@ export const SidebarData = (darkMode) => {
         title: "Ad Master",
         onClick: "true",
         path: "/AdForm/AdForm",
-        icon: (
-          <img
-            src={darkMode ? adpanel : adpanelDark}
-            height={"20px"}
-          />
-        ),
+        icon: <img src={darkMode ? adpanel : adpanelDark} height={"20px"} />,
         iconClosed: <KeyboardArrowRightIcon />,
         iconOpened: <KeyboardArrowDownIcon />,
-        access: "true",
+        access: getAccessLevel("Ad Master"),
+        contentName: "Ad Master",
         subNav: [
           // {
           //   title: "Ad Submission",
@@ -306,17 +341,20 @@ export const SidebarData = (darkMode) => {
           {
             title: "Advertisers",
             path: "/advertiser",
-            access: rights?.["Advertisers"]?.["view"],
+            access: getAccessLevel("Ad Master"),
+            contentName: "Ad Master",
           },
           {
             title: "Advertisements",
             path: "/advertisement/",
-            access: rights?.["Advertisement"]?.["view"],
+            access: getAccessLevel("Ad Master"),
+            contentName: "Ad Master",
           },
           {
             title: "Ad Payment",
             path: "/adpayment",
-            access: rights?.["Set Movie Advertisement"]?.["view"],
+            access: getAccessLevel("Ad Master"),
+            contentName: "Ad Master",
           },
           // {
           //   title: "Set Ads ( Series )",
@@ -336,7 +374,8 @@ export const SidebarData = (darkMode) => {
         ),
         iconClosed: <KeyboardArrowRightIcon />,
         iconOpened: <KeyboardArrowDownIcon />,
-        // access: rights?.["Masters"]?.["view"],
+        access: getAccessLevel("Control Panel"),
+        contentName: "Control Panel",
 
         subNav: [
           // role != "Distributor" && {
@@ -347,27 +386,32 @@ export const SidebarData = (darkMode) => {
           {
             title: "Category",
             path: "/masters/category/",
-            access: rights?.["Masters"]?.["view"],
+            access: getAccessLevel("Control Panel"),
+            contentName: "Control Panel",
           },
           {
             title: "Sub Category",
             path: "/masters/subcategory",
-            access: rights?.["Masters"]?.["view"],
+            access: getAccessLevel("Control Panel"),
+            contentName: "Control Panel",
           },
           {
             title: "Language",
             path: "/masters/language/",
-            access: rights?.["Masters"]?.["view"],
+            access: getAccessLevel("Control Panel"),
+            contentName: "Control Panel",
           },
           {
             title: "Cast",
             path: "/masters/cast/",
-            access: rights?.["Masters"]?.["view"],
+            access: getAccessLevel("Control Panel"),
+            contentName: "Control Panel",
           },
           {
             title: "Country",
             path: "/masters/country/",
-            access: rights?.["Masters"]?.["view"],
+            access: getAccessLevel("Control Panel"),
+            contentName: "Control Panel",
           },
           // {
           //   title: "Song Category",
@@ -377,12 +421,14 @@ export const SidebarData = (darkMode) => {
           {
             title: "Complaint Type",
             path: "/masters/complainttype/",
-            access: rights?.["Masters"]?.["view"],
+            access: getAccessLevel("Control Panel"),
+            contentName: "Control Panel",
           },
           {
             title: "Live Stream Category",
             path: "/masters/livestreamcategory/",
-            access: rights?.["Masters"]?.["view"],
+            access: getAccessLevel("Control Panel"),
+            contentName: "Control Panel",
           },
           // {
           //   title: "Sub Ott",
@@ -402,12 +448,14 @@ export const SidebarData = (darkMode) => {
           {
             title: "Content Advisory",
             path: "/masters/contentadvisory",
-            access: rights?.["Masters"]?.["view"],
+            access: getAccessLevel("Control Panel"),
+            contentName: "Control Panel",
           },
-          {
+         role == "Admin" && {
             title: "Sub Admin",
             path: "/masters/subadmin",
-            access: rights?.["Masters"]?.["view"],
+            access: getAccessLevel("Control Panel"),
+            contentName: "Control Panel",
           },
           // {
           //   title: "Payment Gateways",
@@ -429,34 +477,40 @@ export const SidebarData = (darkMode) => {
         iconClosed: <KeyboardArrowRightIcon />,
         iconOpened: <KeyboardArrowDownIcon />,
         onClick: "true",
-        access: rights?.["Setting"]?.["view"],
+        access: getAccessLevel("Setting"),
+        contentName: "Setting",
         subNav: [
           {
             title: "About Us",
             path: "/setting/aboutus/",
-            access: rights?.["Setting"]?.["view"],
+            access: getAccessLevel("Setting"),
+            contentName: "Setting",
           },
 
           {
             title: "Privacy Policy",
             path: "/setting/privacypolicy/",
-            access: rights?.["Setting"]?.["view"],
+            access: getAccessLevel("Setting"),
+            contentName: "Setting",
           },
           {
             title: "Terms & Conditions",
             path: "/setting/termsconditions/",
-            access: rights?.["Setting"]?.["view"],
+            access: getAccessLevel("Setting"),
+            contentName: "Setting",
           },
           {
             title: "Refund Policy",
             path: "/setting/refundpolicy/",
-            access: rights?.["Setting"]?.["view"],
+            access: getAccessLevel("Setting"),
+            contentName: "Setting",
           },
 
           {
             title: "Ad Price",
             path: "/setting/adprice/",
-            access: rights?.["Setting"]?.["view"],
+            access: getAccessLevel("Setting"),
+            contentName: "Setting",
           },
           // {
           //   title: "User Logs",
@@ -538,7 +592,7 @@ export const SidebarData = (darkMode) => {
     ];
   } else if (role == "advertiser") {
     return [
-            {
+      {
         title: "Dashboard",
         path: "/dashboard",
         icon: (
@@ -548,29 +602,24 @@ export const SidebarData = (darkMode) => {
         iconOpened: <KeyboardArrowDownIcon />,
         access: "true",
       },
-            {
+      {
         title: "Advertisement",
         path: "/advertisement",
-        icon: (
-          <img src={darkMode ? adpanel : adpanelDark} height={"20px"} />
-        ),
+        icon: <img src={darkMode ? adpanel : adpanelDark} height={"20px"} />,
         iconClosed: <KeyboardArrowRightIcon />,
         iconOpened: <KeyboardArrowDownIcon />,
         access: "true",
       },
-            {
+      {
         title: "Payment",
         path: "/paymenthistory",
-        icon: (
-          <img src={darkMode ? payment : paymentDark} height={"20px"} />
-        ),
+        icon: <img src={darkMode ? payment : paymentDark} height={"20px"} />,
         iconClosed: <KeyboardArrowRightIcon />,
         iconOpened: <KeyboardArrowDownIcon />,
         access: "true",
       },
     ];
-  }
-   else {
+  } else {
     return [];
   }
 };

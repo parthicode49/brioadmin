@@ -14,7 +14,9 @@ import * as NotifiAction from "../../actions/notification";
 import notification_icon from "../../images/notification_icon.png"
 import DynamicFormModal from "../utils/NewFormStructure/DynamicFormModal";
 import InfoIcone from "../../images/info.png";
+import { useAccessControl } from "../utils/useAccessControl";
 const Distributor = () => {
+    const { canEdit} = useAccessControl("Content Owner");
   const navigate = useNavigate();
   const role = useSelector((state) => state.layout.role);
   const rights = useSelector((state) => state.layout.rights);
@@ -485,6 +487,7 @@ const Distributor = () => {
         save={save}
         setSave={setSave}
          isMultiNotificationSend={true}
+         canEdit={canEdit}
         sendMultiNotification={sendMultiNotification}
         view="view_all"
         create_new={"/distributor/editdistributor/"}

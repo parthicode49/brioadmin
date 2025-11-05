@@ -6,8 +6,10 @@ import { all_country_list } from "../../actions/Masters/country";
 import { useSelector } from "react-redux";
 import * as Action from "../../actions/subscription";
 import { bindActionCreators } from "redux";
+import { useAccessControl } from "../utils/useAccessControl";
 
 const Subscriptions = () => {
+  const { canEdit } = useAccessControl("Subscriptions");
   const dispatch = useDispatch();
   const [save, setSave] = useState(false);
   const [form, setForm] = useState({
@@ -351,6 +353,7 @@ const Subscriptions = () => {
       formStructure={formStructure}
       handleSubmit={handleSubmit}
       form={form}
+      canEdit={canEdit}
       // isCountry={true}
       setUsedCountries={setUsedCountries}
       isEdit={isEdit}

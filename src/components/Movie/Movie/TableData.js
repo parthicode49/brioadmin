@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 
-export const TableData = () => {
+export const TableData = (canEdit) => {
   const rights = useSelector((state) => state.layout.rights);
   const role = useSelector((state) => state.layout.role);
   return {
@@ -28,11 +28,10 @@ export const TableData = () => {
         subText: "sub_category_list",
       },
       ,
-     {
-        id: 'ownership',
-        label: 'Ownership',
-         subText: "distributor_name",
-
+      {
+        id: "ownership",
+        label: "Ownership",
+        subText: "distributor_name",
       },
       ,
       role !== "Distributor" && {
@@ -103,7 +102,7 @@ export const TableData = () => {
       {
         id: "status",
         label: "Status",
-        // isButtonDisplay: true
+        isButtonDisplay: !canEdit,
       },
       {
         id: "info",
@@ -111,7 +110,7 @@ export const TableData = () => {
         isSpecial: true,
         align: "left",
       },
-      {
+      canEdit && {
         id: "notification",
         label: "Notification",
         isSpecial: true,

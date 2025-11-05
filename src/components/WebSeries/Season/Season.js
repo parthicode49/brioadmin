@@ -12,8 +12,10 @@ import Export from "../../utils/Export";
 import * as Action from "../../../actions/WebSeries/season";
 import { bindActionCreators } from "redux";
 import Hls from "hls.js";
+import { useAccessControl } from "../../utils/useAccessControl";
 
 const Season = () => {
+  const { canEdit} = useAccessControl("Season");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
@@ -386,6 +388,7 @@ const Season = () => {
         loadApi={Action.all_season_list}
         totalCount={seasons?.season_count}
         isDrawerForm={true}
+        canEdit={canEdit}
         openDrawer={drawer}
         setOpenDrawer={setDrawer}
         formStructure={formStructure}

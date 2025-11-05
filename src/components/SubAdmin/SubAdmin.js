@@ -61,7 +61,7 @@ const SubAdmin = () => {
         id: "1",
         title: "Status",
         name: "status",
-        options: ["Active", "Inactive", "Pending", "Expired"],
+        options: ["Active", "Inactive"],
       },
     ],
   };
@@ -635,6 +635,7 @@ const SubAdmin = () => {
       formStructure={formStructure}
       handleSubmit={handleSubmit}
       form={form}
+      canEdit={true}
       isEdit={isEdit}
       formTitle={isEdit ? "Edit Sub Admin" : "Add Sub Admin"}
     />

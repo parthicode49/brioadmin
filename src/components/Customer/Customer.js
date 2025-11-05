@@ -27,7 +27,9 @@ import DynamicFormModal from "../utils/NewFormStructure/DynamicFormModal";
 import SubscribeSVG from "./SubscribeSVG";
 import { Edit } from "@mui/icons-material";
 import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
+import { useAccessControl } from "../utils/useAccessControl";
 export default function Customer() {
+  const { canEdit } = useAccessControl("Customers");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const rights = useSelector((state) => state.layout.rights);
@@ -88,14 +90,14 @@ export default function Customer() {
         label: "Device",
         subText: "deviceId",
       },
-      {
+   canEdit &   {
         id: "subscription",
         label: "Subscription",
         isSpecial: true,
         align: "left",
       },
 
-      {
+    canEdit &  {
         id: "whatsapp",
         label: "WhatsApp",
         isSpecial: true,
@@ -107,7 +109,7 @@ export default function Customer() {
         isSpecial: true,
         align: "left",
       },
-      {
+     canEdit & {
         id: "notification",
         label: "Notification",
         isSpecial: true,
@@ -117,7 +119,7 @@ export default function Customer() {
       //   id: "status",
       //   label: "Status",
       // },
-    ],
+    ].filter(Boolean),
     tableBody: [],
     filterColumn: [
       {
@@ -483,7 +485,6 @@ export default function Customer() {
     setOpenAdError(false);
   };
   const handleSubmit1 = async () => {
-    console.log("dddddddddddddddddddd", formNoti);
     const data = new FormData();
     Object.keys(formNoti)?.map((key) => data.append(key, formNoti?.[key]));
     const resData = await notification_create(data);
@@ -609,6 +610,7 @@ export default function Customer() {
         sendMultiNotification={sendMultiNotification}
         setForm={setForm}
         setTableData={setTableData}
+        canEdit={canEdit}
         setIsEdit={setIsEdit}
         isLoadingData={true}
         loadApi={all_customer_list_admin_loadless}

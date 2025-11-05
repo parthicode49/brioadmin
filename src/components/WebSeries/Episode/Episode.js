@@ -15,7 +15,9 @@ import { Alert, Snackbar } from "@mui/material";
 import dayjs from "dayjs";
 import durationPlugin from "dayjs/plugin/duration";
 import InfoIcone from "../../../images/info.png";
+import { useAccessControl } from "../../utils/useAccessControl";
 const Episode = () => {
+  const { canEdit} = useAccessControl("Episode");
   const navigate = useNavigate();
 
   function getSecondsFromTime(time) {
@@ -531,6 +533,7 @@ const Episode = () => {
         save={save}
         setSave={setSave}
         isDrawerForm={true}
+        canEdit={canEdit}
         openDrawer={drawer}
         setOpenDrawer={setDrawer}
         formStructure={formStructure}

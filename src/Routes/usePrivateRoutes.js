@@ -5,6 +5,7 @@ import MastersModule from "../modules/MastersModule";
 import { useSelector } from "react-redux";
 import StripePayment from "../components/Advertisement/Stripe/StripePayment";
 import PaymentSuccess from "../components/Advertisement/Stripe/PaymentSuccess";
+import ProtectedRoute from "./ProtectedRoute";
 const Dashboard = React.lazy(() => import("../components/Dashboard/Dashboard"));
 const Distributor = React.lazy(() => import("../modules/DistributorsModule"));
 const Series = React.lazy(() =>
@@ -80,6 +81,7 @@ const Analytics = React.lazy(() => import("../components/Analytics/Analytics"));
 const Complaints = React.lazy(() =>
   import("../components/Complaint/Complaint")
 );
+const AdDetails = React.lazy(() => import("../components/Advertisement/AdDetailPage") )
 const SongDetail = React.lazy(() =>
   import("../components/Song/SongDetail/SongDetailsContent")
 );
@@ -108,80 +110,110 @@ const PromocodeDetail = React.lazy(() =>
 const TopTenVideos = React?.lazy(() =>
   import("../components/TopTenMovie/TopTenMovie")
 );
-const LeavingSoon = React.lazy(()=>
+const LeavingSoon = React.lazy(() =>
   import("../components/ContentLeaving/ContentLeaving")
-)
-const DistributorCoupon = React.lazy(() => 
+);
+const DistributorCoupon = React.lazy(() =>
   import("../components/DistributorPanel/DistributorCoupon")
-)
-const DistributorDitails = React.lazy(()=>
+);
+const DistributorDitails = React.lazy(() =>
   import("../components/Distributor/DistributorInfo/DistributorInfo")
-)
-const LiveStream = React.lazy(()=>
+);
+const LiveStream = React.lazy(() =>
   import("../components/LiveStream/LiveStream")
-)
-const AdDashboard = React.lazy(()=>
+);
+const AdDashboard = React.lazy(() =>
   import("../components/Dashboard/AdDashboard")
-)
-const AdvertisementAdPannel = React.lazy(()=>
+);
+const AdvertisementAdPannel = React.lazy(() =>
   import("../components/AdPannel/Advertisement")
-)
-const AdPaymentHistory = React.lazy(() => 
+);
+const AdPaymentHistory = React.lazy(() =>
   import("../components/AdPannel/AdPaymentHistory")
-)
+);
 const Advertisement = React.lazy(() =>
   import("../components/Advertisement/Advertisement")
-)
+);
 
 const DistributorMovie = React.lazy(() =>
   import("../components/DistributorPanel/Movie/Movie")
-)
+);
 const DistributorSeries = React.lazy(() =>
   import("../components/DistributorPanel/Series/Series")
-)
-const AdPayment = React.lazy(()=>
+);
+const AdPayment = React.lazy(() =>
   import("../components/Advertisement/AdHistory")
-)
+);
 
 export const usePrivateRoutes = () => {
   const reduxRole = useSelector((state) => state.layout.role);
   const loginedDetails = JSON.parse(sessionStorage.getItem("loggedInDetails"));
+  const reduxRights = useSelector((state) => state?.layout?.rights);
+  const rights = reduxRights || loginedDetails?.master_rights;
   const role = reduxRole || loginedDetails?.role;
-  console.log(role, "fgsaaaaaaa");
+  const getAccessLevel = (contentName) => {
+    if (!rights || !Array.isArray(rights)) {
+      console.log("Rights is not an array or undefined");
+      return role === "Admin" ? "All Access" : "No Access";
+    }
 
-  if (role == "Admin") {
+    const right = rights.find((r) => r.content === contentName);
+    const accessLevel =
+      right?.content_value || (role === "Admin" ? "All Access" : "No Access");
+    console.log(`Access for ${contentName}:`, accessLevel);
+    return accessLevel;
+  };
+
+  if (role == "Admin" || role == "Sub Admin") {
     return [
       {
         path: `/Dashboard`,
-        Component: <Dashboard />,
+        Component: (
+          <ProtectedRoute requiredAccess="Dashboard">
+            {" "}
+            <Dashboard />{" "}
+          </ProtectedRoute>
+        ),
       },
       {
         path: `/movie`,
-        Component: <Movie />,
+        Component: (
+          <ProtectedRoute requiredAccess="Movies">
+            {" "}
+            <Movie />{" "}
+          </ProtectedRoute>
+        ),
       },
       {
         path: `/comingsoon`,
-        Component: <ComingSoon />,
+        Component: (
+          <ProtectedRoute requiredAccess="Coming Soon">
+            <ComingSoon />{" "}
+          </ProtectedRoute>
+        ),
       },
       {
         path: `/movie/detail`,
         Component: <MovieDetail />,
       },
-      {
-        path: `/song`,
-        Component: <Song />,
-      },
+
       {
         path: `/livestream`,
-        Component: <LiveStream />,
+        Component: (
+          <ProtectedRoute requiredAccess="Live Stream">
+            {" "}
+            <LiveStream />{" "}
+          </ProtectedRoute>
+        ),
       },
-      {
-        path: `/song/detail`,
-        Component: <SongDetail />,
-      },
+
       {
         path: `/series`,
-        Component: <Series />,
+        Component: (
+          <ProtectedRoute requiredAccess="Series">
+            <Series />{" "}
+          </ProtectedRoute>
+        ),
       },
       {
         path: `/series/detail`,
@@ -189,11 +221,19 @@ export const usePrivateRoutes = () => {
       },
       {
         path: `/season`,
-        Component: <Season />,
+        Component: (
+          <ProtectedRoute requiredAccess="Season">
+            <Season />
+          </ProtectedRoute>
+        ),
       },
       {
         path: `/episode`,
-        Component: <Episode />,
+        Component: (
+          <ProtectedRoute requiredAccess="Episode">
+            <Episode />{" "}
+          </ProtectedRoute>
+        ),
       },
       {
         path: `/episode/detail`,
@@ -201,15 +241,27 @@ export const usePrivateRoutes = () => {
       },
       {
         path: `/slider`,
-        Component: <Slider />,
+        Component: (
+          <ProtectedRoute requiredAccess="Slider">
+            <Slider />{" "}
+          </ProtectedRoute>
+        ),
       },
       {
         path: `/customer`,
-        Component: <Customer />,
+        Component: (
+          <ProtectedRoute requiredAccess="Customers">
+            <Customer />
+          </ProtectedRoute>
+        ),
       },
       {
         path: `/analytics`,
-        Component: <Analytics />,
+        Component: (
+          <ProtectedRoute requiredAccess="Analytics">
+            <Analytics />{" "}
+          </ProtectedRoute>
+        ),
       },
       {
         path: `/customer/detail`,
@@ -237,47 +289,98 @@ export const usePrivateRoutes = () => {
       },
       {
         path: `/subscription`,
-        Component: <Subscription />,
+        Component: (
+          <ProtectedRoute requiredAccess="Subscriptions">
+            {" "}
+            <Subscription />{" "}
+          </ProtectedRoute>
+        ),
       },
       {
         path: `/promotion`,
-        Component: <Promotion />,
-      },
-      {
-        path: `/songslider`,
-        Component: <SongSlider />,
+        Component: (
+          <ProtectedRoute requiredAccess="Promotions">
+            <Promotion />{" "}
+          </ProtectedRoute>
+        ),
       },
       {
         path: `/advertiser`,
-        Component: <Advertiser />,
+        Component: (
+          <ProtectedRoute requiredAccess="Ad Master">
+            {" "}
+            <Advertiser />
+          </ProtectedRoute>
+        ),
       },
       {
         path: `/advertisement`,
-        Component: <Advertisement />,
+        Component: (
+          <ProtectedRoute requiredAccess="Ad Master">
+            {" "}
+            <Advertisement />{" "}
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: `/advertisement/detail`,
+        Component: (
+          
+            <AdDetails />
+          
+        ),
       },
       {
         path: `/adpayment`,
-        Component: <AdPayment />,
+        Component: (
+          <ProtectedRoute requiredAccess="Ad Master">
+            <AdPayment />{" "}
+          </ProtectedRoute>
+        ),
       },
       {
         path: `/notification`,
-        Component: <Notification />,
+        Component: (
+          <ProtectedRoute requiredAccess="Notification">
+            {" "}
+            <Notification />
+          </ProtectedRoute>
+        ),
       },
       {
         path: `/transaction`,
-        Component: <Transaction />,
+        Component: (
+          <ProtectedRoute requiredAccess="Transactions">
+            <Transaction />
+          </ProtectedRoute>
+        ),
       },
       {
         path: `/masters/*`,
-        Component: <MastersModule />,
+        Component: (
+          <ProtectedRoute requiredAccess="Control Panel">
+            {" "}
+            <MastersModule />{" "}
+          </ProtectedRoute>
+        ),
       },
       {
         path: `/distributor/*`,
-        Component: <Distributor />,
+        Component: (
+          <ProtectedRoute requiredAccess="Content Owner">
+            {" "}
+            <Distributor />{" "}
+          </ProtectedRoute>
+        ),
       },
       {
         path: `/complaints/*`,
-        Component: <Complaints />,
+        Component: (
+          <ProtectedRoute requiredAccess="Complaints">
+            {" "}
+            <Complaints />{" "}
+          </ProtectedRoute>
+        ),
       },
       {
         path: `/contentform`,
@@ -289,11 +392,19 @@ export const usePrivateRoutes = () => {
       },
       {
         path: `/toptenvideos`,
-        Component: <TopTenVideos />,
+        Component: (
+          <ProtectedRoute requiredAccess="Top Ten Video">
+            <TopTenVideos />{" "}
+          </ProtectedRoute>
+        ),
       },
       {
         path: `/leavingsoon`,
-        Component: <LeavingSoon />,
+        Component: (
+          <ProtectedRoute requiredAccess="Content Leaving Soon">
+            <LeavingSoon />
+          </ProtectedRoute>
+        ),
       },
       {
         path: `/promocode/detail`,
@@ -305,7 +416,11 @@ export const usePrivateRoutes = () => {
       },
       {
         path: `/setting/*`,
-        Component: <SettingModule />,
+        Component: (
+          <ProtectedRoute requiredAccess="Setting">
+            <SettingModule />{" "}
+          </ProtectedRoute>
+        ),
       },
     ];
   } else if (role == "Distributor") {
@@ -351,7 +466,7 @@ export const usePrivateRoutes = () => {
         Component: <DistributorCoupon />,
       },
     ];
-  }else if (role == "advertiser") {
+  } else if (role == "advertiser") {
     return [
       {
         path: `/Dashboard`,
@@ -373,6 +488,6 @@ export const usePrivateRoutes = () => {
         path: `/payment-success`,
         Component: <PaymentSuccess />,
       },
-    ]
+    ];
   }
 };

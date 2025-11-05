@@ -100,3 +100,11 @@
 [class="dark"] .sidebarLink2:hover span, [class="leftsidebardark"] .sidebarLink2 {
   color: var(--themeFontColor);
 }
+
+.lockedRoute {
+  position: relative;
+}
+
+.lockedRoute:hover {
+  background-color: rgba(255, 107, 107, 0.1) !important;
+}

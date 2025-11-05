@@ -9,17 +9,19 @@ import ViewChangeForm from "../../utils/ViewChangeForm";
 //   all_language_list,
 //   language_status_update,
 // } from "../../../actions/Masters/language";
-import * as Action from "../../../actions/Masters/language"
+import * as Action from "../../../actions/Masters/language";
 import Export from "../../utils/Export";
 import { bindActionCreators } from "redux";
+import { useAccessControl } from "../../utils/useAccessControl";
 
 const Language = () => {
+  const { canEdit } = useAccessControl("Control Panel");
   const navigate = useNavigate();
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const location = useLocation();
   const role = useSelector((state) => state.layout.role);
   const rights = useSelector((state) => state.layout.rights);
- const [editingIndex, setEditingIndex] = useState(null);
+  const [editingIndex, setEditingIndex] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [save, setSave] = useState(false);
   const user = useSelector((state) => state.layout.profile);
@@ -30,7 +32,10 @@ const Language = () => {
   // const language = useSelector((state) => state.masters.languages);
   const [form, setForm] = useState({});
   const [isEdit, setIsEdit] = useState(false);
-  const {language_create , language_update} = bindActionCreators(Action , dispatch)
+  const { language_create, language_update } = bindActionCreators(
+    Action,
+    dispatch
+  );
   const [tableData, setTableData] = useState({
     tableTitle: "Languages",
     deleteRecord: Action.language_delete,
@@ -57,7 +62,7 @@ const Language = () => {
         id: "edit",
         label: "Update",
         access: rights?.["Masters"]?.["edit"] == "true",
-           isNewPopUpForm : true
+        isNewPopUpForm: true,
       },
     ],
     tableBody: [],
@@ -72,7 +77,7 @@ const Language = () => {
       //  if(movies?.statuscode!=200)
       dispatch(Action.all_language_list(data));
     }
-  }, [user?.id , save]);
+  }, [user?.id, save]);
   useEffect(() => {
     if (location?.state?.formUpload) {
       const data = new FormData();
@@ -127,7 +132,6 @@ const Language = () => {
       regex: /^[a-zA-Z\s\&]+$/,
       required: true,
     },
-   
   ].filter((e) => e);
 
   return (
@@ -183,6 +187,7 @@ const Language = () => {
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
         isPopUpNewTable={true}
+        canEdit={canEdit}
         formStructure={FormStructure}
         formTitle={isEdit ? "Edit Language" : "Add Language"}
         onSubmit={handleSubmit1}

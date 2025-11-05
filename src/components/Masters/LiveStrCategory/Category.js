@@ -7,18 +7,18 @@ import { TableData } from "./TableData";
 import Export from "../../utils/Export";
 import * as Action from "../../../actions/Masters/livestremcategory";
 import { bindActionCreators } from "redux";
+import { useAccessControl } from "../../utils/useAccessControl";
 
 const Category = () => {
+  const { canEdit } = useAccessControl("Control Panel");
   const navigate = useNavigate();
   const [form, setForm] = useState({});
   const dispatch = useDispatch();
   const location = useLocation();
   const role = useSelector((state) => state.layout.role);
   const rights = useSelector((state) => state.layout.rights);
-  const { create_live_stream_category, update_live_stream_category } = bindActionCreators(
-    Action,
-    dispatch
-  );
+  const { create_live_stream_category, update_live_stream_category } =
+    bindActionCreators(Action, dispatch);
 
   const tempTableData = {
     ...TableData(),
@@ -33,7 +33,9 @@ const Category = () => {
     ],
   };
   const [tableData, setTableData] = useState({ ...tempTableData });
-  const categories = useSelector((state) => state?.masters?.live_stream_category);
+  const categories = useSelector(
+    (state) => state?.masters?.live_stream_category
+  );
   console.log(categories, "Hii Parth");
   const [editingIndex, setEditingIndex] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -78,7 +80,7 @@ const Category = () => {
 
   const handleSubmit1 = async (event) => {
     // event.preventDefault();
-      const data = new FormData();
+    const data = new FormData();
 
     Object.keys(form)?.map((key) => data.append(key, form?.[key]));
     data.append("user", user?.id);
@@ -142,6 +144,7 @@ const Category = () => {
         create_new={"/masters/category/editcategory"}
         save={save}
         setSave={setSave}
+        canEdit={canEdit}
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
         isPopUpNewTable={true}

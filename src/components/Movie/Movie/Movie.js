@@ -25,7 +25,9 @@ import { all_content_advisory_list } from "../../../actions/Masters/contentadvis
 import InfoIcone from "../../../images/info.png";
 import notification_icon from "../../../images/notification_icon.png";
 import DynamicFormModal from "../../utils/NewFormStructure/DynamicFormModal";
+import { useAccessControl } from "../../utils/useAccessControl";
 const Movie = () => {
+    const {  canEdit } = useAccessControl("Movies");
   const navigate = useNavigate();
   const role = useSelector((state) => state.layout.role);
   const [form, setForm] = useState({ approval_status: "Approved" });
@@ -41,9 +43,9 @@ const Movie = () => {
   const [tableData1, setTableData1] = useState([]);
   const [editingIndex, setEditingIndex] = useState(null);
   const tempTableData = {
-    ...TableData(),
+    ...TableData(canEdit),
     deleteRecord: Action.movie_delete,
-    disableDelete: role !== "Distributor" ? false : true,
+    // disableDelete: ,
 
     onDeleteText: [
       "Are you sure want to delete this video ?",
@@ -1385,11 +1387,13 @@ const Movie = () => {
         setTableData={setTableData}
         setIsEdit={setIsEdit}
         view="view_all"
+        hideAddBtn={!canEdit}
         isLoadingData={true}
         loadApi={Action.all_movie_list}
         totalCount={movies?.movie_count}
         save={save}
         setSave={setSave}
+        canEdit={canEdit}
         // isCountry={true}
         setUsedCountries={setUsedCountries}
         isDrawerForm={true}

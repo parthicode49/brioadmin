@@ -6,8 +6,10 @@ import * as Action from "../../../actions/Masters/subcategory";
 import { all_category_list } from "../../../actions/Masters/category";
 import Export from "../../utils/Export";
 import { bindActionCreators } from "redux";
+import { useAccessControl } from "../../utils/useAccessControl";
 
 const SubCategory = () => {
+  const { canEdit } = useAccessControl("Control Panel");
   const [form, setForm] = useState({});
   const [isEdit, setIsEdit] = useState(false);
   const dispatch = useDispatch();
@@ -333,6 +335,7 @@ const SubCategory = () => {
         create_new={"/Masters/SubCategory/EditSubCategory/"}
         save={save}
         setSave={setSave}
+         canEdit={canEdit}
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
         isPopUpNewTable={true}

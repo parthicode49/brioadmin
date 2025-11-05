@@ -468,6 +468,7 @@ const Advertisement = () => {
         view="view_all"
         save={save}
         setSave={setSave}
+        canEdit={true}
         isDrawerForm={true}
         openDrawer={drawer}
         setOpenDrawer={setDrawer}

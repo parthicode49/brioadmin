@@ -1308,6 +1308,7 @@ const Movie = () => {
         setUsedCountries={setUsedCountries}
         isDrawerForm={true}
         openDrawer={drawer}
+        canEdit={true}
         setOpenDrawer={setDrawer}
         formStructure={formStructure}
         handleSubmit={handleSubmit}

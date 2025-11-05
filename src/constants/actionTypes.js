@@ -82,6 +82,7 @@ export const ADPAY = "ADPAY"
 export const ADPRICE = "ADPRICE"
 export const SETAD = "SETAD"
 export const ADDELETE = "ADDELETE"
+export const ADDVIEW = "ADDVIEW"
 export const ADPAYMENTHISTORY = "ADPAYMENTHISTORY"
 export const ADPAYMENTHISTORYDIS = "ADPAYMENTHISTORYDIS"
 

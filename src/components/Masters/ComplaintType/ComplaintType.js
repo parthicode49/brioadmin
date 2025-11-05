@@ -5,7 +5,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Export from "../../utils/Export";
 import * as Action from "../../../actions/Masters/complaintType";
 import { bindActionCreators } from "redux";
+import { useAccessControl } from "../../utils/useAccessControl";
 export default function ComplaintType() {
+  const { canEdit } = useAccessControl("Control Panel");
   const user = useSelector((state) => state.layout.profile);
   const dispatch = useDispatch();
   const rights = useSelector((state) => state.layout.rights);
@@ -42,10 +44,6 @@ export default function ComplaintType() {
     onUpdateText: "Are you Sure?",
     tableHead: [
       {
-        id: "complaint_for",
-        label: "Complaint For",
-      },
-      {
         id: "complaint_type",
         label: "Complaint Type",
       },
@@ -62,12 +60,7 @@ export default function ComplaintType() {
     ],
     tableBody: [],
     filterColumn: [
-      {
-        id: "1",
-        title: "Complaint Type",
-        name: "complaint_for",
-        options: ["With Login", "With Out Login"],
-      },
+
     ],
   };
   const [tableData, setTableData] = useState({ ...tempTableData });
@@ -93,17 +86,6 @@ export default function ComplaintType() {
   }, [complaint_type]);
 
   const formStructure = [
-    {
-      type: "select",
-      name: "complaint_for",
-      title: "Complaint For",
-      placeholder: "Select Complaint For",
-      options: [
-        { label: "With Login", value: "With Login" },
-        { label: "With Out Login", value: "With Out Login" },
-      ],
-      required: true,
-    },
     {
       id: "2",
       type: "inputBox",
@@ -157,6 +139,7 @@ export default function ComplaintType() {
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
         isPopUpNewTable={true}
+        canEdit={canEdit}
         formStructure={formStructure}
         formTitle={isEdit ? "Edit Complaint Type" : "Add Complaint Type"}
         onSubmit={handleSubmit1}

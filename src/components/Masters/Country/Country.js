@@ -5,8 +5,10 @@ import { useDispatch, useSelector } from "react-redux";
 import * as Action from "../../../actions/Masters/country";
 import Export from "../../utils/Export";
 import { bindActionCreators } from "redux";
+import { useAccessControl } from "../../utils/useAccessControl";
 
 export default function Country() {
+  const { canEdit } = useAccessControl("Control Panel");
   const dispatch = useDispatch();
   const [isEdit, setIsEdit] = useState(false);
   const [form, setForm] = useState({});
@@ -129,6 +131,7 @@ export default function Country() {
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
         isPopUpNewTable={true}
+        canEdit={canEdit}
         formStructure={formStructure}
         formTitle={isEdit ? "Edit Country" : "Add Country"}
         onSubmit={handleSubmit1}

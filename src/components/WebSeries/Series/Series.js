@@ -19,7 +19,9 @@ import { all_content_advisory_list } from "../../../actions/Masters/contentadvis
 import notification_icon from "../../../images/notification_icon.png";
 import InfoIcone from "../../../images/info.png";
 import DynamicFormModal from "../../utils/NewFormStructure/DynamicFormModal";
+import { useAccessControl } from "../../utils/useAccessControl";
 const Series = () => {
+  const { canEdit} = useAccessControl("Series");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
@@ -44,7 +46,7 @@ const Series = () => {
   const { notification_create } = bindActionCreators(NotiAction, dispatch);
 
   const tempTableData = {
-    ...TableData(),
+    ...TableData(canEdit),
     deleteRecord: Action.series_delete,
     disableDelete: role !== "Distributor" ? false : true,
 
@@ -1230,6 +1232,7 @@ const Series = () => {
         loadApi={Action.all_series_list}
         totalCount={series?.series_count}
         save={save}
+        canEdit={canEdit}
         setSave={setSave}
         isDrawerForm={true}
         openDrawer={drawer}

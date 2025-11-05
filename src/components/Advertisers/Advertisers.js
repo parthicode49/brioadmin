@@ -10,8 +10,10 @@ import * as Action from "../../actions/Advertiser/advertiser";
 import NewForm from "../utils/NewFormStructure/NewForm";
 import { Button } from "@mui/material";
 import { bindActionCreators } from "redux";
+import { useAccessControl } from "../utils/useAccessControl";
 
 const Advertisers = () => {
+   const { canEdit } = useAccessControl("Ad Master");
   const navigate = useNavigate();
   const role = useSelector((state) => state.layout.role);
   const rights = useSelector((state) => state.layout.rights);
@@ -347,6 +349,7 @@ const Advertisers = () => {
         save={save}
         setSave={setSave}
         view="view_all"
+        canEdit={canEdit}
         isDrawerForm={true}
         openDrawer={drawer}
         setOpenDrawer={setDrawer}

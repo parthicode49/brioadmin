@@ -5,7 +5,9 @@ import Form from "../utils/Form";
 import { about_us, about_us_update } from "../../actions/Setting/about_us";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useAccessControl } from "../utils/useAccessControl";
 export default function AboutUs() {
+  const { canEdit } = useAccessControl("Setting");
   const user = useSelector((state) => state.layout.profile);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -32,7 +34,7 @@ export default function AboutUs() {
       id: "4",
       type: "mobile",
       title: "Mobile Number",
-    //   maxLength: 12,
+      //   maxLength: 12,
       name: "mobileNumber",
       // required: true,
     },
@@ -97,12 +99,12 @@ export default function AboutUs() {
       name: "instagram_url",
     },
 
-    {
+    canEdit && {
       id: "8",
       type: "button",
       title: "Update",
     },
-  ];
+  ].filter(Boolean);
 
   const handleSubmit = (event) => {
     event.preventDefault();

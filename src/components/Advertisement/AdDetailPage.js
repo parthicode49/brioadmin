@@ -5,38 +5,29 @@ import * as Action from "../../actions/Advertiser/advertisement";
 import { bindActionCreators } from "redux";
 import { all_advertiser_list } from "../../actions/Advertiser/advertiser";
 import { useAccessControl } from "../utils/useAccessControl";
+import { useLocation } from "react-router-dom";
 
-const AdHistory = () => {
+const AdDetailPage = () => {
+  const location = useLocation()
+  console.log(location , "location44444")
   const { canEdit } = useAccessControl("Ad Master");
   const dispatch = useDispatch();
   const user = useSelector((state) => state.layout.profile);
-  const { advertisement_payment_list_admin } = bindActionCreators(
-    Action,
-    dispatch
-  );
-
-  useEffect(() => {
-    dispatch(all_advertiser_list());
-  }, []);
-
-  const advertisers_list = useSelector(
-    (state) => state?.advertisers?.advertisers
-  );
-
-  console.log(advertisers_list, "advertisers_list4444");
-
+  const { advertisement_view_data } = bindActionCreators(Action, dispatch);
   const [adHistory, setAdHistory] = useState([]);
   useEffect(() => {
-    const dataHistory = async () => {
-      const resData = await advertisement_payment_list_admin({});
-      if (resData?.status == 200) {
+    const adData = async () => {
+      const resData = await advertisement_view_data({ advertisment_id:location?.state?.id });
+      if (resData?.status === 200) {
         setAdHistory(resData?.data?.data);
       }
-      console.log(resData, "Reererer");
-    };
 
-    dataHistory();
-  }, [user]);
+    };
+    if (location?.state?.id) {
+      adData();
+    }
+  }, [location?.state?.id]);
+
   useEffect(() => {
     if (adHistory) {
       const temp = tableData;
@@ -44,19 +35,21 @@ const AdHistory = () => {
       temp.tableBody =
         adHistory?.map((ele) => ({
           ...ele,
-          paid_amount1: "$ " + ele?.paid_amount,
+          user: <p style={{ color: "var(--themeFontColor)" }}>
+            <p>{ele?.user_name}</p>
+            <p>{ele?.email}</p>
+            <p>{ele?.mobile_number}</p>
+          </p>,
+          content : ele?.movie ? "Movie" : "Episode",
+          content_name : ele?.movie ? ele?.movie_title : ele?.episode_title 
         })) || [];
       setTableData({ ...temp });
     }
   }, [adHistory]);
 
   const [tableData, setTableData] = useState({
-    tableTitle: "Payment History",
+    tableTitle: "Ad History",
     disableDelete: true,
-    column_sum: {
-      name: "paid_amount",
-      title: "Total Amount ($)",
-    },
     // updateRecord: complaint_status_update,
     // openModal: handleOpen,
     // onUpdateText: "Has the complaint been resolved?",
@@ -67,51 +60,27 @@ const AdHistory = () => {
         // isDate: true,
       },
       {
-        id: "product_name",
-        label: "Product Name",
+        id: "user",
+        label: "User",
+        isSpecial: true,
+        align: "left",
+      },
+      {
+        id: "content",
+        label: "Content Type",
         // subText: "mobileNumber",
       },
       {
-        id: "payment_id",
-        label: "Payment ID",
-        // subText: "mobileNumber",
-      },
-      {
-        id: "advertiser_name",
-        label: "Advertiser Name",
-      },
-      {
-        id: "added_view",
-        label: "Views",
-      },
-
-      {
-        id: "paid_amount1",
-        label: "Paid Amount ($)",
+        id: "content_name",
+        label: "Content Name",
       },
     ],
     tableBody: [],
     filterColumn: [
-      {
-        id: "1",
-        title: "Advertiser Name",
-        name: "advertiser_name",
-        options: [],
-      },
     ],
     // isDateRangeFilter: "created_at",
   });
 
-  useEffect(() => {
-    if (advertisers_list?.data?.length > 0) {
-      const tempFilter = tableData;
-      tempFilter["filterColumn"][0]["options"] = advertisers_list?.data?.map(
-        (ele) => ele?.name
-      );
-
-      setTableData({ ...tempFilter });
-    }
-  }, [advertisers_list?.data]);
   return (
     <ListTable
       tableData={tableData}
@@ -122,4 +91,4 @@ const AdHistory = () => {
   );
 };
 
-export default AdHistory;
+export default AdDetailPage;

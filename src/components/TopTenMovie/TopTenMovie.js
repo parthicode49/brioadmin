@@ -6,8 +6,10 @@ import { all_movie_name_list } from "../../actions/Movie/movie";
 import { only_series_name } from "../../actions/WebSeries/series";
 import ListTable from "../utils/Table";
 import Export from "../utils/Export";
+import { useAccessControl } from "../utils/useAccessControl";
 
 const TopTenMovie = () => {
+  const { canEdit } = useAccessControl("Top Ten Video");
   const dispatch = useDispatch();
   const [form, setForm] = useState({});
   const [isEdit, setIsEdit] = useState(false);
@@ -238,6 +240,7 @@ const TopTenMovie = () => {
       setIsEdit={setIsEdit}
       view="view_all"
       save={save}
+      canEdit={canEdit}
       setSave={setSave}
       isModalOpen={isModalOpen}
       setIsModalOpen={setIsModalOpen}

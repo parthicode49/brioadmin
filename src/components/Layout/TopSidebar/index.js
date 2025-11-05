@@ -1,44 +1,161 @@
-import React, { useState, useMemo } from "react";
-import { Box } from "@mui/material";
+// import React, { useState, useMemo } from "react";
+// import { Box } from "@mui/material";
+// import { styled } from "@mui/material/styles";
+// import { SidebarData } from "../LeftSidebar/SidebarData";
+// import SubMenu from "./SubMenu";
+// import { Link } from "react-router-dom";
+// import ClearIcon from "@mui/icons-material/Clear";
+// import IconButton from "@mui/material/IconButton";
+// import logo from "./../../../images/logo.png";
+// // import logo_black from "./../../../images/logo.png"
+
+// const SidebarNav = styled("nav")(({ theme }) => ({
+//   boxShadow: "0px 4px 20px rgba(47, 143, 232, 0.07)",
+//   width: "98.8vw",
+//   padding: "0px 10px",
+//   height: "max-content",
+//   display: "flex",
+//   justifyContent: "center",
+//   position: "absolute",
+//   transition: "350ms",
+//   zIndex: "10",
+//   transform: "rotateX(180deg)",
+//   overflowY: "visible",
+//   "&::-webkit-scrollbar": {
+//     width: ".1rem",
+//     height: ".4rem",
+//   },
+//   "&::-webkit-scrollbar-track": {
+//     boxShadow: "inset 0 0 6px rgba(0, 0, 0, 0)",
+//   },
+//   "&::-webkit-scrollbar-thumb": {
+//     backgroundColor: "var(--themeFontColor)",
+//     borderRadius: "1rem",
+//   },
+// }));
+
+// const SidebarWrap = styled("div")(({ theme }) => ({
+//   width: "100vw",
+//   display: "flex",
+//   justifyContent: "space-evenly",
+//   transform: "rotateX(180deg)",
+// }));
+
+// const Sidebar = ({ darkMode }) => {
+//   const [isActive, setIsActive] = useState("");
+//   const sidebardata = SidebarData(darkMode);
+
+//   return (
+//     <div
+//       style={{
+//         marginBottom: "2rem",
+//         background: "var(--themeColor)",
+//         zIndex: "1100",
+//         height: "3.5rem",
+//         overflow: "visible",
+//         borderRadius: "8px",
+//         marginLeft: "2rem",
+//         marginRight: "2rem",
+//         position: "sticky",
+//         top: "4.5rem",
+//         left: "0",
+//         boxShadow:"var(--themeShadow)",
+//         display:"flex",
+//         alignItems:"center"
+//       }}
+//     >
+//       <SidebarNav id="topNavbar" className="TopSidebarNav">
+//         <SidebarWrap>
+//           {sidebardata.map((item, index) => {
+//             return (
+//               <SubMenu
+//                 item={item}
+//                 isActive={isActive}
+//                 setIsActive={setIsActive}
+//                 key={index}
+//               />
+//             );
+//           })}
+//         </SidebarWrap>
+//       </SidebarNav>
+//     </div>
+//   );
+// };
+
+// export default Sidebar;
+import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import { SidebarData } from "../LeftSidebar/SidebarData";
 import SubMenu from "./SubMenu";
-import { Link } from "react-router-dom";
-import ClearIcon from "@mui/icons-material/Clear";
-import IconButton from "@mui/material/IconButton";
-import logo from "./../../../images/logo.png";
-// import logo_black from "./../../../images/logo.png"
+import { SidebarData } from "../LeftSidebar/SidebarData"; // Update import path as needed
+
 
 const SidebarNav = styled("nav")(({ theme }) => ({
-  boxShadow: "0px 4px 20px rgba(47, 143, 232, 0.07)",
-  width: "98.8vw",
-  padding: "0px 10px",
-  height: "max-content",
+  width: "100%",
+  padding: "8px 10px",
   display: "flex",
   justifyContent: "center",
-  position: "absolute",
+  alignItems: "center",
   transition: "350ms",
   zIndex: "10",
-  transform: "rotateX(180deg)",
-  overflowY: "visible",
-  "&::-webkit-scrollbar": {
-    width: ".1rem",
-    height: ".4rem",
-  },
-  "&::-webkit-scrollbar-track": {
-    boxShadow: "inset 0 0 6px rgba(0, 0, 0, 0)",
-  },
-  "&::-webkit-scrollbar-thumb": {
-    backgroundColor: "var(--themeFontColor)",
-    borderRadius: "1rem",
-  },
+  height: "100%",
+  minHeight: "100%",
 }));
 
 const SidebarWrap = styled("div")(({ theme }) => ({
-  width: "100vw",
   display: "flex",
-  justifyContent: "space-evenly",
-  transform: "rotateX(180deg)",
+  flexWrap: "wrap", // Allow wrapping to multiple rows
+  justifyContent: "center",
+  alignItems: "center",
+  gap: "8px",
+  width: "100%",
+  rowGap: "8px", // Gap between rows
+  // Responsive styles
+  "@media screen and (max-width: 1400px)": {
+    gap: "6px",
+    rowGap: "6px",
+  },
+  "@media screen and (max-width: 1024px)": {
+    gap: "5px",
+    rowGap: "5px",
+  },
+  "@media screen and (max-width: 768px)": {
+    gap: "4px",
+    rowGap: "4px",
+  },
+}));
+
+const SidebarContainer = styled("div")(({ theme }) => ({
+  marginBottom: "2rem",
+  background: "var(--themeColor)",
+  zIndex: "1100",
+  minHeight: "3.5rem",
+  height: "auto", // Allow height to grow with content
+  overflow: "visible",
+  borderRadius: "8px",
+  marginLeft: "2rem",
+  marginRight: "2rem",
+  position: "sticky",
+  top: "4.5rem",
+  left: "0",
+  boxShadow: "var(--themeShadow)",
+  display: "flex",
+  alignItems: "center",
+  padding: "8px 0", // Add vertical padding
+  // Responsive styles
+  "@media screen and (max-width: 768px)": {
+    minHeight: "3rem",
+    marginLeft: "1rem",
+    marginRight: "1rem",
+    top: "4rem",
+    padding: "6px 0",
+  },
+  "@media screen and (max-width: 480px)": {
+    minHeight: "2.8rem",
+    marginLeft: "0.5rem",
+    marginRight: "0.5rem",
+    borderRadius: "6px",
+    padding: "5px 0",
+  },
 }));
 
 const Sidebar = ({ darkMode }) => {
@@ -46,25 +163,8 @@ const Sidebar = ({ darkMode }) => {
   const sidebardata = SidebarData(darkMode);
 
   return (
-    <div
-      style={{
-        marginBottom: "2rem",
-        background: "var(--themeColor)",
-        zIndex: "1100",
-        height: "3.5rem",
-        overflow: "visible",
-        borderRadius: "8px",
-        marginLeft: "2rem",
-        marginRight: "2rem",
-        position: "sticky",
-        top: "4.5rem",
-        left: "0",
-        boxShadow:"var(--themeShadow)",
-        display:"flex",
-        alignItems:"center"
-      }}
-    >
-      <SidebarNav id="topNavbar" className="TopSidebarNav">
+    <SidebarContainer>
+      <SidebarNav id="topNavbar" className="topSidebarNav">
         <SidebarWrap>
           {sidebardata.map((item, index) => {
             return (
@@ -78,7 +178,7 @@ const Sidebar = ({ darkMode }) => {
           })}
         </SidebarWrap>
       </SidebarNav>
-    </div>
+    </SidebarContainer>
   );
 };
 

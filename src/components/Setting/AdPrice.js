@@ -6,7 +6,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import * as Action from "../../actions/Advertiser/advertisement";
 import { bindActionCreators } from "redux";
+import { useAccessControl } from "../utils/useAccessControl";
 export default function AdPrice() {
+  const { canEdit } = useAccessControl("Setting");
   const user = useSelector((state) => state.layout.profile);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -36,12 +38,12 @@ export default function AdPrice() {
       required: true,
     },
 
-    {
+    canEdit &&{
       id: "8",
       type: "button",
       title: "Update",
     },
-  ];
+  ].filter(Boolean);
 
   const handleSubmit = async (event) => {
     event.preventDefault();

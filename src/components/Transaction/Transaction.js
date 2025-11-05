@@ -16,7 +16,9 @@ import notification_icon from "../../images/notification_icon.png";
 import DynamicFormModal from "../utils/NewFormStructure/DynamicFormModal";
 import * as NotifiAction from "../../actions/notification";
 import { bindActionCreators } from "redux";
+import { useAccessControl } from "../utils/useAccessControl";
 export default function Transaction() {
+  const { canEdit } = useAccessControl("Transactions");
   const dispatch = useDispatch();
   const location = useLocation();
   const [isEdit, setIsEdit] = useState(false);
@@ -85,13 +87,13 @@ export default function Transaction() {
         id: "location",
         label: "Location",
       },
-      {
+     canEdit&& {
         id: "whatsapp",
         label: "WhatsApp",
         isSpecial: true,
         align: "left",
       },
-      {
+     canEdit&& {
         id: "notification",
         label: "Notification",
         isSpecial: true,
@@ -102,7 +104,7 @@ export default function Transaction() {
       //   label: "Status",
       //   isButtonDisplay: true,
       // },
-    ],
+    ].filter(Boolean),
     tableBody: [],
     filterColumn: [
       {
@@ -370,6 +372,7 @@ export default function Transaction() {
         setTableData={setTableData}
         isMultiNotificationSend={true}
         sendMultiNotification={sendMultiNotification}
+        canEdit={canEdit}
         setForm={setForm}
         setIsEdit={setIsEdit}
         isLoadingData={true}

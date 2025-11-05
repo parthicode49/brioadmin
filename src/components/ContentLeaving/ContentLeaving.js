@@ -14,8 +14,10 @@ import * as Action from "../../actions/contentLeaving"
 import { Edit } from "@mui/icons-material";
 import DynamicFormModal from "../utils/NewFormStructure/DynamicFormModal";
 import { bindActionCreators } from "redux";
+import { useAccessControl } from "../utils/useAccessControl";
 
 export default function ContentLeaving() {
+   const { canEdit} = useAccessControl("Content Leaving Soon");
   const dispatch = useDispatch();
   const rights = useSelector((state) => state?.layout?.rights);
   const [open, setOpen] = useState(false);
@@ -325,6 +327,7 @@ export default function ContentLeaving() {
         key={"ListTable"}
         setTableData={setTableData}
         setContent={setContent}
+        canEdit={canEdit}
       />
     </>
   );

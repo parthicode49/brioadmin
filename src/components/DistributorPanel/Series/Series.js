@@ -339,15 +339,15 @@ const Series = () => {
           ],
           required: true,
         },
-        {
-          type: "date",
-          title: "Expiry Time",
-          default: new Date().toISOString().split("T")[0],
-          name: "expiry_date",
-          placeholder: "Select Date",
-          required: true,
-          size: "3",
-        },
+        // {
+        //   type: "date",
+        //   title: "Expiry Time",
+        //   default: new Date().toISOString().split("T")[0],
+        //   name: "expiry_date",
+        //   placeholder: "Select Date",
+        //   required: true,
+        //   size: "3",
+        // },
         {
           type: "toggle",
           title: "Series Display In",
@@ -372,18 +372,18 @@ const Series = () => {
             { value: "No", color: "danger" },
           ],
         },
-        {
-          type: "select",
-          name: "series_type",
-          title: "Select Series Type",
-          placeholder: "Select Type",
-          size: "3",
-          options: [
-            { label: "Exclusive", value: "Exclusive" },
-            { label: "Non-Exclusive", value: "Non-Exclusive" },
-          ],
-          required: true,
-        },
+        // {
+        //   type: "select",
+        //   name: "series_type",
+        //   title: "Select Series Type",
+        //   placeholder: "Select Type",
+        //   size: "3",
+        //   options: [
+        //     { label: "Exclusive", value: "Exclusive" },
+        //     { label: "Non-Exclusive", value: "Non-Exclusive" },
+        //   ],
+        //   required: true,
+        // },
         {
           type: "inputBox",
           name: "reject_reason",
@@ -645,7 +645,7 @@ const Series = () => {
         prevFormStructure.map((section) => {
           if (section.title === "Details") {
             const updatedFields = section.fields.map((field, index) => {
-              if (index == 10) {
+              if (index == 8) {
                 return { ...field, display: "block" };
               }
               return field;
@@ -660,7 +660,7 @@ const Series = () => {
         prevFormStructure.map((section) => {
           if (section.title === "Details") {
             const updatedFields = section.fields.map((field, index) => {
-              if (index == 10) {
+              if (index == 8) {
                 return { ...field, display: "none" };
               }
               return field;
@@ -1200,6 +1200,7 @@ const Series = () => {
         setIsEdit={setIsEdit}
         view="view_all"
         save={save}
+        canEdit={true}
         setSave={setSave}
         isDrawerForm={true}
         openDrawer={drawer}

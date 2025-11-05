@@ -12,7 +12,9 @@ import Export from "./../utils/Export";
 import dayjs from "dayjs";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import { complaint_type_list_admin } from "../../actions/Masters/complaintType";
+import { useAccessControl } from "../utils/useAccessControl";
 export default function Complaint() {
+  const { canEdit } = useAccessControl("Complaints");
   const dispatch = useDispatch();
   const rights = useSelector((state) => state?.layout?.rights);
   const [open, setOpen] = useState(false);
@@ -86,7 +88,7 @@ export default function Complaint() {
       //   isSpecial: true,
       //    align: "left",
       // },
-      {
+      canEdit && {
         id: "whatsapp",
         label: "WhatsApp",
         isSpecial: true,
@@ -98,7 +100,7 @@ export default function Complaint() {
         keywords: ["Open", "Close"],
         nonEditableState: "Close",
       },
-    ],
+    ].filter(Boolean),
     tableBody: [],
     filterColumn: [
       {
@@ -191,6 +193,7 @@ export default function Complaint() {
         isLoadingData={true}
         loadApi={all_complaint_list}
         totalCount={complaints?.complaint_count}
+        canEdit={canEdit}
       />
     </>
   );

@@ -96,6 +96,7 @@ const AdPaymentHistory = () => {
       tableData={tableData}
       key={"ListTable"}
       setTableData={setTableData}
+      canEdit={true}
     />
   );
 };

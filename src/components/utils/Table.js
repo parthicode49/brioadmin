@@ -43,6 +43,7 @@ import DynamicFormModal from "./NewFormStructure/DynamicFormModal";
 import AddIcon from "@mui/icons-material/Add";
 import NewForm from "./NewFormStructure/NewForm";
 import notification_icon from "./../../images/notification_icon.png";
+import LockIcon from "@mui/icons-material/Lock";
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -83,6 +84,7 @@ function EnhancedTableHead(props) {
     onRequestSort,
     headCells,
     disableDelete,
+    canEdit,
   } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
@@ -96,7 +98,7 @@ function EnhancedTableHead(props) {
       }}
     >
       <TableRow>
-        {disableDelete && (
+        {disableDelete && canEdit && (
           <TableCell
             padding="checkbox"
             sx={{
@@ -166,6 +168,7 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
   headCells: PropTypes.array.isRequired,
   disableDelete: PropTypes.bool.isRequired,
+  canEdit: PropTypes.bool.isRequired,
 };
 
 function EnhancedTableToolbar(props) {
@@ -278,20 +281,24 @@ function EnhancedTableToolbar(props) {
               </IconButton>
             </Tooltip>
 
-          { !notShowDelete&& <Tooltip title="Delete" onClick={() => deleteRows()}>
+            {!notShowDelete && (
+              <Tooltip title="Delete" onClick={() => deleteRows()}>
+                <IconButton>
+                  <img src={DeleteIcon} height={"20px"} />
+                  {/* <DeleteIcon /> */}
+                </IconButton>
+              </Tooltip>
+            )}
+          </>
+        ) : (
+          !notShowDelete && (
+            <Tooltip title="Delete" onClick={() => deleteRows()}>
               <IconButton>
                 <img src={DeleteIcon} height={"20px"} />
                 {/* <DeleteIcon /> */}
               </IconButton>
-            </Tooltip>}
-          </>
-        ) : (
-         !notShowDelete&&   <Tooltip title="Delete" onClick={() => deleteRows()}>
-            <IconButton>
-              <img src={DeleteIcon} height={"20px"} />
-              {/* <DeleteIcon /> */}
-            </IconButton>
-          </Tooltip>
+            </Tooltip>
+          )
         )
       ) : (
         <Grid
@@ -319,9 +326,7 @@ function EnhancedTableToolbar(props) {
                 {/* <div className="calendar-bg"> */}
                 <DateRangePicker
                   size="md"
-                  placeholder={
-                    "Date range"
-                  }
+                  placeholder={"Date range"}
                   ranges={[]}
                   name={"value.name"}
                   value={dateRange || []}
@@ -698,6 +703,7 @@ export default function ListTable({
   setSave,
   totalCount,
   hideAddBtn,
+  canEdit,
   create_new,
   initialData,
   total_transaction_amount,
@@ -714,6 +720,7 @@ export default function ListTable({
   isCountry,
   setUsedCountries,
 }) {
+  console.log(canEdit, "canEdit4444");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -803,20 +810,25 @@ export default function ListTable({
   const [changeRow, setChangeRow] = useState({});
   const [changeValue, setChangeValue] = useState({});
   const updateStatus = (row, value) => {
-    console.log(row , row?.status !== "Expiring Soon" , row?.status !== "Expired" , "newjdfifsdiosdfds")
-   if(row?.status !== "Expiring Soon"&& row?.status !== "Expired"){
-     setOpen(true);
-     setPopupType("Update");
-     setPopupContent(
-       tableData?.customisedStatusUpdateMessage
-         ? row?.status?.toLowerCase() == "inactive"
-           ? tableData?.onActiveText
-           : tableData?.onInactiveText
-         : tableData.onUpdateText
-     );
-     setChangeRow({ ...row });
-     setChangeValue({ ...value });
-   }
+    console.log(
+      row,
+      row?.status !== "Expiring Soon",
+      row?.status !== "Expired",
+      "newjdfifsdiosdfds"
+    );
+    if (row?.status !== "Expiring Soon" && row?.status !== "Expired") {
+      setOpen(true);
+      setPopupType("Update");
+      setPopupContent(
+        tableData?.customisedStatusUpdateMessage
+          ? row?.status?.toLowerCase() == "inactive"
+            ? tableData?.onActiveText
+            : tableData?.onInactiveText
+          : tableData.onUpdateText
+      );
+      setChangeRow({ ...row });
+      setChangeValue({ ...value });
+    }
   };
   useMemo(() => {
     if (popupType == "Delete") {
@@ -874,7 +886,7 @@ export default function ListTable({
           );
 
           dispatch(tableData.updateRecord(data));
-          setSave(!save)
+          setSave(!save);
         } else {
           Object.keys(changeRow).map((key) =>
             key == "status"
@@ -888,7 +900,7 @@ export default function ListTable({
                 changeValue.keywords?.[0] || "Active")
           );
           dispatch(tableData.updateRecord(data));
-          setSave(!save)
+          setSave(!save);
         }
 
         setTableData({ ...temp });
@@ -962,8 +974,8 @@ export default function ListTable({
 
         setResults([...temp]);
         setTableData({ ...tableData, exportData: [...temp] });
-      }else{
-         setTableData({ ...tableData});
+      } else {
+        setTableData({ ...tableData });
       }
     }
   }, [search, filter, dateRange, isLoadingData, save]);
@@ -1065,6 +1077,12 @@ export default function ListTable({
       setTableData({ ...tableData, exportData: tableData.tableBody });
     }
   }, [selected]);
+  console.log(
+    !tableData.disableDelete && canEdit,
+    !tableData.disableDelete,
+    canEdit,
+    "sdsadasdasdas"
+  );
 
   return (
     <>
@@ -1092,28 +1110,30 @@ export default function ListTable({
               marginBottom: "1rem",
             }}
           >
-           { !hideAddBtn && <Button
-              variant="contained"
-              style={{
-                background:
-                  "linear-gradient(225deg,  var(--gradientColor1) 0%, var(--gradientColor2) 91.25%)",
-              }}
-              sx={{
-                textTransform: "capitalize",
-                borderRadius: "10px",
-                // mt: "10px",
-                p: "10px 30px",
-                fontSize: "14px",
-                color: "#fff !important",
-              }}
-              onClick={() => {
-                // setEditingIndex(null);
-                setIsModalOpen(true);
-                setIsEdit(false);
-              }}
-            >
-              <AddIcon sx={{ marginRight: "5px" }} /> Add
-            </Button>}
+            {!hideAddBtn && canEdit && (
+              <Button
+                variant="contained"
+                style={{
+                  background:
+                    "linear-gradient(225deg,  var(--gradientColor1) 0%, var(--gradientColor2) 91.25%)",
+                }}
+                sx={{
+                  textTransform: "capitalize",
+                  borderRadius: "10px",
+                  // mt: "10px",
+                  p: "10px 30px",
+                  fontSize: "14px",
+                  color: "#fff !important",
+                }}
+                onClick={() => {
+                  // setEditingIndex(null);
+                  setIsModalOpen(true);
+                  setIsEdit(false);
+                }}
+              >
+                <AddIcon sx={{ marginRight: "5px" }} /> Add
+              </Button>
+            )}
             {/* {exportButton && <Grid item>{exportButton}</Grid>} */}
           </div>
           <DynamicFormModal
@@ -1135,41 +1155,43 @@ export default function ListTable({
       )}
       {isDrawerForm && (
         <>
-         {!hideAddBtn && <div
-            style={{
-              width: "100%",
-              textAlign: "right",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "end",
-              gap: "10px",
-              marginBottom: "1rem",
-            }}
-          >
-            <Button
-              variant="contained"
+          {!hideAddBtn && canEdit && (
+            <div
               style={{
-                background:
-                  "linear-gradient(225deg,  var(--gradientColor1) 0%, var(--gradientColor2) 91.25%)",
-              }}
-              sx={{
-                textTransform: "capitalize",
-                borderRadius: "10px",
-                // mt: "10px",
-                p: "10px 30px",
-                fontSize: "14px",
-                color: "#fff !important",
-              }}
-              onClick={() => {
-                // setEditingIndex(null);
-                setOpenDrawer(true);
-                setIsEdit(false);
+                width: "100%",
+                textAlign: "right",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "end",
+                gap: "10px",
+                marginBottom: "1rem",
               }}
             >
-              <AddIcon sx={{ marginRight: "5px" }} /> Add
-            </Button>
-            {/* {exportButton && <Grid item>{exportButton}</Grid>} */}
-          </div>}
+              <Button
+                variant="contained"
+                style={{
+                  background:
+                    "linear-gradient(225deg,  var(--gradientColor1) 0%, var(--gradientColor2) 91.25%)",
+                }}
+                sx={{
+                  textTransform: "capitalize",
+                  borderRadius: "10px",
+                  // mt: "10px",
+                  p: "10px 30px",
+                  fontSize: "14px",
+                  color: "#fff !important",
+                }}
+                onClick={() => {
+                  // setEditingIndex(null);
+                  setOpenDrawer(true);
+                  setIsEdit(false);
+                }}
+              >
+                <AddIcon sx={{ marginRight: "5px" }} /> Add
+              </Button>
+              {/* {exportButton && <Grid item>{exportButton}</Grid>} */}
+            </div>
+          )}
           <NewForm
             open={openDrawer}
             setOpen={setOpenDrawer}
@@ -1179,9 +1201,9 @@ export default function ListTable({
               setIsEdit(false);
             }}
             formStructure={formStructure}
-            isConfirmBtn = {isConfirmBtn}
+            isConfirmBtn={isConfirmBtn}
             handleSubmit={handleSubmit}
-            handleConfirmSubmit = {handleConfirmSubmit}
+            handleConfirmSubmit={handleConfirmSubmit}
             formData={form}
             setFormData={setForm}
             isCountry={isCountry}
@@ -1222,7 +1244,8 @@ export default function ListTable({
                 : tableData?.column_sum &&
                   "Total Amount" +
                     " : " +
-                   "$ "+ parseFloat(total_transaction_amount).toFixed(2)
+                    "$ " +
+                    parseFloat(total_transaction_amount).toFixed(2)
             }
             person_name={
               tableData?.person_name &&
@@ -1279,6 +1302,7 @@ export default function ListTable({
                 onSelectAllClick={(event) =>
                   handleSelectAllClick(event, results)
                 }
+                canEdit={canEdit}
                 onRequestSort={handleRequestSort}
                 rowCount={results?.length}
                 headCells={tableData.tableHead}
@@ -1292,7 +1316,6 @@ export default function ListTable({
                         .map((row, index) => {
                           const isItemSelected = isSelected(row.id);
                           const labelId = `enhanced-table-checkbox-${index}`;
-
                           return (
                             <TableRow
                               hover
@@ -1306,7 +1329,7 @@ export default function ListTable({
                                   row?.color || "var(--themeColor)",
                               }}
                             >
-                              {!tableData.disableDelete && (
+                              {!tableData.disableDelete && canEdit && (
                                 <TableCell
                                   padding="checkbox"
                                   key={row.id + "TableCell"}
@@ -1332,89 +1355,108 @@ export default function ListTable({
                                   />
                                 </TableCell>
                               )}
-                              {(!tableData.tableHead[0]?.isSpecial &&  tableData.tableHead[0]?.isFirstImage) ? (
-                                 <TableCell
-                                      sx={{
-                                        borderBottom: "1px solid rgb(97 97 97)",
-                                        padding: tableData.tableHead[0]?.padding || "8px 8px",
-                                        fontSize: "13px",
-                                        width: tableData.tableHead[0]?.width || "auto",
-                                        cursor:
-                                          tableData.tableHead[0]?.isModal &&
-                                          row[tableData.tableHead[0].id] &&
-                                          "pointer",
-                                      }}
-                                      align="left"
-                                      key={index}
-                                      onClick={() => {
-                                        if (tableData.tableHead[0]?.isModal && row[tableData.tableHead[0].id]) {
-                                          setContent(
-                                            <img src={IMAGE + row[tableData.tableHead[0].id]} />
-                                          );
-                                          tableData.openModal();
-                                        }
-                                      }}
-                                    >
-                                      {row[tableData.tableHead[0].id] ? (
-                                        tableData.tableHead[0]?.isModal ? (
-                                          <img
-                                            src="https://i.ibb.co/3RxybqZ/photo.png"
-                                            height={"30px"}
-                                          />
-                                        ) : (
-                                          <img src={IMAGE + row[tableData.tableHead[0].id]} />
-                                        )
-                                      ) : (
-                                        <p
-                                          style={{
-                                            color: "var(--themeFontColor)",
-                                          }}
-                                        >
-                                          _
-                                        </p>
-                                      )}
-                                    </TableCell>
-                                )
-                                :
-                                ( !tableData.tableHead[0]?.isSpecial&& <TableCell
-                                  component="th"
-                                  id={labelId}
-                                  key={labelId}
-                                  scope="row"
+                              {!tableData.tableHead[0]?.isSpecial &&
+                              tableData.tableHead[0]?.isFirstImage ? (
+                                <TableCell
                                   sx={{
-                                    borderBottom: "1px solid  rgb(97 97 97)",
-                                    padding: "8px 10px",
+                                    borderBottom: "1px solid rgb(97 97 97)",
+                                    padding:
+                                      tableData.tableHead[0]?.padding ||
+                                      "8px 8px",
+                                    fontSize: "13px",
                                     width:
                                       tableData.tableHead[0]?.width || "auto",
+                                    cursor:
+                                      tableData.tableHead[0]?.isModal &&
+                                      row[tableData.tableHead[0].id] &&
+                                      "pointer",
+                                  }}
+                                  align="left"
+                                  key={index}
+                                  onClick={() => {
+                                    if (
+                                      tableData.tableHead[0]?.isModal &&
+                                      row[tableData.tableHead[0].id]
+                                    ) {
+                                      setContent(
+                                        <img
+                                          src={
+                                            IMAGE +
+                                            row[tableData.tableHead[0].id]
+                                          }
+                                        />
+                                      );
+                                      tableData.openModal();
+                                    }
                                   }}
                                 >
-                                  {/* <Link
+                                  {row[tableData.tableHead[0].id] ? (
+                                    tableData.tableHead[0]?.isModal ? (
+                                      <img
+                                        src="https://i.ibb.co/3RxybqZ/photo.png"
+                                        height={"30px"}
+                                      />
+                                    ) : (
+                                      <img
+                                        src={
+                                          IMAGE + row[tableData.tableHead[0].id]
+                                        }
+                                      />
+                                    )
+                                  ) : (
+                                    <p
+                                      style={{
+                                        color: "var(--themeFontColor)",
+                                      }}
+                                    >
+                                      _
+                                    </p>
+                                  )}
+                                </TableCell>
+                              ) : (
+                                !tableData.tableHead[0]?.isSpecial && (
+                                  <TableCell
+                                    component="th"
+                                    id={labelId}
+                                    key={labelId}
+                                    scope="row"
+                                    sx={{
+                                      borderBottom: "1px solid  rgb(97 97 97)",
+                                      padding: "8px 10px",
+                                      width:
+                                        tableData.tableHead[0]?.width || "auto",
+                                    }}
+                                  >
+                                    {/* <Link
                                     style={{ color: "inherit" }}
                                     to={tableData.tableHead[0].link}
                                     state={{ id: row.id, name: row.name }}
                                   > */}
-                                  <p
-                                    style={{
-                                      color:
-                                        tableData.tableHead[0].color ||
-                                        "var(--themeFontColor)",
-                                    }}
-                                  >
-                                    {row[tableData.tableHead[0].id]}
-                                  </p>
-                                  {tableData.tableHead[0]?.subText &&
-                                    row[tableData.tableHead[0]?.subText] && (
-                                      <span
-                                        style={{
-                                          color: "var(--themeFontColor)",
-                                        }}
-                                      >
-                                        ({row[tableData.tableHead[0]?.subText]})
-                                      </span>
-                                    )}
-                                  {/* </Link> */}
-                                </TableCell>)
-                              }
+                                    <p
+                                      style={{
+                                        color:
+                                          tableData.tableHead[0].color ||
+                                          "var(--themeFontColor)",
+                                      }}
+                                    >
+                                      {row[tableData.tableHead[0].id]}
+                                    </p>
+                                    {tableData.tableHead[0]?.subText &&
+                                      row[tableData.tableHead[0]?.subText] && (
+                                        <span
+                                          style={{
+                                            color: "var(--themeFontColor)",
+                                          }}
+                                        >
+                                          (
+                                          {row[tableData.tableHead[0]?.subText]}
+                                          )
+                                        </span>
+                                      )}
+                                    {/* </Link> */}
+                                  </TableCell>
+                                )
+                              )}
                               {tableData.tableHead.map((value, index) => {
                                 if (value.isSpecial) {
                                   return (
@@ -1441,10 +1483,11 @@ export default function ListTable({
                                         padding: "8px 10px",
                                         fontSize: "13px",
                                         width: value?.width || "auto",
-                                        color : "var(--themeFontColor) !important;",
+                                        color:
+                                          "var(--themeFontColor) !important;",
                                         // textAlign : "center !important;"
                                       }}
-                                      align={ "left"}
+                                      align={"left"}
                                       key={index}
                                     >
                                       {formatDateToDDMMYYYY(row[value.id])}
@@ -1495,8 +1538,8 @@ export default function ListTable({
                                     </TableCell>
                                   );
                                 } else if (value.isButtonDisplay) {
-                                  const test = row[value.id]?.trim()
-                                  console.log(test ,"newTestk")
+                                  const test = row[value.id]?.trim();
+                                  console.log(test, "newTestk");
                                   return (
                                     <TableCell
                                       sx={{
@@ -1515,7 +1558,9 @@ export default function ListTable({
                                           fontWeight: "500",
                                         }}
                                         variant="contained"
-                                        className={row[value.id]?.trim() + "Badge"}
+                                        className={
+                                          row[value.id]?.trim() + "Badge"
+                                        }
                                       >
                                         {row[value.id]}
                                       </span>
@@ -1641,7 +1686,8 @@ export default function ListTable({
                                           if (
                                             row[value.id] !=
                                               value.nonEditableState &&
-                                            !row["edit"]
+                                            !row["edit"] &&
+                                            canEdit
                                           )
                                             updateStatus(
                                               {
@@ -1785,48 +1831,105 @@ export default function ListTable({
                                         }}
                                         // height={"20px"}
                                         onClick={() => {
-                                          if (!row["edit"]) {
-                                            const temp = { ...row };
-                                            if (value?.isNewPopUpForm) {
-                                              setIsModalOpen(true);
-                                              setForm(row);
-                                              setIsEdit(true);
-                                            } else if (value?.isNewForm) {
-                                              setOpenDrawer(true);
-                                              setForm(row);
-                                              setIsEdit(true);
-                                            } else {
-                                              Object.keys(temp).map(
-                                                (key) =>
-                                                  temp[key]?.["$$typeof"] &&
-                                                  delete temp[key]
-                                              );
-                                              // setForm({ ...row });
-                                              // setIsEdit(true);
+                                          if (canEdit) {
+                                            if (!row["edit"]) {
+                                              const temp = { ...row };
+                                              if (value?.isNewPopUpForm) {
+                                                setIsModalOpen(true);
+                                                setForm(row);
+                                                setIsEdit(true);
+                                              } else if (value?.isNewForm) {
+                                                setOpenDrawer(true);
+                                                setForm(row);
+                                                setIsEdit(true);
+                                              } else {
+                                                Object.keys(temp).map(
+                                                  (key) =>
+                                                    temp[key]?.["$$typeof"] &&
+                                                    delete temp[key]
+                                                );
+                                                // setForm({ ...row });
+                                                // setIsEdit(true);
 
-                                              location?.pathname !=
-                                                create_new &&
-                                                navigate(create_new, {
-                                                  state: {
-                                                    view: "create_new",
-                                                    form: JSON.stringify({
-                                                      ...temp,
-                                                    }),
-                                                    isEdit: true,
-                                                  },
-                                                });
+                                                location?.pathname !=
+                                                  create_new &&
+                                                  navigate(create_new, {
+                                                    state: {
+                                                      view: "create_new",
+                                                      form: JSON.stringify({
+                                                        ...temp,
+                                                      }),
+                                                      isEdit: true,
+                                                    },
+                                                  });
+                                              }
+                                            } else {
+                                              setContentAccess(
+                                                <p
+                                                  style={{
+                                                    color:
+                                                      "var(--themeFontColor)",
+                                                  }}
+                                                >
+                                                  {value.ErrorMsg ||
+                                                    "You do not have permission to Edit data"}
+                                                </p>
+                                              );
+                                              setOpenAccess(true);
                                             }
                                           } else {
                                             setContentAccess(
-                                              <p
+                                              <div
                                                 style={{
-                                                  color:
-                                                    "var(--themeFontColor)",
+                                                  textAlign: "center",
+                                                  padding: "40px 30px",
+                                                  maxWidth: "450px",
+                                                  margin: "0 auto",
+                                                  borderRadius: "8px",
                                                 }}
                                               >
-                                                {value.ErrorMsg ||
-                                                  "You do not have permission to Edit data"}
-                                              </p>
+                                                <LockIcon
+                                                  style={{
+                                                    fontSize: "80px",
+                                                    color: "#ff6b6b",
+                                                    marginBottom: "20px",
+                                                  }}
+                                                />
+                                                <h2
+                                                  style={{
+                                                    marginBottom: "15px",
+                                                    color: "#333",
+                                                    fontSize: "24px",
+                                                    fontWeight: "600",
+                                                  }}
+                                                >
+                                                  Access Denied
+                                                </h2>
+                                                <p
+                                                  style={{
+                                                    color: "#666",
+                                                    fontSize: "16px",
+                                                    marginBottom: "10px",
+                                                    lineHeight: "1.6",
+                                                  }}
+                                                >
+                                                  You don't have permission to
+                                                  access{" "}
+                                                  {/* <strong></strong>. */}
+                                                </p>
+                                                <p
+                                                  style={{
+                                                    color: "#888",
+                                                    fontSize: "14px",
+                                                    marginTop: "15px",
+                                                    lineHeight: "1.5",
+                                                  }}
+                                                >
+                                                  Please contact your
+                                                  administrator to request
+                                                  access to this feature.
+                                                </p>
+                                              </div>
                                             );
                                             setOpenAccess(true);
                                           }
@@ -1861,7 +1964,7 @@ export default function ListTable({
                                   row?.color || "var(--themeColor)",
                               }}
                             >
-                              {!tableData.disableDelete && (
+                              {!tableData.disableDelete && canEdit && (
                                 <TableCell
                                   padding="checkbox"
                                   key={row.id + "TableCell"}
@@ -1944,8 +2047,7 @@ export default function ListTable({
                                       {row[value.id]}
                                     </TableCell>
                                   );
-                                } 
-                                else if (value.isDate) {
+                                } else if (value.isDate) {
                                   return (
                                     <TableCell
                                       sx={{
@@ -1954,10 +2056,11 @@ export default function ListTable({
                                         padding: "8px 10px",
                                         fontSize: "13px",
                                         width: value?.width || "auto",
-                                        color : "var(--themeFontColor)  !important;",
+                                        color:
+                                          "var(--themeFontColor)  !important;",
                                         // textAlign : "center !important"
                                       }}
-                                      align={ "left"}
+                                      align={"left"}
                                       key={index}
                                     >
                                       {formatDateToDDMMYYYY(row[value.id])}
@@ -2008,7 +2111,10 @@ export default function ListTable({
                                     </TableCell>
                                   );
                                 } else if (value.isButtonDisplay) {
-                                                                    const test = row[value.id]?.replaceAll(' ', '')
+                                  const test = row[value.id]?.replaceAll(
+                                    " ",
+                                    ""
+                                  );
                                   return (
                                     <TableCell
                                       sx={{
@@ -2229,7 +2335,8 @@ export default function ListTable({
                                           if (
                                             row[value.id] !=
                                               value.nonEditableState &&
-                                            !row["edit"]
+                                            !row["edit"] &&
+                                            canEdit
                                           )
                                             updateStatus(
                                               {
@@ -2373,48 +2480,105 @@ export default function ListTable({
                                         }}
                                         // height={"20px"}
                                         onClick={() => {
-                                          if (!row["edit"]) {
-                                            const temp = { ...row };
-                                            if (value?.isNewPopUpForm) {
-                                              setIsModalOpen(true);
-                                              setForm(row);
-                                              setIsEdit(true);
-                                            } else if (value?.isNewForm) {
-                                              setOpenDrawer(true);
-                                              setForm(row);
-                                              setIsEdit(true);
-                                            } else {
-                                              Object.keys(temp).map(
-                                                (key) =>
-                                                  temp[key]?.["$$typeof"] &&
-                                                  delete temp[key]
-                                              );
-                                              // setForm({ ...row });
-                                              // setIsEdit(true);
+                                          if (canEdit) {
+                                            if (!row["edit"]) {
+                                              const temp = { ...row };
+                                              if (value?.isNewPopUpForm) {
+                                                setIsModalOpen(true);
+                                                setForm(row);
+                                                setIsEdit(true);
+                                              } else if (value?.isNewForm) {
+                                                setOpenDrawer(true);
+                                                setForm(row);
+                                                setIsEdit(true);
+                                              } else {
+                                                Object.keys(temp).map(
+                                                  (key) =>
+                                                    temp[key]?.["$$typeof"] &&
+                                                    delete temp[key]
+                                                );
+                                                // setForm({ ...row });
+                                                // setIsEdit(true);
 
-                                              location?.pathname !=
-                                                create_new &&
-                                                navigate(create_new, {
-                                                  state: {
-                                                    view: "create_new",
-                                                    form: JSON.stringify({
-                                                      ...temp,
-                                                    }),
-                                                    isEdit: true,
-                                                  },
-                                                });
+                                                location?.pathname !=
+                                                  create_new &&
+                                                  navigate(create_new, {
+                                                    state: {
+                                                      view: "create_new",
+                                                      form: JSON.stringify({
+                                                        ...temp,
+                                                      }),
+                                                      isEdit: true,
+                                                    },
+                                                  });
+                                              }
+                                            } else {
+                                              setContentAccess(
+                                                <p
+                                                  style={{
+                                                    color:
+                                                      "var(--themeFontColor)",
+                                                  }}
+                                                >
+                                                  {value.ErrorMsg ||
+                                                    "You do not have permission to Edit data"}
+                                                </p>
+                                              );
+                                              setOpenAccess(true);
                                             }
                                           } else {
                                             setContentAccess(
-                                              <p
+                                              <div
                                                 style={{
-                                                  color:
-                                                    "var(--themeFontColor)",
+                                                  textAlign: "center",
+                                                  padding: "40px 30px",
+                                                  maxWidth: "450px",
+                                                  margin: "0 auto",
+                                                  borderRadius: "8px",
                                                 }}
                                               >
-                                                {value.ErrorMsg ||
-                                                  "You do not have permission to Edit data"}
-                                              </p>
+                                                <LockIcon
+                                                  style={{
+                                                    fontSize: "80px",
+                                                    color: "#ff6b6b",
+                                                    marginBottom: "20px",
+                                                  }}
+                                                />
+                                                <h2
+                                                  style={{
+                                                    marginBottom: "15px",
+                                                    color: "#333",
+                                                    fontSize: "24px",
+                                                    fontWeight: "600",
+                                                  }}
+                                                >
+                                                  Access Denied
+                                                </h2>
+                                                <p
+                                                  style={{
+                                                    color: "#666",
+                                                    fontSize: "16px",
+                                                    marginBottom: "10px",
+                                                    lineHeight: "1.6",
+                                                  }}
+                                                >
+                                                  You don't have permission to
+                                                  access{" "}
+                                                  {/* <strong></strong>. */}
+                                                </p>
+                                                <p
+                                                  style={{
+                                                    color: "#888",
+                                                    fontSize: "14px",
+                                                    marginTop: "15px",
+                                                    lineHeight: "1.5",
+                                                  }}
+                                                >
+                                                  Please contact your
+                                                  administrator to request
+                                                  access to this feature.
+                                                </p>
+                                              </div>
                                             );
                                             setOpenAccess(true);
                                           }

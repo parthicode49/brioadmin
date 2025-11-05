@@ -18,8 +18,10 @@ import { Button } from "@mui/material";
 import DynamicFormModal from "../../utils/NewFormStructure/DynamicFormModal";
 import AddIcon from "@mui/icons-material/Add";
 import { bindActionCreators } from "redux";
+import { useAccessControl } from "../../utils/useAccessControl";
 
 const Category = () => {
+  const { canEdit } = useAccessControl("Control Panel");
   const navigate = useNavigate();
   const [form, setForm] = useState({});
   const dispatch = useDispatch();
@@ -262,6 +264,7 @@ const Category = () => {
         formStructure={formStructure}
         formTitle={isEdit ? "Edit Category" : "Add Category"}
         onSubmit={handleSubmit1}
+        canEdit={canEdit}
         initialData={editingIndex !== null ? tableData[editingIndex] : {}}
         exportButton={
           <Export

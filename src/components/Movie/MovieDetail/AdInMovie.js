@@ -4,8 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import Export from "../../utils/Export";
 import * as Action from "../../../actions/Advertiser/adinmovie";
 import { bindActionCreators } from "redux";
+import { useAccessControl } from "../../utils/useAccessControl";
 
 const AdInMovie = ({ id }) => {
+   const {  canEdit } = useAccessControl("Movies");
   const dispatch = useDispatch();
   const {
     advertisement_in_movie_create,
@@ -14,7 +16,7 @@ const AdInMovie = ({ id }) => {
     advertisement_name_id_only,
     // advertisement_in_movie_delete,
   } = bindActionCreators(Action, dispatch);
-  const [form, setForm] = useState({ movie: id });
+  const [form, setForm] = useState({});
   const [isEdit, setIsEdit] = useState(false);
   const user = useSelector((state) => state.layout.profile);
   const [save, setSave] = useState(false);
@@ -140,7 +142,7 @@ const AdInMovie = ({ id }) => {
   }, [isEdit]);
   const handleSubmit = async (event) => {
     if (isEdit) {
-      const resData = await advertisement_in_movie_update(form);
+      const resData = await advertisement_in_movie_update({...form , movie : id});
       if (resData?.status === 200) {
         setForm({movie: id});
         setSave(!save);
@@ -149,7 +151,7 @@ const AdInMovie = ({ id }) => {
         setForm(form);
       }
     } else {
-      const resData = await advertisement_in_movie_create(form);
+      const resData = await advertisement_in_movie_create({...form , movie : id});
       if (resData?.status === 200) {
         // setForm({});
         setForm({movie: id});
@@ -174,6 +176,7 @@ const AdInMovie = ({ id }) => {
       isModalOpen={isModalOpen}
       setIsModalOpen={setIsModalOpen}
       isPopUpNewTable={true}
+      canEdit={canEdit}
       formStructure={formStructure}
       formTitle={isEdit ? "Edit Advertisement" : "Add Advertisement"}
       onSubmit={handleSubmit}

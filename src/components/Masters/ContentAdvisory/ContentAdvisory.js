@@ -7,8 +7,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Export from "../../utils/Export";
 import * as Action from "../../../actions/Masters/contentadvisory";
 import { bindActionCreators } from "redux";
+import { useAccessControl } from "../../utils/useAccessControl";
 
 export default function ContentAdvisory() {
+  const { canEdit } = useAccessControl("Control Panel");
   const user = useSelector((state) => state.layout.profile);
   const dispatch = useDispatch();
   const rights = useSelector((state) => state.layout.rights);
@@ -130,6 +132,7 @@ export default function ContentAdvisory() {
         create_new={"/Masters/SubCategory/EditSubCategory/"}
         save={save}
         setSave={setSave}
+        canEdit={canEdit}
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
         isPopUpNewTable={true}

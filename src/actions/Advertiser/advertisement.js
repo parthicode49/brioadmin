@@ -7,6 +7,7 @@ import {
   ADPRICE,
   ADPAYMENTHISTORY,
   ADPAYMENTHISTORYDIS,
+  ADDVIEW,
 } from "../../constants/actionTypes";
 import * as api from "../../api/index.js";
 
@@ -130,6 +131,16 @@ export const advertisement_charge_update =
     try {
       const  data  = await api.advertisement_charge_update(formData);
       dispatch({ type: MESSAGE, payload: data?.data });
+      return data
+    } catch (error) {
+      console.log(error);
+    }
+  };
+export const advertisement_view_data =
+  (formData) => async (dispatch) => {
+    try {
+      const  data  = await api.advertisement_view_data(formData);
+      dispatch({ type: ADDVIEW, payload: data?.data });
       return data
     } catch (error) {
       console.log(error);

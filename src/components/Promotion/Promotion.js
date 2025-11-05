@@ -11,7 +11,9 @@ import ListTable from "../utils/Table";
 import Export from "../utils/Export";
 import { useMemo } from "react";
 import dayjs from "dayjs";
+import { useAccessControl } from "../utils/useAccessControl";
 const Promotion = () => {
+  const { canEdit } = useAccessControl("Promotions");
   const dispatch = useDispatch();
   const user = useSelector((state) => state.layout.profile);
   const series = useSelector((state) => state?.webseries?.series_name);
@@ -177,7 +179,7 @@ const Promotion = () => {
           name: "poster",
           title: "Portrait",
           description: "Image size",
-          image_size : "980 * 1300 PX",
+          image_size: "980 * 1300 PX",
           accept: "image/*",
           size: 6,
           required: true,
@@ -186,8 +188,8 @@ const Promotion = () => {
           type: "image",
           name: "thumbnail",
           title: "Landscape",
-           description: "Image size",
-          image_size : "1920 * 1080 PX",
+          description: "Image size",
+          image_size: "1920 * 1080 PX",
           accept: "image/*",
           size: 6,
           required: true,
@@ -198,25 +200,26 @@ const Promotion = () => {
   useMemo(() => {
     if (Promotion_list?.data) {
       const temp = tableData;
-        const status = (expire_date , status) => {
-              const today = dayjs().startOf("day");
-              const expDate = dayjs(expire_date).startOf("day");
-      
-              if (expDate.isBefore(today)) {
-                return "Expired";
-              } else if (expDate.diff(today, "day") <= 3) {
-                return "Expiring Soon";
-              } else {
-                return status;
-              }
-            };
+      const status = (expire_date, status) => {
+        const today = dayjs().startOf("day");
+        const expDate = dayjs(expire_date).startOf("day");
+
+        if (expDate.isBefore(today)) {
+          return "Expired";
+        } else if (expDate.diff(today, "day") <= 3) {
+          return "Expiring Soon";
+        } else {
+          return status;
+        }
+      };
       temp.tableBody = Promotion_list?.data?.map((ele) => ({
         ...ele,
-         status:
-          status(ele.end_date , ele?.status),
+        status: status(ele.end_date, ele?.status),
         expired_on:
           new Date(ele?.end_date) > new Date() ? (
-            <p style={{ color: "var(--themeFontColor)" }}>{dayjs(ele?.end_date).format("DD-MM-YYYY")}</p>
+            <p style={{ color: "var(--themeFontColor)" }}>
+              {dayjs(ele?.end_date).format("DD-MM-YYYY")}
+            </p>
           ) : (
             <p style={{ color: "red" }}>Expired</p>
           ),
@@ -370,6 +373,7 @@ const Promotion = () => {
         openDrawer={drawer}
         setOpenDrawer={setDrawer}
         formStructure={formStructure}
+        canEdit={canEdit}
         handleSubmit={handleSubmit}
         form={form}
         isEdit={isEdit}

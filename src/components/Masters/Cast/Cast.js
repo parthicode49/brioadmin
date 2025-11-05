@@ -21,7 +21,9 @@ import Reload from "../../utils/Reload";
 import ViewChangeForm from "../../utils/ViewChangeForm";
 import * as Action from "../../../actions/Masters/cast";
 import { bindActionCreators } from "redux";
+import { useAccessControl } from "../../utils/useAccessControl";
 export default function Cast() {
+  const { canEdit } = useAccessControl("Control Panel");
   const user = useSelector((state) => state.layout.profile);
   const dispatch = useDispatch();
   const rights = useSelector((state) => state.layout.rights);
@@ -230,6 +232,7 @@ export default function Cast() {
         create_new={"/masters/cast/editcast/"}
         save={save}
         setSave={setSave}
+        canEdit={canEdit}
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
         isPopUpNewTable={true}

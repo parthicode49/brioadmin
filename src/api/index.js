@@ -196,6 +196,8 @@ export const all_advertise_form_list = (formData) => API.post('/all_advertise_fo
 export const advertise_form_upate = (formData) =>API.post('/advertise_form_upate/' , formData)
 export const advertise_form_delete = (formData) => API.post('/advertise_form_delete/' , formData)
 export const all_advertise_transaction_list = (formData) => API.post('/all_advertise_transaction_list/' , formData)
+export const advertisement_view_data = (formData) => API.post("/advertisement_view_data/", formData)
+
 // export const advertise_transaction_create =(formData) => API.post('/advertise_transaction_create/',formData)
 
 export const advertisement_charge_list = (formData) => API.post('/advertisement_charge_list/' , formData)

@@ -5,9 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import * as Action from "../../actions/Advertiser/advertisement";
 import { bindActionCreators } from "redux";
 import DynamicFormModal from "../utils/NewFormStructure/DynamicFormModal";
-
+import { useAccessControl } from "../utils/useAccessControl";
+import InfoIcone from "../../images/info.png";
+import { useNavigate } from "react-router-dom";
 const Advertisement = () => {
+  const { canEdit } = useAccessControl("Ad Master");
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   const [form, setForm] = useState({});
   const [drawer, setDrawer] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -74,6 +78,10 @@ const Advertisement = () => {
         label: "Product Name",
       },
       {
+        id: "ad_view",
+        label: "Views",
+      },
+      {
         id: "views_required",
         label: "Required Views",
       },
@@ -111,6 +119,12 @@ const Advertisement = () => {
         id: "created_at",
         label: "Created At",
         isDate: true,
+      },
+      {
+        id: "info",
+        label: "View",
+        isSpecial: true,
+        align: "left",
       },
       {
         id: "edit",
@@ -167,7 +181,7 @@ const Advertisement = () => {
           title: "Payable Amount ($)",
           regex: /^[0-9\s]+$/,
           placeholder: "Enter Amount",
-          symbol : "$",
+          symbol: "$",
           disabled: true,
           required: true,
         },
@@ -312,6 +326,15 @@ const Advertisement = () => {
       const temp = tableData;
       temp.tableBody = advertisementList?.map((ele) => ({
         ...ele,
+        info: (
+          <img
+            src={InfoIcone}
+            width="20px"
+            height="20px"
+            style={{ cursor: "pointer" }}
+            onClick={() => navigate("detail", { state: { id: ele?.id } })}
+          />
+        ),
         payment_status1:
           ele?.payment_status === "Paid" ? (
             <button
@@ -355,7 +378,7 @@ const Advertisement = () => {
             </button>
           ),
         payment_status: ele?.payment_status === "Paid" ? "Paid" : "Unpaid",
-        payable_amount1 : "$ " + ele?.payable_amount,
+        payable_amount1: "$ " + ele?.payable_amount,
         top_up: (
           <div>
             <button
@@ -450,6 +473,7 @@ const Advertisement = () => {
         handleSubmit={handleSubmit}
         hideAddBtn={true}
         isEdit={isEdit}
+        canEdit={canEdit}
         formTitle={isEdit ? "Edit Advertisement" : "Add Advertisement"}
         exportButton={
           <Export
