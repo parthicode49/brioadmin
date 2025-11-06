@@ -11,12 +11,12 @@ import NewForm from "../utils/NewFormStructure/NewForm";
 import { Button } from "@mui/material";
 import { bindActionCreators } from "redux";
 import * as NotifiAction from "../../actions/notification";
-import notification_icon from "../../images/notification_icon.png"
+import notification_icon from "../../images/notification_icon.png";
 import DynamicFormModal from "../utils/NewFormStructure/DynamicFormModal";
 import InfoIcone from "../../images/info.png";
 import { useAccessControl } from "../utils/useAccessControl";
 const Distributor = () => {
-    const { canEdit} = useAccessControl("Content Owner");
+  const { canEdit } = useAccessControl("Content Owner");
   const navigate = useNavigate();
   const role = useSelector((state) => state.layout.role);
   const rights = useSelector((state) => state.layout.rights);
@@ -74,17 +74,17 @@ const Distributor = () => {
         id: "status",
         label: "Status",
       },
-            {
+      {
         id: "info",
         label: "View",
         isSpecial: true,
         align: "left",
       },
-      
+
       {
         id: "notification",
         label: "Notification",
-          isSpecial: true,
+        isSpecial: true,
         align: "center",
       },
 
@@ -98,7 +98,7 @@ const Distributor = () => {
     tableBody: [],
     // isDateRangeFilter: "created_at",
   });
-    const handleForm = (id) => {
+  const handleForm = (id) => {
     setEditingIndex(null);
     setIsModalOpen(true);
     setIsEdit(false);
@@ -108,7 +108,7 @@ const Distributor = () => {
       receiver_type: "Single",
     });
   };
-    const handleFormMulti = (id, fun) => {
+  const handleFormMulti = (id, fun) => {
     setIsModalOpen(true);
     setFormNoti({
       user_list: id,
@@ -246,7 +246,7 @@ const Distributor = () => {
           name: "password",
           placeholder: "Enter Login Password",
           required: true,
-          display : "nome"
+          display: "nome",
         },
         // {
         //   id: "9",
@@ -316,7 +316,7 @@ const Distributor = () => {
           />
           // </Link>
         ),
-                info: (
+        info: ele?.is_there_content ? (
           <img
             src={InfoIcone}
             width="20px"
@@ -324,46 +324,48 @@ const Distributor = () => {
             style={{ cursor: "pointer" }}
             onClick={() => navigate("detail", { state: { id: ele?.id } })}
           />
+        ) : (
+          <p style={{ color: "var(--themeFontColor)" }}>No Content Available</p>
         ),
       }));
       setTableData({ ...temp });
     }
   }, [distributors]);
-    useEffect(() => {
-      if (isEdit) {
-        setFormStructure((prevFormStructure) =>
-          prevFormStructure.map((section) => {
-            if (section.title === "Details") {
-              const updatedFields = section.fields.map((field, index) => {
-                if (index === 7) {
-                  return { ...field, display: "block" };
-                }
-                return field;
-              });
-              return { ...section, fields: updatedFields };
-            }
-            return section;
-          })
-        );
-      } else {
-        setFormStructure((prevFormStructure) =>
-          prevFormStructure?.map((section) => {
-            if (section.title === "Details") {
-              const updatedFields = section.fields.map((field, index) => {
-                if (index === 7) {
-                  return { ...field, display: "none" };
-                }
-              
-                return field;
-              });
-              return { ...section, fields: updatedFields };
-            }
-            return section;
-          })
-        );
-      }
-    }, [isEdit]);
-    console.log(formStructure , isEdit , "new Coer")
+  useEffect(() => {
+    if (isEdit) {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 4) {
+                return { ...field, display: "block" };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    } else {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure?.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 4) {
+                return { ...field, display: "none" };
+              }
+
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    }
+  }, [isEdit]);
+  console.log(formStructure, isEdit, "new Coer");
   const handleSubmit = async (event) => {
     event.preventDefault();
     // const data = new FormData();
@@ -486,8 +488,8 @@ const Distributor = () => {
         setIsEdit={setIsEdit}
         save={save}
         setSave={setSave}
-         isMultiNotificationSend={true}
-         canEdit={canEdit}
+        isMultiNotificationSend={true}
+        canEdit={canEdit}
         sendMultiNotification={sendMultiNotification}
         view="view_all"
         create_new={"/distributor/editdistributor/"}

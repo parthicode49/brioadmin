@@ -109,6 +109,11 @@ const DistributorMovie = () => {
 
       // role != "Distributor" &&
       {
+        id: "approval_status",
+        label: "Approval Status",
+        isButtonDisplay: true
+      },
+      {
         id: "status",
         label: "Status",
         isButtonDisplay: true
@@ -152,7 +157,7 @@ const DistributorMovie = () => {
               {value?.content_access}
             </span>
           ),
-          distributor_commission_view : value?.content_access == "SVOD" ? "₹ " + value?.distributor_commission : value?.content_access == "TVOD" ?  value?.distributor_tvod_commission + "%" : "-" ,
+          distributor_commission_view : value?.content_access == "SVOD" ? "$ " + value?.distributor_commission : value?.content_access == "TVOD" ?  value?.distributor_tvod_commission + "%" : "-" ,
         sub_category_list: value?.subcategory_name.join(" , "),
         rental_price: parseFloat(value?.rental_price).toFixed(2),
         info: (

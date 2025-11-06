@@ -17,7 +17,7 @@ const DistributorInfo = () => {
       dispatch(all_distributor_movie_list({distributor_id :location?.state?.id }))
       dispatch(all_distributor_series_list({distributor_id :location?.state?.id }))
       // dispatch(all_distributor_song_list({distributor_id :location?.state?.id }))
-      dispatch(all_promocode_list_distributor({distributor_id :location?.state?.id }))
+      // dispatch(all_promocode_list_distributor({distributor_id :location?.state?.id }))
     }
   },[location?.state?.id])
 
@@ -27,7 +27,7 @@ const DistributorInfo = () => {
       <DistributorMovie />
       <DistributorSeries />
       {/* <DistributorSong /> */}
-      <DistributorCoupon />
+      {/* <DistributorCoupon /> */}
     </>
   );
 };

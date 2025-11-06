@@ -73,8 +73,8 @@ const HighestWatchedSeriesGraph = () => {
           gap: 10px;
           font-family: 'Raleway';
         ">
-          <strong style="font-size: 20px">${label}</strong>
-          <span style="font-family: 'Poppins';">Revenue: ₹${value.toLocaleString()}</span>
+
+          <span style="font-family: 'Poppins';">Views: ${value.toLocaleString()}</span>
         </div>
       `;
       }

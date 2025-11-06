@@ -9,9 +9,11 @@ import { Link } from "react-router-dom";
 // import users_icon from "./../../images/users-icon.png";
 
 const Features = ({ earning, path }) => {
-  const data = earning?.Data;
+  console.log(earning , path , "NEw Code 123")
 
-  const plan = data?.movie_access;
+  const data = earning?.data;
+
+  const plan = data?.content_access;
   const FeaturesData = [
     // data?.movie_ownership!="Distributor"&&{
     //   id: "1",
@@ -21,7 +23,7 @@ const Features = ({ earning, path }) => {
     // },
     plan == "TVOD" && {
       id: "2",
-      subTitle: earning?.total_amount,
+      subTitle: data?.movie_total_revenue,
       // subTitle: parseFloat(500050).toFixed(2),
 
       title: "Total Earning",
@@ -29,39 +31,51 @@ const Features = ({ earning, path }) => {
       // title1:" ."
     },
 
-    plan == "TVOD" && {
-      id: "2",
-      subTitle: earning?.total_earning,
-      title: "Profit",
-      // title1: "(After Tax) ",
+    // plan == "TVOD" && {
+    //   id: "2",
+    //   subTitle: data?.total_earning,
+    //   title: "Profit",
+    //   // title1: "(After Tax) ",
 
-      // subTitle: 407540.75,
-    },
+    //   // subTitle: 407540.75,
+    // },
     plan == "TVOD" &&
-      data?.movie_ownership == "Distributor" && {
+      data?.ownership == "Content Owner" && {
         id: "3",
-        subTitle: earning?.admin_earning,
+        subTitle: data?.admin_earning,
         title: "Platform",
         // title:"Net Profit Share",
         // title1 : "(24 SEVEN FLIX4U)",
         // subTitle: 203770.37,
       },
     plan == "TVOD" &&
-      data?.movie_ownership == "Distributor" && {
+   data?.ownership == "Content Owner" && {
         id: "4",
-        subTitle: earning?.distributor_earning,
+        subTitle: data?.content_owner_earning,
         title: "Distributor",
         // title:"Net Profit Share",
         // title1:"(Content Creator)",
         // subTitle: 203770.37,
       },
-    plan == "TVOD" &&
-      path == "MovieDetails" &&
-      data?.movie_ownership == "Distributor" && {
+  //   plan == "SVOD" &&
+  //  data?.ownership == "Content Owner" && {
+  //       id: "4",
+  //       subTitle: data?.content_owner_earning,
+  //       title: "View",
+  //       // title:"Net Profit Share",
+  //       // title1:"(Content Creator)",
+  //       // subTitle: 203770.37,
+  //     },
+    plan == "SVOD" &&
+   data?.ownership == "Content Owner" && {
         id: "4",
-        subTitle: earning?.producer_earning,
-        title: "Producer",
+        subTitle: data?.content_owner_earning,
+        title: "Cotent Owner Earning",
+        // title:"Net Profit Share",
+        // title1:"(Content Creator)",
+        // subTitle: 203770.37,
       },
+
   ];
   return (
     <>
@@ -109,7 +123,7 @@ const Features = ({ earning, path }) => {
                       width={"100%"}
                       display={"block"}
                     >
-                      ₹ {feature.subTitle}
+                      $ {parseFloat(feature.subTitle).toFixed(2)}
                     </Typography>
                   </Box>
                 </Box>

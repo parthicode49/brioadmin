@@ -157,7 +157,7 @@ const DistributorSeries = () => {
               {value?.content_access}
             </span>
           ),
-                    distributor_commission_view : value?.content_access == "SVOD" ? "₹ " + value?.distributor_commission : value?.content_access == "TVOD" ?  value?.distributor_tvod_commission + "%" : "-" ,
+                    distributor_commission_view : value?.content_access == "SVOD" ? "$ " + value?.distributor_commission : value?.content_access == "TVOD" ?  value?.distributor_tvod_commission + "%" : "-" ,
            info: (
           <img 
           src={InfoIcone}

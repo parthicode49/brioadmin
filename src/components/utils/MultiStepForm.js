@@ -1012,9 +1012,9 @@ const MultiStepForm = ({
                       </div>
                       <div style={{ textAlign: "left", marginTop: "1rem" }}>
                         <div className="filter-price">
-                          ₹ {data?.offer_price}
+                          $ {data?.offer_price}
                         </div>
-                        {/* <div className="filter-price">₹ 2499</div> */}
+                        {/* <div className="filter-price">$ 2499</div> */}
                       </div>
                       <hr
                         style={{

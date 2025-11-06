@@ -87,7 +87,7 @@ const TotalRevenue = () => {
       },
       y: {
         formatter: function (val) {
-          return  "₹"+val;
+          return  "$"+val;
         },
       },
     },
@@ -120,7 +120,7 @@ const TotalRevenue = () => {
               fontWeight: 500,
             }}
           >
-           TVOD Revenue : ₹ {parseFloat(totalrevenue?.TVOD_revenue).toFixed(2)}
+           TVOD Revenue : $ {parseFloat(totalrevenue?.TVOD_revenue).toFixed(2)}
           </Typography>
           <Box>
             <FormControl size="small" sx={{ minWidth: 100 }}>

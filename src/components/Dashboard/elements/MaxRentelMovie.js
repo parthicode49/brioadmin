@@ -147,7 +147,7 @@ const MaxRentelMovie = ({maxRentelMovie}) => {
                <span style={{color:"var(--themeFontColor)"}}> Totel Earing :-</span>
               </Typography>
               <Typography variant="p"  fontSize={16} fontWeight={400}  display={"block"} >
-               <span style={{color:"var(--themeFontColor)"}}> ₹ {(feature.movie_name)?.toFixed(2)} </span>
+               <span style={{color:"var(--themeFontColor)"}}> $ {(feature.movie_name)?.toFixed(2)} </span>
               </Typography>
               
               </Box>

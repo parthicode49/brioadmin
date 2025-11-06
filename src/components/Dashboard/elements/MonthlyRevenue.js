@@ -42,7 +42,7 @@ const monthlyrevenue = useSelector((state) => state.dashboard?.monthlyrevenue);
       }, dataLabels: {
        
         formatter: function (val) {
-          return val>0?"₹"+val:"";
+          return val>0?"$"+val:"";
         },
       },
         chart: {
@@ -111,7 +111,7 @@ const monthlyrevenue = useSelector((state) => state.dashboard?.monthlyrevenue);
           },
           y: {
             formatter: function (val) {
-              return  "₹"+val+".00";
+              return  "$"+val+".00";
             },
           },
         },
@@ -150,7 +150,7 @@ const monthlyrevenue = useSelector((state) => state.dashboard?.monthlyrevenue);
             }}
             // className="for-dark-bottom-border"
           >
-            Yearly Revenue: ₹ {parseFloat(monthlyrevenue?.Total_yearly_amount).toFixed(2)}
+            Yearly Revenue: $ {parseFloat(monthlyrevenue?.Total_yearly_amount).toFixed(2)}
           </Typography>
           <Box>
            <FormControl size="small" sx={{ minWidth: 100 }}>

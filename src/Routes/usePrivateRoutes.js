@@ -157,7 +157,7 @@ export const usePrivateRoutes = () => {
       return role === "Admin" ? "All Access" : "No Access";
     }
 
-    const right = rights.find((r) => r.content === contentName);
+    const right = rights?.find((r) => r.content === contentName);
     const accessLevel =
       right?.content_value || (role === "Admin" ? "All Access" : "No Access");
     console.log(`Access for ${contentName}:`, accessLevel);

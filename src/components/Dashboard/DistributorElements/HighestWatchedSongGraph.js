@@ -74,7 +74,7 @@ const HighestWatchedSongGraph = () => {
           font-family: 'Raleway';
         ">
           <strong style="font-size: 20px">${label}</strong>
-          <span style="font-family: 'Poppins';">View: ₹${value.toLocaleString()}</span>
+          <span style="font-family: 'Poppins';">View: $${value.toLocaleString()}</span>
         </div>
       `;
       },

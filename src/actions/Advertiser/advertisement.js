@@ -8,6 +8,7 @@ import {
   ADPAYMENTHISTORY,
   ADPAYMENTHISTORYDIS,
   ADDVIEW,
+  ADDDASHBOARD,
 } from "../../constants/actionTypes";
 import * as api from "../../api/index.js";
 
@@ -141,6 +142,16 @@ export const advertisement_view_data =
     try {
       const  data  = await api.advertisement_view_data(formData);
       dispatch({ type: ADDVIEW, payload: data?.data });
+      return data
+    } catch (error) {
+      console.log(error);
+    }
+  };
+export const advertisement_highest_view =
+  (formData) => async (dispatch) => {
+    try {
+      const  data  = await api.advertisement_highest_view(formData);
+      dispatch({ type: ADDDASHBOARD, payload: data?.data });
       return data
     } catch (error) {
       console.log(error);

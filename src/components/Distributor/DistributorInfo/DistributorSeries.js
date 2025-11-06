@@ -3,17 +3,17 @@ import ListTable from "../../utils/Table";
 import Export from "../../utils/Export";
 import { all_distributor_series_list } from "../../../actions/distributorPanel/distributorContentForm";
 import { useDispatch, useSelector } from "react-redux";
-import InfoIcone from "../../../images/info.png"
+import InfoIcone from "../../../images/info.png";
 import { useNavigate } from "react-router-dom";
 const DistributorSeries = () => {
   const dispatch = useDispatch();
-    const navigate = useNavigate()
+  const navigate = useNavigate();
   const [form, setForm] = useState({});
   const user = useSelector((state) => state?.layout?.profile);
   const distributor_series = useSelector(
     (state) => state?.distributorPanel?.distributor_series
   );
-  console.log(distributor_series ,"drfsdffsaweassas")
+  console.log(distributor_series, "drfsdffsaweassas");
   // useEffect(() => {
   //   if (user?.id) {
   //     dispatch(all_distributor_series_list({ distributor_id: user?.id }));
@@ -70,9 +70,9 @@ const DistributorSeries = () => {
         id: "language_name",
         label: "Language",
       },
-            {
-        id: 'distributor_commission_view',
-        label: 'Pay Per View',
+      {
+        id: "distributor_commission_view",
+        label: "Pay Per View",
       },
       // {
       //   id: 'ott_platform',
@@ -114,11 +114,16 @@ const DistributorSeries = () => {
 
       // role != "Distributor" &&
       {
+        id: "approval_status",
+        label: "Approval Status",
+        isButtonDisplay: true,
+      },
+      {
         id: "status",
         label: "Status",
-        isButtonDisplay: true
+        isButtonDisplay: true,
       },
-                  {
+      {
         id: "info",
         label: "View",
         isSpecial: true,
@@ -157,15 +162,23 @@ const DistributorSeries = () => {
               {value?.content_access}
             </span>
           ),
-                    distributor_commission_view : value?.content_access == "SVOD" ? "₹ " + value?.distributor_commission : value?.content_access == "TVOD" ?  value?.distributor_tvod_commission + "%" : "-" ,
-           info: (
-          <img 
-          src={InfoIcone}
-           width="20px"
+        distributor_commission_view:
+          value?.content_access == "SVOD"
+            ? "$ " + value?.distributor_commission
+            : value?.content_access == "TVOD"
+            ? value?.distributor_tvod_commission + "%"
+            : "-",
+        info: (
+          <img
+            src={InfoIcone}
+            width="20px"
             height="20px"
-               style={{ cursor: "pointer" }}
-            onClick={() => navigate("/series/detail", { state: { id: value?.id } })}
-          />),
+            style={{ cursor: "pointer" }}
+            onClick={() =>
+              navigate("/series/detail", { state: { id: value?.id } })
+            }
+          />
+        ),
         sub_category_list: value?.subcategory_name.join(" , "),
         rental_price: parseFloat(value?.rental_price).toFixed(2),
         released_status:

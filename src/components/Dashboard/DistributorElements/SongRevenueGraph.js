@@ -87,7 +87,7 @@ const SongRevenueGraph = () => {
   //         font-family: 'Raleway';
   //       ">
   //         <strong style="font-size: 20px">${label}</strong>
-  //         <span style="font-family: 'Poppins';">Revenue: ₹${value.toLocaleString()}</span>
+  //         <span style="font-family: 'Poppins';">Revenue: $${value.toLocaleString()}</span>
   //       </div>
   //     `;
   //     },
@@ -145,7 +145,7 @@ const SongRevenueGraph = () => {
           font-family: 'Raleway';
         ">
 <strong style="font-size: 20px">${label}</strong>
-<span style="font-family: 'Poppins';">Revenue: ₹${value.toLocaleString()}</span>
+<span style="font-family: 'Poppins';">Revenue: $${value.toLocaleString()}</span>
 </div>
       `;
       },
@@ -173,7 +173,7 @@ const SongRevenueGraph = () => {
             Series Revenue
           </Typography>
           <Typography sx={{ fontSize: 40, fontWeight: 500 }}>
-            ₹{totalRevenue?.toLocaleString()}
+            ${totalRevenue?.toLocaleString()}
           </Typography>
         </Box>
 

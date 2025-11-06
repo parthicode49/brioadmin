@@ -6,23 +6,17 @@ import Chart from "react-apexcharts";
 
 import { highest_watched_movies_graph } from "../../../actions/analytics";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  distributor_most_watched_series,
-  distributor_movie_yearly_revenue,
-  distributor_series_yearly_revenue,
-} from "../../../actions/distributor_dashboard";
-const SeriesRevenueGraph = () => {
+
+import { advertisement_highest_view } from "../../../actions/Advertiser/advertisement";
+const AdViewGraph = () => {
   const user = useSelector((state) => state.layout.profile);
   const dispatch = useDispatch();
   useEffect(() => {
-    if (user) {
-      dispatch(distributor_series_yearly_revenue({ id: user?.id }));
+    if (user?.id) {
+      dispatch(advertisement_highest_view({ id: user?.id }));
     }
   }, [user]);
-  const data = useSelector(
-    (state) => state?.distributor_dashboard?.series_wise_revenue
-  );
-  console.log(data, "newData");
+  const data = useSelector((state) => state?.advertisers?.ad_list_dashboard);
 
   const yValues = data?.graph_data[0]?.data || [];
   const xLabels = data?.labels || [];
@@ -30,25 +24,21 @@ const SeriesRevenueGraph = () => {
   const isSingle = yValues.length === 1;
   const isHorizontal = !isSingle && yValues.length < 5;
 
-  const totalRevenue = data?.total_revenue;
+  const totalView = data?.total_view;
 
-  // // Chart
-  // const series =
-  // data&&  data?.graph_data?.map((value, index) => ({
-  //     ...value,
-  //     type: ["column", "column"][index],
-  //   })) || [];
+  console.log(data, "safsdfsdf");
+  // Chart
+  // const series = data?.graph_data?.map((value,index)=>({...value,type:["column","column"][index]}))||[];
   const series = [
     {
       name: "Revenue",
       data: yValues,
     },
   ];
-
   // const options = {
   //   chart: {
   //     id: "movie-revenue-chart",
-  //     type: "bar",
+  //     type: 'bar',
   //     height: 350,
   //     toolbar: {
   //       show: false,
@@ -57,27 +47,28 @@ const SeriesRevenueGraph = () => {
   //   plotOptions: {
   //     bar: {
   //       borderRadius: 4,
-  //       borderRadiusApplication: "end",
+  //       borderRadiusApplication: 'end',
   //       horizontal: false,
-  //     },
+  //     }
   //   },
   //   dataLabels: {
-  //     enabled: false,
+  //     enabled: false
   //   },
-  //   colors: ["#DC5F00"],
+  //   colors: ['#DC5F00'],
   //   xaxis: {
-  //     categories: data?.labels || [],
-  //            labels: {
+  //      categories:data?.labels||[],
+  //      labels: {
   //       show: series[0]?.data?.length < 10
   //     }
+
   //     // labels: {
-  //     //   show: false,
-  //     // },
+  //     //   show: false
+  //     // }
   //   },
   //   tooltip: {
   //     custom: function ({ series, seriesIndex, dataPointIndex, w }) {
   //       const value = series[seriesIndex][dataPointIndex];
-  //       const label = w.globals.labels[dataPointIndex];
+  //       const label = w?.globals?.labels[dataPointIndex];
   //       return `
   //       <div style="
   //         padding: 10px;
@@ -96,9 +87,10 @@ const SeriesRevenueGraph = () => {
   //         <span style="font-family: 'Poppins';">Revenue: $${value.toLocaleString()}</span>
   //       </div>
   //     `;
-  //     },
-  //   },
+  //     }
+  //   }
   // };
+
   const options = {
     chart: {
       id: "movie-revenue-chart",
@@ -176,13 +168,12 @@ const SeriesRevenueGraph = () => {
           }}
         >
           <Typography sx={{ fontSize: 27, fontWeight: 500 }}>
-            Series Revenue
+            Advertisement
           </Typography>
           <Typography sx={{ fontSize: 40, fontWeight: 500 }}>
-            ${parseFloat(totalRevenue?.toLocaleString()).toFixed(2)}
+            Total View {totalView}
           </Typography>
         </Box>
-
         {series.length && options.xaxis.categories.length ? (
           <Chart
             key="movie-revenue-chart"
@@ -199,4 +190,4 @@ const SeriesRevenueGraph = () => {
   );
 };
 
-export default SeriesRevenueGraph;
+export default AdViewGraph;

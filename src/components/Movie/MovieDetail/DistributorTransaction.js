@@ -431,7 +431,7 @@ useMemo(() => {
             >
               Total Earning :{" "}
               <span style={{ color: "orange" }}>
-                ₹ {parseFloat(distributor_earning).toFixed(2)}
+                $ {parseFloat(distributor_earning).toFixed(2)}
               </span>
             </Typography>
             <Typography
@@ -451,7 +451,7 @@ useMemo(() => {
             >
               Total Send Amount:{" "}
               <span style={{ color: "green" }}>
-                ₹ {parseFloat(received_money).toFixed(2)}
+                $ {parseFloat(received_money).toFixed(2)}
               </span>
             </Typography>
             <Typography
@@ -471,7 +471,7 @@ useMemo(() => {
             >
               Pending Amount :{" "}
               <span style={{ color: "red" }}>
-                ₹ {parseFloat(pending_money).toFixed(2)}
+                $ {parseFloat(pending_money).toFixed(2)}
              
               </span>
             </Typography>
@@ -583,7 +583,7 @@ useMemo(() => {
                     }}
                   >
                     <p style={{ color: "var(--themeFontColor)" }}>
-                      ₹ {parseFloat(row?.payment_amount).toFixed(2)}
+                      $ {parseFloat(row?.payment_amount).toFixed(2)}
                     </p>
                   </TableCell>
                   <TableCell

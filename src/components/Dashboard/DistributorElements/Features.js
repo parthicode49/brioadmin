@@ -38,13 +38,13 @@ const Features = ({ dashboardcount, role }) => {
     //   link: "/song",
     //   access: true,
     // },
-    {
-      id: "6",
-      subTitle: dashboardcount?.[3]?.["data"],
-      title: "Content Form",
-      link: "/contentform",
-      access: true,
-    },
+    // {
+    //   id: "6",
+    //   subTitle: dashboardcount?.[3]?.["data"],
+    //   title: "Content Form",
+    //   link: "/contentform",
+    //   access: true,
+    // },
 
     //  role!="Distributor"&&{
     //   id: "6",

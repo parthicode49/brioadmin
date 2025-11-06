@@ -227,7 +227,7 @@ const Series = () => {
         {
           type: "inputBox",
           name: "distributor_commission",
-          title: "Pay Per View (In Rupee)",
+          title: "Pay Per View ($)",
           display: "none",
           regex: /^(\d{0,1})(\.{0,1})(\d{0,2})$/,
           placeholder: "Type distribitor commission",

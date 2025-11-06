@@ -88,7 +88,7 @@ const MovieRevenueGraph = () => {
   //         font-family: 'Raleway';
   //       ">
   //         <strong style="font-size: 20px">${label}</strong>
-  //         <span style="font-family: 'Poppins';">Revenue: ₹${value.toLocaleString()}</span>
+  //         <span style="font-family: 'Poppins';">Revenue: $${value.toLocaleString()}</span>
   //       </div>
   //     `;
   //     }
@@ -147,7 +147,7 @@ const MovieRevenueGraph = () => {
           font-family: 'Raleway';
         ">
 <strong style="font-size: 20px">${label}</strong>
-<span style="font-family: 'Poppins';">Revenue: ₹${value.toLocaleString()}</span>
+<span style="font-family: 'Poppins';">Revenue: $${value.toLocaleString()}</span>
 </div>
       `;
       },
@@ -175,7 +175,7 @@ const MovieRevenueGraph = () => {
             Movie Revenue
           </Typography>
           <Typography sx={{ fontSize: 40, fontWeight: 500 }}>
-            ₹{totalRevenue?.toLocaleString()}
+            ${parseFloat(totalRevenue?.toLocaleString()).toFixed(2)}
           </Typography>
         </Box>
         {series.length && options.xaxis.categories.length ? (

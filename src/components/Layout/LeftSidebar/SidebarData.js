@@ -42,7 +42,7 @@ export const SidebarData = (darkMode) => {
       return "All Access"; // Default for Admin
     }
 
-    const right = rights.find((r) => r.content === contentName);
+    const right = rights?.find((r) => r.content === contentName);
     console.log(
       `Access for ${contentName}:`,
       right?.content_value || "Not Found"

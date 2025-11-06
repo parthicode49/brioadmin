@@ -38,7 +38,7 @@ const PremiumCustomerByRent = ({ data_by_rent }) => {
         mobileNumber: value?.user?.mobileNumber,
         // name: value.user.firstName + " " + value.user.lastName,
         id: value.user.id,
-        total_transaction_amount:"₹"+" "+ parseFloat(value?.total_transaction_amount).toFixed(2),
+        total_transaction_amount:"$"+" "+ parseFloat(value?.total_transaction_amount).toFixed(2),
       }));
 
       setTableData({ ...temp });

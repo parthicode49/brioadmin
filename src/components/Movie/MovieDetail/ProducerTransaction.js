@@ -517,7 +517,7 @@ const MyTasks = ({
             >
               Total Earning :{" "}
               <span style={{ color: "orange" }}>
-                ₹ {parseFloat(producer_earning).toFixed(2)}
+                $ {parseFloat(producer_earning).toFixed(2)}
               </span>
             </Typography>
             <Typography
@@ -537,7 +537,7 @@ const MyTasks = ({
             >
               Total Send Amount:{" "}
               <span style={{ color: "green" }}>
-                ₹ {parseFloat(received_money).toFixed(2)}
+                $ {parseFloat(received_money).toFixed(2)}
               </span>
             </Typography>
             <Typography
@@ -557,7 +557,7 @@ const MyTasks = ({
             >
               Pending Amount :{" "}
               <span style={{ color: "red" }}>
-                ₹ {parseFloat(pending_money).toFixed(2)}
+                $ {parseFloat(pending_money).toFixed(2)}
               </span>
             </Typography>
          {  role !=="Producer" && role !=="Distributor" && <Button
@@ -668,7 +668,7 @@ const MyTasks = ({
                     }}
                   >
                     <p style={{ color: "var(--themeFontColor)" }}>
-                      ₹ {parseFloat(row?.payment_amount).toFixed(2)}
+                      $ {parseFloat(row?.payment_amount).toFixed(2)}
                     </p>
                   </TableCell>
                   <TableCell

@@ -83,7 +83,7 @@ const DailyRevenue = () => {
       },
       y: {
         formatter: function (val) {
-          return  "₹"+val;
+          return  "$"+val;
         },
       },
     },
@@ -116,7 +116,7 @@ const DailyRevenue = () => {
               fontWeight: 500,
             }}
           >
-            Daily Revenue: ₹ { dailyrevenue?.total_amount_weekly}
+            Daily Revenue: $ { dailyrevenue?.total_amount_weekly}
           </Typography>
 
         </Box>

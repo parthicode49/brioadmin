@@ -37,7 +37,7 @@ const PremiumCustomerByPlan = ({ data_by_plan }) => {
         mobileNumber: value?.user?.mobileNumber,
         // name:  (value?.user?.firstName == null) && (value?.user?.lastName == null) ? "Mobile" : value?.user?.firstName + " " + value?.user?.lastName,
         id: value.user.id,
-        total_transaction_amount:"₹"+" "+ parseFloat(value?.total_transaction_amount).toFixed(2),
+        total_transaction_amount:"$"+" "+ parseFloat(value?.total_transaction_amount).toFixed(2),
 
       }));
 

@@ -109,7 +109,7 @@ const Features = ({ earning, path }) => {
                       width={"100%"}
                       display={"block"}
                     >
-                      ₹ {feature.subTitle}
+                      $ {feature.subTitle}
                     </Typography>
                   </Box>
                 </Box>

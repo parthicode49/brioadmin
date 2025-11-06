@@ -243,7 +243,7 @@ const Movie = () => {
         {
           type: "inputBox",
           name: "distributor_commission",
-          title: "Pay Per View (In Rupee)",
+          title: "Pay Per View ($)",
           display: "none",
           regex: /^(\d{0,1})(\.{0,1})(\d{0,2})$/,
           placeholder: "Type Content Owner commission",
@@ -922,6 +922,15 @@ const Movie = () => {
             });
             return { ...section, fields: updatedFields };
           }
+          if (section.title === "Ownership") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 2) {
+                return { ...field, disabled: true };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
           return section;
         })
       );
@@ -930,8 +939,17 @@ const Movie = () => {
         prevFormStructure.map((section) => {
           if (section.title === "Details") {
             const updatedFields = section.fields.map((field, index) => {
-              if (index === 8) {
+              if (index === 2) {
                 return { ...field, display: "none" };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          if (section.title === "Ownership") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 8) {
+                return { ...field, disabled: true };
               }
               return field;
             });

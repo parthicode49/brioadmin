@@ -12,7 +12,7 @@ export const useAccessControl = (requiredAccess) => {
       return "All Access";
     }
     
-    const right = rights.find(r => r.content === contentName);
+    const right = rights?.find(r => r.content === contentName);
     return right?.content_value || "All Access";
   };
 

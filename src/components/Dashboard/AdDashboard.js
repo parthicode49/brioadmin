@@ -9,6 +9,7 @@ import HighestWatchedSongGraph from "./DistributorElements/HighestWatchedSongGra
 import Features from "./DistributorElements/Features";
 import { useDispatch, useSelector } from "react-redux";
 import { distributor_dashboard_count } from "../../actions/distributor_dashboard";
+import AdViewGraph from "./AdvertiserDashboard/AdViewGraph";
 
 const AdDashboard = () => {
   const dispatch = useDispatch()
@@ -25,10 +26,10 @@ const AdDashboard = () => {
     <Suspense>
       <>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2 }}>
-          {/* <Grid item xs={12} md={12} lg={12} xl={12}>
-            <MovieRevenueGraph />
-          </Grid>
           <Grid item xs={12} md={12} lg={12} xl={12}>
+            <AdViewGraph />
+          </Grid>
+          {/* <Grid item xs={12} md={12} lg={12} xl={12}>
             <Features dashboardcount={dashboard_count?.data} />
           </Grid>
           <Grid item xs={12} md={6} lg={6} xl={6}>

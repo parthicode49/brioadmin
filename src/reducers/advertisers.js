@@ -10,6 +10,8 @@ const advertisersReducer = (state = { advertisersData: null }, action) => {
       return { ...state, adform: action.payload };
     case actionType.ADVERTISEMENTSADLIST:
       return { ...state, ad_list_adv: action.payload };
+    case actionType.ADDDASHBOARD:
+      return { ...state, ad_list_dashboard: action.payload };
 
     default:
       return state;

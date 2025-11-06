@@ -108,9 +108,10 @@ const ProductDetailsContent = () => {
         columnSpacing={{ xs: 1, sm: 1, md: 1, lg: 2, xl: 2 }}
       >
         <Grid item xs={12} sm={12} md={6} lg={5} xl={5} key={"sdcsdc"}>
-          <ProductProfile data={data} path="he" />
-          {/* <Features earning={earning} path={path}/> */}
+          <ProductProfile data={data} />
+
         </Grid>
+
         <Grid item spacing={4} xs={12} sm={12} md={6} lg={7} xl={7}>
           <Card
             sx={{
@@ -589,7 +590,9 @@ const ProductDetailsContent = () => {
             </Box>
           </Card>
         </Grid>
-
+        <Grid item xs={12} sm={12} md={12} lg={12} xl={12} key={"sdcsdc"}>
+          <Features data={data}/>
+        </Grid>
         {data1 && (
           <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
             <Card
