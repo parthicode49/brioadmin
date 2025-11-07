@@ -23,6 +23,7 @@ export const distributor_update = (formData) => async (dispatch) => {
     return data;
   } catch (error) {
     dispatch({ type: MESSAGE, payload: error?.response?.data });
+    console.log(error , "Dfdsfdfdsfdsdsfsdfds")
     return error?.response?.data;
   }
 };

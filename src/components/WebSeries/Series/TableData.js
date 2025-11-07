@@ -24,6 +24,13 @@ export const TableData = (canEdit) => {
         label: "Ownership",
         subText: "distributor_name",
       },
+      {
+        id: "series_access1",
+        label: "Access",
+        isSpecial: true,
+        align: "left",
+      },
+
       // {
       //   id: 'season',
       //   label: 'Season',
@@ -53,7 +60,7 @@ export const TableData = (canEdit) => {
       //   id: 'content_advisory',
       //   label: 'Content Type',
       // },
-        {
+      {
         id: "approval_status",
         label: "Approval Status",
         isButtonDisplay: true,
@@ -69,7 +76,7 @@ export const TableData = (canEdit) => {
         isSpecial: true,
         align: "left",
       },
-     canEdit && {
+      canEdit && {
         id: "notification",
         label: "Notification",
         isSpecial: true,
@@ -89,12 +96,6 @@ export const TableData = (canEdit) => {
     ].filter(Boolean),
     tableBody: [],
     filterColumn: [
-      // {
-      //   id: "1",
-      //   title: "Access Type",
-      //   name: "series_type",
-      //   options: ["FREE", "TVOD", "SVOD"],
-      // },
       {
         id: "2",
         title: "Language",
@@ -128,6 +129,12 @@ export const TableData = (canEdit) => {
         title: "Status",
         name: "status",
         options: ["Active", "Inactive"],
+      },
+      {
+        id: "1",
+        title: "Access Type",
+        name: "content_access",
+        options: ["FREE", "Rent", "SVOD"],
       },
     ],
   };

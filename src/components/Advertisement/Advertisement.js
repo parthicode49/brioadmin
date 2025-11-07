@@ -8,10 +8,11 @@ import DynamicFormModal from "../utils/NewFormStructure/DynamicFormModal";
 import { useAccessControl } from "../utils/useAccessControl";
 import InfoIcone from "../../images/info.png";
 import { useNavigate } from "react-router-dom";
+import { all_category_list } from "../../actions/Masters/category";
 const Advertisement = () => {
   const { canEdit } = useAccessControl("Ad Master");
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [form, setForm] = useState({});
   const [drawer, setDrawer] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -23,6 +24,7 @@ const Advertisement = () => {
   const [formSub, setFormSub] = useState({});
   const [isModalOpenSub, setIsModalOpenSub] = useState(false);
   const [adPrice, setAdPrice] = useState(null);
+  const categories = useSelector((state) => state.masters.categories);
   const {
     all_advertisement_list_admin,
     advertisement_update,
@@ -48,6 +50,7 @@ const Advertisement = () => {
         setAdPrice(resData?.data?.ad_charge);
       }
     };
+    dispatch(all_category_list());
     dailyAdPrice();
   }, []);
 
@@ -169,7 +172,7 @@ const Advertisement = () => {
         {
           type: "inputBox",
           name: "views_required",
-          title: "Views Required",
+          title: "Guaranteed Views",
           regex: /^[0-9\s]+$/,
           placeholder: "Enter No Of Views",
           required: true,
@@ -215,6 +218,16 @@ const Advertisement = () => {
           display: "none",
           required: true,
         },
+        {
+          type: "select_multiple",
+          name: "prefered_category",
+          title: "Prefered Category",
+          placeholder: "Select Prefered Category",
+          maxSelections: "3",
+          disabled : true,
+          options: [],
+          required: true,
+        },
       ],
     },
     {
@@ -240,6 +253,48 @@ const Advertisement = () => {
     },
   ]);
 
+  useEffect(() => {
+    if (categories?.data) {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 6) {
+                return {
+                  ...field,
+                  options: categories?.data?.map((ele) => ({
+                    label: ele.category_name,
+                    value: ele.id,
+                  })),
+                };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    } else {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+         if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 6) {
+                return {
+                  ...field,
+                  options: []
+                };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    }
+  }, [categories]);
   useEffect(() => {
     if (form?.approval_status == "Rejected") {
       setFormStructure((prevFormStructure) =>
@@ -429,7 +484,7 @@ const Advertisement = () => {
       {
         type: "inputBox",
         name: "views_required",
-        title: "Views Required",
+        title: "Guaranteed Views",
         regex: /^[0-9\s]+$/,
         placeholder: "Enter No Of Views",
         required: true,

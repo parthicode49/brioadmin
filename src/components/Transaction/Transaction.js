@@ -5,7 +5,6 @@ import { Link, useLocation } from "react-router-dom";
 import styles from "./../../styles/PageTitle.module.css";
 import ListTable from "../utils/Table";
 import {
-  all_successfull_transaction_admin_loadless,
   all_transaction_list,
 } from "./../../actions/transaction";
 import { useDispatch, useSelector } from "react-redux";
@@ -118,7 +117,7 @@ export default function Transaction() {
         id: "1",
         name: "transaction_type",
         title: "Transaction Type",
-        options: ["Advertisement", "SVOD", "TVOD"],
+        options: ["Advertisement", "SVOD", "Rent"],
       },
     ],
     isDateRangeFilter: "created_at",
@@ -286,7 +285,7 @@ export default function Transaction() {
           ) : (
             <>
               <p style={{ color: "var(--themeFontColor)" }}>
-                {ele?.transaction_type}
+                {"Rent"}
               </p>
               <span style={{ color: "#dd5107" }}>
                 (

@@ -19,7 +19,7 @@ import { useAccessControl } from "../utils/useAccessControl";
 
 const ComingSoon = () => {
   const { canView, canEdit, isReadOnly } = useAccessControl("Coming Soon");
-  console.log(canView, canEdit, isReadOnly, "vvvvvvvvv")
+  // console.log(canView, canEdit, isReadOnly, "vvvvvvvvv")
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.layout.profile);
@@ -614,6 +614,7 @@ const ComingSoon = () => {
         save={save}
         setSave={setSave}
         isDrawerForm={true}
+        canEdit={canEdit}
         openDrawer={drawer}
         setOpenDrawer={setDrawer}
         formStructure={formStructure}

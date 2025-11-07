@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import ListTable from "../utils/Table";
 import * as Action from "../../actions/livestream";
 import { bindActionCreators } from "redux";
@@ -6,16 +6,18 @@ import { useDispatch, useSelector } from "react-redux";
 import Export from "../utils/Export";
 import { live_stream_category_list } from "../../actions/Masters/livestremcategory";
 import { useAccessControl } from "../utils/useAccessControl";
+import { all_country_list } from "../../actions/Masters/country";
 
 const LiveStream = () => {
-   const { canView, canEdit, isReadOnly } = useAccessControl("Live Stream");
-   console.log(canEdit , "llllllll")
+  const { canView, canEdit, isReadOnly } = useAccessControl("Live Stream");
+  console.log(canEdit, "llllllll");
   const dispatch = useDispatch();
   const [form, setForm] = useState({});
   const [isEdit, setIsEdit] = useState(false);
   const [save, setSave] = useState(false);
   const [drawer, setDrawer] = useState(false);
   const user = useSelector((state) => state.layout.profile);
+  const [usedCountries, setUsedCountries] = useState([]);
   const categories = useSelector(
     (state) => state?.masters?.live_stream_category
   );
@@ -31,6 +33,7 @@ const LiveStream = () => {
 
   useEffect(() => {
     dispatch(live_stream_category_list());
+    dispatch(all_country_list());
   }, []);
 
   const [tableData, setTableData] = useState({
@@ -92,7 +95,34 @@ const LiveStream = () => {
       //   },
     ],
   });
-
+  const [countryFormStructure, setCountryFormStructure] = useState([
+    {
+      type: "select",
+      name: "country",
+      title: "Country",
+      placeholder: "Select Country",
+      options: [],
+      required: true,
+    },
+    {
+      type: "inputBox",
+      name: "price",
+      title: "price",
+      placeholder: "Enter price",
+      required: true,
+      regex: /^[0-9\.]+$/,
+      maxLength: "4",
+    },
+    // {
+    //   type: "inputBox",
+    //   name: "discount_price",
+    //   title: "Discount Price",
+    //   placeholder: "Enter Discount Price",
+    //   required: true,
+    //   regex: /^[0-9\.]+$/,
+    //   maxLength: "3",
+    // },
+  ]);
   const [formStructure, setFormStructure] = useState([
     {
       title: "Details",
@@ -112,7 +142,7 @@ const LiveStream = () => {
           placeholder: "Select Stream Type here",
           options: [
             { value: "FREE", label: "FREE" },
-            { value: "TVOD", label: "TVOD" },
+            { value: "TVOD", label: "Rent" },
             { value: "SVOD", label: "SVOD" },
           ],
           required: true,
@@ -154,6 +184,15 @@ const LiveStream = () => {
           name: "publish_time",
           placeholder: "Select Time",
           required: true,
+          size: "3",
+        },
+        {
+          type: "date",
+          title: "Expiry Time",
+          min: new Date(new Date().setDate(new Date().getDate() + 1)),
+          name: "expiry_date",
+          placeholder: "Select Date",
+          // required: true,
           size: "3",
         },
         {
@@ -206,6 +245,78 @@ const LiveStream = () => {
     },
   ]);
 
+  const countries = useSelector((state) => state?.masters?.countries);
+
+  const tableColumnsForCountry = [
+    { title: "Country Name", field: "country" },
+    // { title: "Discount Price", field: "discount_price" },
+    { title: "Price", field: "price" },
+    // { title: "Final Price", field: "discount_price" },
+  ];
+  useMemo(() => {
+    if (countries?.data) {
+      const temp = [...countryFormStructure];
+      temp[0]["options"] = countries?.data
+        .filter((ele) => !usedCountries.includes(ele?.id))
+        .map((ele) => ({
+          label: ele.country_name,
+          value: ele.country_name,
+        }));
+      setCountryFormStructure(temp);
+    }
+  }, [countries, usedCountries]);
+
+  useEffect(() => {
+    setFormStructure((prevFormStructure) => {
+      const hasRentSection = prevFormStructure?.some(
+        (section) => section.title === "Country Wise Price"
+      );
+
+      // If TVOD, and Rent section doesn't exist -> add it
+      if (form?.stream_type === "TVOD" && !hasRentSection) {
+        return [
+          ...prevFormStructure,
+          {
+            title: "Country Wise Price",
+            fields: [
+              // {
+              //   id: "10",
+              //   type: "inputBox",
+              //   title: `Available Days`,
+              //   placeholder: "Type Movie Available Days",
+              //   name: "tvod_available_days",
+              //   regex: /^[0-9\.]+$/,
+              //   maxLength: "2",
+              //   required: true,
+              // },
+              {
+                type: "country_table",
+                countryFormStructure: countryFormStructure,
+                tableColumns: tableColumnsForCountry,
+                name: "countrys",
+                formTitle: isEdit ? "Edit Country" : "Add Country",
+                title: "Resume/CV",
+                description: "PDF, DOC, DOCX (Max 5MB)",
+                accept: ".pdf,.doc,.docx",
+                size: 6,
+                required: true,
+              },
+            ],
+          },
+        ];
+      }
+
+      // If not TVOD, and Rent section exists -> remove it
+      if (form?.stream_type !== "TVOD" && hasRentSection) {
+        return prevFormStructure.filter(
+          (section) => section.title !== "Country Wise Price"
+        );
+      }
+
+      return prevFormStructure; // no change needed
+    });
+  }, [form?.stream_type]);
+
   useEffect(() => {
     if (categories?.data) {
       setFormStructure((prevFormStructure) =>
@@ -239,45 +350,48 @@ const LiveStream = () => {
     }
   }, [livestream]);
 
-  useEffect(() => {
-    if (form?.stream_type === "TVOD") {
-      setFormStructure((prevFormStructure) =>
-        prevFormStructure.map((section) => {
-          if (section.title === "Details") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 2) {
-                return { ...field, display: "block" };
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          return section;
-        })
-      );
-    } else {
-      setFormStructure((prevFormStructure) =>
-        prevFormStructure.map((section) => {
-          if (section.title === "Details") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 2) {
-                return { ...field, display: "none" };
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          return section;
-        })
-      );
-    }
-  }, [form?.stream_type]);
+  // useEffect(() => {
+  //   if (form?.stream_type === "TVOD") {
+  //     setFormStructure((prevFormStructure) =>
+  //       prevFormStructure.map((section) => {
+  //         if (section.title === "Details") {
+  //           const updatedFields = section.fields.map((field, index) => {
+  //             if (index === 2) {
+  //               return { ...field, display: "block" };
+  //             }
+  //             return field;
+  //           });
+  //           return { ...section, fields: updatedFields };
+  //         }
+  //         return section;
+  //       })
+  //     );
+  //   } else {
+  //     setFormStructure((prevFormStructure) =>
+  //       prevFormStructure.map((section) => {
+  //         if (section.title === "Details") {
+  //           const updatedFields = section.fields.map((field, index) => {
+  //             if (index === 2) {
+  //               return { ...field, display: "none" };
+  //             }
+  //             return field;
+  //           });
+  //           return { ...section, fields: updatedFields };
+  //         }
+  //         return section;
+  //       })
+  //     );
+  //   }
+  // }, [form?.stream_type]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData();
-    Object.keys(form)?.map((key) => data.append(key, form?.[key]));
+    Object.keys(form)?.map(
+      (key) => key !== "countrys" && data.append(key, form?.[key])
+    );
     data.append("user", user?.id);
+    data.append("countrys", JSON.stringify(form?.countrys));
     if (isEdit) {
       const resData = await update_live_stream(data);
       if (resData?.status === 200) {
@@ -314,6 +428,7 @@ const LiveStream = () => {
         openDrawer={drawer}
         setOpenDrawer={setDrawer}
         formStructure={formStructure}
+        setUsedCountries={setUsedCountries}
         handleSubmit={handleSubmit}
         form={form}
         canEdit={canEdit}

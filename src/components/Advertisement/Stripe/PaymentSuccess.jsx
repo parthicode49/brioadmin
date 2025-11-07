@@ -84,6 +84,7 @@ export default function PaymentSuccess() {
     let userObj = {
       id: metadatafn?.ad_id,
       payable_amount: metadatafn?.price,
+      flag: metadatafn?.flag,
       views_required: metadatafn?.required_view,
       payment_id: paymentIntentFn?.id,
     };

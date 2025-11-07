@@ -9,6 +9,7 @@ import DynamicFormModal from "../utils/NewFormStructure/DynamicFormModal";
 import StripePayment from "../Advertisement/Stripe/StripePayment";
 import { useNavigate } from "react-router-dom";
 import EnlargedView from "../utils/EnlargedView";
+import { all_category_list } from "../../actions/Masters/category";
 
 const Advertisement = () => {
   const dispatch = useDispatch();
@@ -24,6 +25,7 @@ const Advertisement = () => {
   const [formSub, setFormSub] = useState({});
   const [open, setOpen] = useState(false);
   const [content, setContent] = useState("");
+    const categories = useSelector((state) => state.masters.categories);
   const {
     advertisement_create,
     advertisement_update,
@@ -42,7 +44,9 @@ const Advertisement = () => {
       }
     };
     dailyAdPrice();
+          dispatch(all_category_list());
   }, []);
+
   console.log(adPrice, "adPrice44444");
   useEffect(() => {
     if (user?.id) {
@@ -71,6 +75,7 @@ const Advertisement = () => {
         ad_name: data?.product_name,
         required_view: data?.views_required,
         ad_id: data?.id,
+        flag: false,
       },
     });
   };
@@ -93,8 +98,16 @@ const Advertisement = () => {
               }}
               onClick={() =>
                 ele?.approval_status === "Approved"
-                  ? ele?.payment_status === "Paid" ? handleFormSub(ele?.id, ele?.product_name) : (setOpen(true), setContent("First Pay For Advertisement before adding Top Up"))
-                  : (setOpen(true), setContent("Advertisement should be Approved before adding extra views"))
+                  ? ele?.payment_status === "Paid"
+                    ? handleFormSub(ele?.id, ele?.product_name)
+                    : (setOpen(true),
+                      setContent(
+                        "First Pay For Advertisement before adding Top Up"
+                      ))
+                  : (setOpen(true),
+                    setContent(
+                      "Advertisement should be Approved before adding extra views"
+                    ))
               }
             >
               Top Up
@@ -272,13 +285,13 @@ const Advertisement = () => {
           title: "Payable Amount",
           regex: /^[0-9\s]+$/,
           placeholder: "Enter Amount ($)",
-          symbol : "$",
+          symbol: "$",
           required: true,
         },
         {
           type: "inputBox",
           name: "views_required",
-          title: "Views Required",
+          title: "Guaranteed Views",
           regex: /^[0-9\s]+$/,
           placeholder: "Enter No Of Views",
           required: true,
@@ -293,6 +306,15 @@ const Advertisement = () => {
           display: "none",
           required: true,
         },
+        {
+          type: "select_multiple",
+          name: "prefered_category",
+          title: "Prefered Category",
+          placeholder: "Select Prefered Category",
+          maxSelections: "3",
+          options: [],
+          required: true,
+        },
       ],
     },
     {
@@ -305,7 +327,8 @@ const Advertisement = () => {
           placeholder: "Paste Advertise Link",
           required: true,
           size: "12",
-          displayText : "Please upload all video links, trailer links, posters, and thumbnails to the Google Drive / Dropbox folder and share the drive link once done."
+          displayText:
+            "Please upload all video links, trailer links, posters, and thumbnails to the Google Drive / Dropbox folder and share the drive link once done.",
         },
         {
           type: "inputBox",
@@ -314,7 +337,8 @@ const Advertisement = () => {
           placeholder: "Paste Link",
           // required: true,
           size: "12",
-          displayText : "If you wish for customers to easily view your site, you can include your website link (not required)."
+          displayText:
+            "If you wish for customers to easily view your site, you can include your website link (not required).",
         },
       ],
     },
@@ -340,14 +364,14 @@ const Advertisement = () => {
         name: "payable_amount",
         title: "Payable Amount",
         regex: /^[0-9\s]+$/,
-         placeholder: "  Enter Amount ($)",
-          symbol : "$",
+        placeholder: "  Enter Amount ($)",
+        symbol: "$",
         required: true,
       },
       {
         type: "inputBox",
         name: "views_required",
-        title: "Views Required",
+        title: "Guaranteed Views",
         regex: /^[0-9\s]+$/,
         placeholder: "Enter No Of Views",
         required: true,
@@ -389,6 +413,48 @@ const Advertisement = () => {
       );
     }
   }, [form?.approval_status]);
+    useEffect(() => {
+      if (categories?.data) {
+        setFormStructure((prevFormStructure) =>
+          prevFormStructure.map((section) => {
+            if (section.title === "Details") {
+              const updatedFields = section.fields.map((field, index) => {
+                if (index === 4) {
+                  return {
+                    ...field,
+                    options: categories?.data?.map((ele) => ({
+                      label: ele.category_name,
+                      value: ele.id,
+                    })),
+                  };
+                }
+                return field;
+              });
+              return { ...section, fields: updatedFields };
+            }
+            return section;
+          })
+        );
+      } else {
+        setFormStructure((prevFormStructure) =>
+          prevFormStructure.map((section) => {
+           if (section.title === "Details") {
+              const updatedFields = section.fields.map((field, index) => {
+                if (index === 4) {
+                  return {
+                    ...field,
+                    options: []
+                  };
+                }
+                return field;
+              });
+              return { ...section, fields: updatedFields };
+            }
+            return section;
+          })
+        );
+      }
+    }, [categories]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -429,6 +495,7 @@ const Advertisement = () => {
         ad_name: formSub?.ad_name,
         required_view: formSub?.views_required,
         ad_id: formSub?.id,
+        flag: true,
       },
     });
     // const resData = await advertisement_payment_create(formSub);

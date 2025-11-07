@@ -236,7 +236,7 @@ const Movie = () => {
           options: [
             { value: "FREE", label: "FREE" },
             { value: "SVOD", label: "SVOD" },
-            { value: "TVOD", label: "TVOD" },
+            { value: "TVOD", label: "Rent" },
           ],
           required: true,
         },
@@ -1263,7 +1263,7 @@ const Movie = () => {
             </span>
           ) : value?.content_access === "TVOD" ? (
             <span style={{ color: "var(--dangerColor)" }}>
-              {value?.content_access}
+               {"Rent"}
             </span>
           ) : (
             <span style={{ color: "var(--warningColor)" }}>

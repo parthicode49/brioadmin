@@ -58,6 +58,7 @@ export default function StripePayment() {
               "metadata[required_view]": location?.state?.required_view,
               "metadata[price]": location?.state?.price,
               "metadata[ad_id]": location?.state?.ad_id,
+              "metadata[flag]": location?.state?.flag,
             }),
           }
         );

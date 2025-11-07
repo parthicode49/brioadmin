@@ -33,7 +33,6 @@ export const TableData = (canEdit) => {
         label: "Ownership",
         subText: "distributor_name",
       },
-      ,
       role !== "Distributor" && {
         id: "movie_access1",
         label: "Access",
@@ -129,7 +128,7 @@ export const TableData = (canEdit) => {
         id: "1",
         title: "Access Type",
         name: "content_access",
-        options: ["FREE", "TVOD", "SVOD"],
+        options: ["FREE", "Rent", "SVOD"],
       },
       //  {
       //   id: "2",

@@ -95,7 +95,7 @@ const Advertisers = () => {
           title: "Company Name",
           name: "company_name",
           placeholder: "Enter Company Name",
-          required: true,
+          // required: true,
         },
         {
           id: "2",

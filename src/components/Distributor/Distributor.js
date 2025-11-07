@@ -180,7 +180,7 @@ const Distributor = () => {
           title: "Company Name",
           name: "company_name",
           placeholder: "Enter Company Name",
-          required: true,
+          // required: true,
         },
         {
           id: "2",
@@ -365,14 +365,20 @@ const Distributor = () => {
       );
     }
   }, [isEdit]);
-  console.log(formStructure, isEdit, "new Coer");
   const handleSubmit = async (event) => {
     event.preventDefault();
     // const data = new FormData();
     // Object.keys(form)?.map((key) => data.append(key, form?.[key]));
     // data.append("user", user?.id);
     if (isEdit) {
-      const resData = await distributor_update(form);
+      const resData = await distributor_update({
+        company_name: form?.company_name,
+        distributor_name: form?.distributor_name,
+        email: form?.email,
+        mobile_number: form?.mobile_number,
+        password: form?.password,
+        id: form?.id,
+      });
       if (resData?.status === 200) {
         setForm({});
         setSave(!save);
@@ -486,6 +492,7 @@ const Distributor = () => {
         setForm={setForm}
         setTableData={setTableData}
         setIsEdit={setIsEdit}
+        isEdit={isEdit}
         save={save}
         setSave={setSave}
         isMultiNotificationSend={true}

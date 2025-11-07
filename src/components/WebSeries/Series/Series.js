@@ -220,7 +220,7 @@ const Series = () => {
           options: [
             { value: "FREE", label: "FREE" },
             { value: "SVOD", label: "SVOD" },
-            { value: "TVOD", label: "TVOD" },
+            { value: "TVOD", label: "Rent" },
           ],
           required: true,
         },
@@ -1026,6 +1026,20 @@ const Series = () => {
       const temp = tableData;
       temp.tableBody = series?.data?.map((value) => ({
         ...value,
+        series_access1 : 
+            value?.content_access === "FREE" ? (
+            <span style={{ color: "var(--successColor)" }}>
+              {value?.content_access}
+            </span>
+          ) : value?.content_access === "TVOD" ? (
+            <span style={{ color: "var(--dangerColor)" }}>
+               {"Rent"}
+            </span>
+          ) : (
+            <span style={{ color: "var(--warningColor)" }}>
+              {value?.content_access}
+            </span>
+          ),
         sub_category_name: value?.subcategory_name?.join(" , "),
         distributor_name:
           value?.ownership == "Content Owner" ? value?.distributor_name : null,

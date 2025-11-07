@@ -226,7 +226,7 @@ const Series = () => {
     //       options: [
     //         { value: "FREE", label: "FREE" },
     //         { value: "SVOD", label: "SVOD" },
-    //         { value: "TVOD", label: "TVOD" },
+    //         { value: "TVOD", label: "Rent" },
     //       ],
     //       required: true,
     //     },
@@ -335,7 +335,7 @@ const Series = () => {
           options: [
             { value: "FREE", label: "FREE" },
             { value: "SVOD", label: "SVOD" },
-            { value: "TVOD", label: "TVOD" },
+            { value: "TVOD", label: "Rent" },
           ],
           required: true,
         },
