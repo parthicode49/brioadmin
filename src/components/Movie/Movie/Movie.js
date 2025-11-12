@@ -909,57 +909,57 @@ const Movie = () => {
     }
   }, [form?.ownership]);
 
-  useEffect(() => {
-    if (isEdit) {
-      setFormStructure((prevFormStructure) =>
-        prevFormStructure.map((section) => {
-          if (section.title === "Details") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 8) {
-                return { ...field, display: "block" };
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          if (section.title === "Ownership") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 2) {
-                return { ...field, disabled: true };
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          return section;
-        })
-      );
-    } else {
-      setFormStructure((prevFormStructure) =>
-        prevFormStructure.map((section) => {
-          if (section.title === "Details") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 2) {
-                return { ...field, display: "none" };
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          if (section.title === "Ownership") {
-            const updatedFields = section.fields.map((field, index) => {
-              if (index === 8) {
-                return { ...field, disabled: true };
-              }
-              return field;
-            });
-            return { ...section, fields: updatedFields };
-          }
-          return section;
-        })
-      );
-    }
-  }, [isEdit]);
+  // useEffect(() => {
+  //   if (isEdit) {
+  //     setFormStructure((prevFormStructure) =>
+  //       prevFormStructure.map((section) => {
+  //         if (section.title === "Details") {
+  //           const updatedFields = section.fields.map((field, index) => {
+  //             if (index === 8) {
+  //               return { ...field, display: "block" };
+  //             }
+  //             return field;
+  //           });
+  //           return { ...section, fields: updatedFields };
+  //         }
+  //         if (section.title === "Ownership") {
+  //           const updatedFields = section.fields.map((field, index) => {
+  //             if (index === 2) {
+  //               return { ...field, disabled: true };
+  //             }
+  //             return field;
+  //           });
+  //           return { ...section, fields: updatedFields };
+  //         }
+  //         return section;
+  //       })
+  //     );
+  //   } else {
+  //     setFormStructure((prevFormStructure) =>
+  //       prevFormStructure.map((section) => {
+  //         if (section.title === "Details") {
+  //           const updatedFields = section.fields.map((field, index) => {
+  //             if (index === 8) {
+  //               return { ...field, display: "none" };
+  //             }
+  //             return field;
+  //           });
+  //           return { ...section, fields: updatedFields };
+  //         }
+  //         if (section.title === "Ownership") {
+  //           const updatedFields = section.fields.map((field, index) => {
+  //             if (index === 2) {
+  //               return { ...field, disabled: true };
+  //             }
+  //             return field;
+  //           });
+  //           return { ...section, fields: updatedFields };
+  //         }
+  //         return section;
+  //       })
+  //     );
+  //   }
+  // }, [isEdit]);
 
   useEffect(() => {
     if (distributors?.data) {

@@ -30,6 +30,7 @@ const Advertisement = () => {
     advertisement_update,
     advertisement_charge_list,
     advertisement_payment_create,
+    admin_advertisement_create,
   } = bindActionCreators(Action, dispatch);
 
   useEffect(() => {
@@ -53,8 +54,6 @@ const Advertisement = () => {
     dispatch(all_category_list());
     dailyAdPrice();
   }, []);
-
-  console.log(advertisementList, "dfsfddsf");
 
   const [tableData, setTableData] = useState({
     tableTitle: "Advertisements",
@@ -102,12 +101,12 @@ const Advertisement = () => {
         isSpecial: true,
         align: "left",
       },
-      // {
-      //   id: "top_up",
-      //   label: "Top Up",
-      //   isSpecial: true,
-      //   align: "left",
-      // },
+      {
+        id: "top_up",
+        label: "Top Up",
+        isSpecial: true,
+        align: "left",
+      },
       {
         id: "status",
         label: "Status",
@@ -171,6 +170,16 @@ const Advertisement = () => {
         },
         {
           type: "inputBox",
+          name: "payable_amount",
+          title: "Payable Amount ($)",
+          regex: /^[0-9\s]+$/,
+          placeholder: "Enter Amount",
+          symbol: "$",
+
+          required: true,
+        },
+        {
+          type: "inputBox",
           name: "views_required",
           title: "Guaranteed Views",
           regex: /^[0-9\s]+$/,
@@ -178,21 +187,13 @@ const Advertisement = () => {
           required: true,
           disabled: true,
         },
-        {
-          type: "inputBox",
-          name: "payable_amount",
-          title: "Payable Amount ($)",
-          regex: /^[0-9\s]+$/,
-          placeholder: "Enter Amount",
-          symbol: "$",
-          disabled: true,
-          required: true,
-        },
+
         {
           type: "toggle",
           title: "Approval Status",
           name: "approval_status",
           // required: true,
+          display: "none",
           size: "3",
           options: [
             { value: "Pending", color: "danger" },
@@ -224,7 +225,7 @@ const Advertisement = () => {
           title: "Prefered Category",
           placeholder: "Select Prefered Category",
           maxSelections: "3",
-          disabled : true,
+          // disabled: true,
           options: [],
           required: true,
         },
@@ -239,6 +240,17 @@ const Advertisement = () => {
           title: "Advertise Link",
           placeholder: "Paste Advertise Link",
           required: true,
+          display: "none",
+          size: "12",
+        },
+        {
+          type: "inputBox",
+          name: "advertise_url_m3u8",
+          title: "Advertise URL ( .m3u8 )",
+          // regex: /^[0-9\s]+$/,
+          placeholder: "Enter M3u8 URL",
+          display: "none",
+          required: true,
           size: "12",
         },
         {
@@ -252,6 +264,248 @@ const Advertisement = () => {
       ],
     },
   ]);
+
+  useEffect(() => {
+    if (advertisementList?.length > 0) {
+      const temp = tableData;
+      temp.tableBody = advertisementList?.map((ele) => ({
+        ...ele,
+        advertiser_name:
+          ele?.ownership === "In House" ? "In House" : ele?.advertiser_name,
+        advertiser_company_name:
+          ele?.ownership === "In House" ? <p style={{ color: "var(--themeFontColor)" }}> - </p> : ele?.advertiser_company_name,
+        info: (
+          <img
+            src={InfoIcone}
+            width="20px"
+            height="20px"
+            style={{ cursor: "pointer" }}
+            onClick={() => navigate("detail", { state: { id: ele?.id } })}
+          />
+        ),
+        payment_status1:
+          ele?.ownership == "In House" ? (
+            <p style={{ color: "var(--themeFontColor)" }}> - </p>
+          ) : ele?.payment_status === "Paid" ? (
+            <button
+              disabled
+              style={{
+                padding: "10px 24px",
+                color: "#10b981",
+                background: "#ecfdf5",
+                border: "1px solid #10b981",
+                borderRadius: "6px",
+                fontSize: "14px",
+                fontWeight: "500",
+                cursor: "not-allowed",
+                opacity: "0.9",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+              }}
+            >
+              Paid
+            </button>
+          ) : (
+            <button
+              disabled
+              style={{
+                padding: "10px 24px",
+                color: "#ff6b00",
+                background: "#fdf1ecff",
+                border: "1px solid #ff6b00",
+                borderRadius: "6px",
+                fontSize: "14px",
+                fontWeight: "500",
+                cursor: "not-allowed",
+                opacity: "0.9",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+              }}
+            >
+              Unpaid
+            </button>
+          ),
+        payment_status: ele?.payment_status === "Paid" ? "Paid" : "Unpaid",
+        payable_amount1: "$ " + ele?.payable_amount,
+        top_up:   ele?.ownership === "In House" ?  (
+          <div>
+            <button
+              style={{
+                padding: "5px 15px",
+                color: "rgb(238, 127, 37)",
+                background: "transparent",
+                border: "1px solid rgb(238, 127, 37)",
+                borderRadius: "5px",
+              }}
+              onClick={() => handleFormSub(ele?.id)}
+            >
+              Top Up
+            </button>
+          </div>
+        ) : <p style={{ color: "var(--themeFontColor)" }}> - </p> ,
+      }));
+      setTableData({ ...temp });
+      // setForm({ ...form, sequence: Number(tableData.tableBody[tableData.tableBody.length - 1]?.["sequence"]) + 1 })
+    }
+  }, [advertisementList]);
+
+  useEffect(() => {
+    if (
+      isEdit &&
+      form?.advertiser !== null &&
+      form?.advertiser !== "null" &&
+      form?.advertiser !== "" &&
+      form?.advertiser !== undefined
+    ) {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 3) {
+                return {
+                  ...field,
+                  display: "block",
+                };
+              }
+
+              if (index === 6) {
+                return {
+                  ...field,
+                  disabled: true,
+                };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    } else {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 3) {
+                return {
+                  ...field,
+                  display: "none",
+                };
+              }
+              if (index === 5) {
+                return {
+                  ...field,
+                  display: "none",
+                };
+              }
+              if (index === 6) {
+                return {
+                  ...field,
+                  disabled: false,
+                };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    }
+  }, [isEdit]);
+  useEffect(() => {
+    if (
+      form?.advertiser !== null &&
+      form?.advertiser !== "null" &&
+      form?.advertiser !== "" &&
+      form?.advertiser !== undefined
+    ) {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Media") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 0) {
+                return {
+                  ...field,
+                  display: "block",
+                };
+              }
+              if (index === 1) {
+                return {
+                  ...field,
+                  display: "none",
+                };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 1) {
+                return {
+                  ...field,
+                  disabled: true,
+                };
+              }
+
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    } else {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Media") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 0) {
+                return {
+                  ...field,
+                  display: "none",
+                };
+              }
+              if (index === 1) {
+                return {
+                  ...field,
+                  display: "block",
+                };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 1) {
+                return {
+                  ...field,
+                  disabled: false,
+                };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    }
+  }, [form?.advertiser]);
 
   useEffect(() => {
     if (categories?.data) {
@@ -278,12 +532,12 @@ const Advertisement = () => {
     } else {
       setFormStructure((prevFormStructure) =>
         prevFormStructure.map((section) => {
-         if (section.title === "Details") {
+          if (section.title === "Details") {
             const updatedFields = section.fields.map((field, index) => {
               if (index === 6) {
                 return {
                   ...field,
-                  options: []
+                  options: [],
                 };
               }
               return field;
@@ -357,15 +611,36 @@ const Advertisement = () => {
     event.preventDefault();
     const data = new FormData();
     Object.keys(form)?.map((key) => data.append(key, form?.[key]));
-    // data.append("advertiser", user?.id);
-    const resData = await advertisement_update(data);
-    if (resData?.status === 200) {
-      // setForm({});
-      setForm({});
-      setSave(!save);
-      setDrawer(false);
+    if (
+      form?.advertiser == null ||
+      form?.advertiser == "null" ||
+      form?.advertiser == "" ||
+      form?.advertiser == undefined
+    ) {
+      data.append("ownership", "In House");
+      data.append("master", user?.id);
+      data.append("approval_status", "Approved");
+    }
+    if (isEdit) {
+      const resData = await advertisement_update(data);
+      if (resData?.status === 200) {
+        // setForm({});
+        setForm({});
+        setSave(!save);
+        setDrawer(false);
+      } else {
+        setForm(form);
+      }
     } else {
-      setForm(form);
+      const resData = await admin_advertisement_create(data);
+      if (resData?.status === 200) {
+        // setForm({});
+        setForm({});
+        setSave(!save);
+        setDrawer(false);
+      } else {
+        setForm(form);
+      }
     }
   };
   const handleFormSub = (id) => {
@@ -376,95 +651,21 @@ const Advertisement = () => {
       id: id,
     });
   };
-  useEffect(() => {
-    if (advertisementList?.length > 0) {
-      const temp = tableData;
-      temp.tableBody = advertisementList?.map((ele) => ({
-        ...ele,
-        info: (
-          <img
-            src={InfoIcone}
-            width="20px"
-            height="20px"
-            style={{ cursor: "pointer" }}
-            onClick={() => navigate("detail", { state: { id: ele?.id } })}
-          />
-        ),
-        payment_status1:
-          ele?.payment_status === "Paid" ? (
-            <button
-              disabled
-              style={{
-                padding: "10px 24px",
-                color: "#10b981",
-                background: "#ecfdf5",
-                border: "1px solid #10b981",
-                borderRadius: "6px",
-                fontSize: "14px",
-                fontWeight: "500",
-                cursor: "not-allowed",
-                opacity: "0.9",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "6px",
-              }}
-            >
-              Paid
-            </button>
-          ) : (
-            <button
-              disabled
-              style={{
-                padding: "10px 24px",
-                color: "#ff6b00",
-                background: "#fdf1ecff",
-                border: "1px solid #ff6b00",
-                borderRadius: "6px",
-                fontSize: "14px",
-                fontWeight: "500",
-                cursor: "not-allowed",
-                opacity: "0.9",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "6px",
-              }}
-            >
-              Unpaid
-            </button>
-          ),
-        payment_status: ele?.payment_status === "Paid" ? "Paid" : "Unpaid",
-        payable_amount1: "$ " + ele?.payable_amount,
-        top_up: (
-          <div>
-            <button
-              style={{
-                padding: "5px 15px",
-                color: "rgb(238, 127, 37)",
-                background: "transparent",
-                border: "1px solid rgb(238, 127, 37)",
-                borderRadius: "5px",
-              }}
-              onClick={() => handleFormSub(ele?.id)}
-            >
-              Top Up
-            </button>
-          </div>
-        ),
-      }));
-      setTableData({ ...temp });
-      // setForm({ ...form, sequence: Number(tableData.tableBody[tableData.tableBody.length - 1]?.["sequence"]) + 1 })
-    }
-  }, [advertisementList]);
 
   const handleSubmit2 = async () => {
-    const resData = await advertisement_payment_create(formSub);
+    const resData = await advertisement_payment_create({...formSub , flag : true });
     if (resData?.status === 200) {
       setSave(!save);
       setFormSub({});
       setIsModalOpenSub(false);
     }
   };
-
+  useEffect(() => {
+    if (form?.payable_amount) {
+      const amount = Number(form?.payable_amount) / parseFloat(adPrice);
+      setForm({ ...form, views_required: amount });
+    }
+  }, [form?.payable_amount]);
   useEffect(() => {
     if (formSub?.payable_amount) {
       const amount = Number(formSub?.payable_amount) / parseFloat(adPrice);
@@ -526,7 +727,7 @@ const Advertisement = () => {
         setOpenDrawer={setDrawer}
         formStructure={formStructure}
         handleSubmit={handleSubmit}
-        hideAddBtn={true}
+        // hideAddBtn={true}
         isEdit={isEdit}
         canEdit={canEdit}
         formTitle={isEdit ? "Edit Advertisement" : "Add Advertisement"}

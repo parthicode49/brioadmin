@@ -58,7 +58,7 @@ const AdInMovie = ({ id }) => {
     if (adData?.length > 0) {
       const temp = formStructure;
       temp[0]["options"] = adData?.map((ele) => ({
-        label: ele?.product_name + " - " + ele?.advertiser,
+        label: ele?.product_name + " - " + (ele?.advertiser ? ele?.advertiser : "Admin"),
         value: ele?.id,
       }));
       setFormStructure([...temp]);

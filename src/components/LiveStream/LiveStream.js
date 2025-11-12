@@ -7,6 +7,7 @@ import Export from "../utils/Export";
 import { live_stream_category_list } from "../../actions/Masters/livestremcategory";
 import { useAccessControl } from "../utils/useAccessControl";
 import { all_country_list } from "../../actions/Masters/country";
+import FileCopyIcon from "@mui/icons-material/FileCopy";  
 
 const LiveStream = () => {
   const { canView, canEdit, isReadOnly } = useAccessControl("Live Stream");
@@ -49,6 +50,7 @@ const LiveStream = () => {
       {
         id: "channel_name",
         label: "Title",
+        subText : "category_name"
       },
       {
         id: "stream_type",
@@ -66,24 +68,43 @@ const LiveStream = () => {
         subText: "publish_time",
         // isImage: true,
       },
-
       {
-        id: "category_name",
-        label: "category",
-        align: "center",
+        id: "stream_start_date",
+        label: "Stream Start",
+        subText: "stream_start_time",
+        // isImage: true,
       },
+      {
+        id: "stream_key_0",
+        label: "Stream Key",
+        isSpecial: true,
+        align: "left",
+      },
+      {
+        id: "stream_server_0",
+        label: "Stream URL",
+        isSpecial: true,
+        align: "left",
+      },
+      {
+        id: "channel_live_url_0",
+        label: "Playback URL",
+        isSpecial: true,
+        align: "left",
+      },
+
 
       {
         id: "status",
         label: "Status",
         // isButtonDisplay: true,
       },
-      {
-        id: "edit",
-        label: "Update",
-        access: "true",
-        isNewForm: true,
-      },
+      // {
+      //   id: "edit",
+      //   label: "Update",
+      //   access: "true",
+      //   isNewForm: true,
+      // },
     ],
     tableBody: [],
     filterColumn: [
@@ -188,7 +209,28 @@ const LiveStream = () => {
         },
         {
           type: "date",
-          title: "Expiry Time",
+          variant: "date",
+          title: "Stream Start Date",
+          min: new Date().toISOString().split("T")[0],
+          name: "stream_start_date",
+          default: new Date().toISOString().split("T")[0],
+          required: true,
+          placeholder: "Select Date",
+          size: "3",
+        },
+        {
+          type: "time",
+          variant: "time",
+          title: "Stream Start Time",
+          default: new Date().toISOString().split("T")[1],
+          name: "stream_start_time",
+          placeholder: "Select Time",
+          required: true,
+          size: "3",
+        },
+        {
+          type: "date",
+          title: "Expiry Date",
           min: new Date(new Date().setDate(new Date().getDate() + 1)),
           name: "expiry_date",
           placeholder: "Select Date",
@@ -213,14 +255,14 @@ const LiveStream = () => {
     {
       title: "Media",
       fields: [
-        {
-          type: "inputBox",
-          name: "channel_live_url",
-          title: "Channel Link",
-          placeholder: "Paste Channel Link",
-          required: true,
-          size: "9",
-        },
+        // {
+        //   type: "inputBox",
+        //   name: "channel_live_url",
+        //   title: "Channel Link",
+        //   placeholder: "Paste Channel Link",
+        //   required: true,
+        //   size: "9",
+        // },
         {
           type: "image",
           name: "poster",
@@ -341,11 +383,113 @@ const LiveStream = () => {
       );
     }
   }, [categories]);
+    const handleCopyText = (textToCopy) => {
+    // console.log(textToCopy ,"fgf")
+    // if (!textToCopy) {
+    //   console.error('No text to copy');
+    //   alert('No text to copy!');
+    //   return;
+    // }
+
+    navigator.clipboard.writeText(textToCopy).then(
+      () => {
+        // console.log("Number copied to clipboard:", textToCopy);
+        // alert(`${textToCopy} copied to clipboard!`);
+      },
+      (err) => {
+        console.error("Failed to copy text:", err);
+        alert("Failed to copy text. Please try again.");
+      }
+    );
+  };
 
   useEffect(() => {
     if (livestream?.data) {
       const temp = tableData;
-      temp.tableBody = livestream?.data || [];
+      temp.tableBody = livestream?.data?.map((ele)=>({
+        ...ele,
+        stream_key_0 : <>
+        <p
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+             color: "var(--gradientColor2)"
+            }}
+          >
+            { ele?.stream_key?.length > 30  ? ele?.stream_key?.substring(0,30) + "..." : ele?.stream_key }
+            <span
+              style={{
+                color: "var(--gradientColor2)",
+                width: "40%",
+                paddingLeft: "5px",
+                cursor: "pointer",
+              }}
+              onClick={() =>
+                handleCopyText(
+                  ele?.stream_key
+                )
+              }
+            >
+              <FileCopyIcon color="inherit" />{" "}
+            </span>
+            </p>
+        </>,
+        stream_server_0 : <>
+        <p
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+             color: "var(--gradientColor2)"
+            }}
+          >
+            { ele?.stream_server?.length > 20  ? ele?.stream_server?.substring(0,20) + "..." : ele?.stream_server }
+            <span
+              style={{
+                color: "var(--gradientColor2)",
+                width: "40%",
+                paddingLeft: "5px",
+                cursor: "pointer",
+              }}
+              onClick={() =>
+                handleCopyText(
+                  ele?.stream_server
+                )
+              }
+            >
+              <FileCopyIcon color="inherit" />{" "}
+            </span>
+            </p>
+        </>,
+        channel_live_url_0 : <>
+        <p
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+             color: "var(--gradientColor2)"
+            }}
+          >
+            { ele?.channel_live_url?.length > 20  ? ele?.channel_live_url?.substring(0,20) + "..." : ele?.channel_live_url }
+            <span
+              style={{
+                color: "var(--gradientColor2)",
+                width: "40%",
+                paddingLeft: "5px",
+                cursor: "pointer",
+              }}
+              onClick={() =>
+                handleCopyText(
+                  ele?.channel_live_url
+                )
+              }
+            >
+              <FileCopyIcon color="inherit" />{" "}
+            </span>
+            </p>
+        </>,
+      })) || [];
       setTableData({ ...temp });
     }
   }, [livestream]);

@@ -15,7 +15,7 @@ const AdInEpisode = ({ id }) => {
     advertisement_in_episode_update,
     advertisement_name_id_only,
   } = bindActionCreators(Action, dispatch);
-  const [form, setForm] = useState({ episode: id });
+  const [form, setForm] = useState({});
   const [isEdit, setIsEdit] = useState(false);
   const user = useSelector((state) => state.layout.profile);
   const [save, setSave] = useState(false);
@@ -55,7 +55,7 @@ const AdInEpisode = ({ id }) => {
     if (adData?.length > 0) {
       const temp = formStructure;
       temp[0]["options"] = adData?.map((ele) => ({
-        label: ele?.product_name + " - " +  ele?.advertiser,
+        label: ele?.product_name + " - " + (ele?.advertiser ? ele?.advertiser : "Admin"),
         value: ele?.id,
       }));
       setFormStructure([...temp]);
@@ -139,7 +139,7 @@ const AdInEpisode = ({ id }) => {
   }, [isEdit]);
   const handleSubmit = async (event) => {
     if (isEdit) {
-      const resData = await advertisement_in_episode_update(form);
+      const resData = await advertisement_in_episode_update({...form , episode : id});
       if (resData?.status === 200) {
         setForm({});
         setSave(!save);
@@ -148,7 +148,7 @@ const AdInEpisode = ({ id }) => {
         setForm(form);
       }
     } else {
-      const resData = await advertisement_in_episode_create(form);
+      const resData = await advertisement_in_episode_create({...form , episode : id});
       if (resData?.status === 200) {
         // setForm({});
         setForm({});

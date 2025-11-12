@@ -199,8 +199,9 @@ const Profile = (props) => {
         <MenuItem
           onClick={() => {
             sessionStorage.setItem("remember_me", "false");
-            sessionStorage.setItem("loginDetails", "{}");
-            sessionStorage.setItem("loggedInDetails", "{}");
+            sessionStorage.setItem("loginDetails", null);
+            sessionStorage.setItem("loggedInDetails", null);
+            // sessionStorage.setItem(null)
             dispatch({ type: PROFILE, payload: {} });
             dispatch({ type: ADVERTISER, payload: {} });
             dispatch({ type: DISTRIBUTOR, payload: {} });

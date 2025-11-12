@@ -19,6 +19,7 @@ import {
   RadioGroup,
   Radio,
   FormControl,
+  CircularProgress,
 } from "@mui/material";
 import { CloudUpload, Delete } from "@mui/icons-material";
 import { Slide } from "@mui/material";
@@ -46,6 +47,7 @@ const DynamicFormModal = ({
   // const [formData, setFormData] = useState({});
   const [filePreviews, setFilePreviews] = useState({});
   const [allowSubmit, setAllowSubmit] = useState(true);
+  const [loading, setLoading] = useState(false);
   const fileInputRefs = useRef({});
   if (!formData) {
     console.warn("formData is undefined!");
@@ -126,114 +128,197 @@ const DynamicFormModal = ({
   //   setFilePreviews({});
   // };
 
-  const handleFormSubmit = (e) => {
-    e.preventDefault(); // Prevent default submission
+  // const handleFormSubmit = (e) => {
+  //   e.preventDefault(); // Prevent default submission
 
-    let requiredFieldCount = 0; // Total required fields count
-    let requiredFieldFilledCount = 0; // Filled required fields count
-    let emailValid = true; // Email validity flag
-    let mobileValid = true; // Mobile number validity flag
-    let pancardValid = true; // PAN validity flag
-    let gstValid = true; // GST validity flag
+  //   let requiredFieldCount = 0; // Total required fields count
+  //   let requiredFieldFilledCount = 0; // Filled required fields count
+  //   let emailValid = true; // Email validity flag
+  //   let mobileValid = true; // Mobile number validity flag
+  //   let pancardValid = true; // PAN validity flag
+  //   let gstValid = true; // GST validity flag
+
+  //   formStructure?.forEach((field) => {
+  //     console.log(field.required, formStructure, "Hiii Parth Check THis");
+  //     if (field.required && field.display !== "none") {
+  //       requiredFieldCount++; // Count all required fields
+  //       const fieldValue = String(formData[field.name] || "").trim(); // Ensure the field value is a string
+  //       // console.log(fieldValue, "dsfdfsdd");
+  //       // General required field check
+  //       if (fieldValue) {
+  //         // Email validation
+  //         if (field?.isEmail) {
+  //           const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+  //           if (!emailRegex.test(fieldValue)) {
+  //             emailValid = false; // Email is invalid
+  //           } else {
+  //             requiredFieldFilledCount++; // Increment count for valid email
+  //           }
+  //         }
+
+  //         // Mobile validation
+  //         if (field?.isMobile) {
+  //           const digits = fieldValue.replace(/\D/g, "").slice(2); // Extract digits after +91
+  //           if (digits.length === 10) {
+  //             requiredFieldFilledCount++; // Increment count for valid mobile number
+  //           } else {
+  //             mobileValid = false; // Mobile number is invalid
+  //           }
+  //         }
+
+  //         // PAN validation
+  //         if (field?.isPancard) {
+  //           const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+  //           if (!panRegex.test(fieldValue)) {
+  //             pancardValid = false; // PAN is invalid
+  //           } else {
+  //             requiredFieldFilledCount++; // Increment count for valid PAN
+  //           }
+  //         }
+
+  //         // GST validation
+  //         if (field?.isGst) {
+  //           const gstRegex =
+  //             /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[A-Z0-9]{1}[Z]{1}[A-Z0-9]{1}$/;
+  //           if (!gstRegex.test(fieldValue)) {
+  //             gstValid = false; // PAN is invalid
+  //           } else {
+  //             requiredFieldFilledCount++; // Increment count for valid PAN
+  //           }
+  //         }
+
+  //         // For other fields
+  //         if (
+  //           !field.isEmail &&
+  //           !field.isMobile &&
+  //           !field?.isGst &&
+  //           !field?.isPancard
+  //         ) {
+  //           requiredFieldFilledCount++; // Increment count if field is filled
+  //         }
+  //       }
+  //     }
+  //   });
+
+  //   // Validate the form
+  //   const isFormValid =
+  //     requiredFieldCount === requiredFieldFilledCount &&
+  //     emailValid &&
+  //     mobileValid &&
+  //     pancardValid &&
+  //     gstValid;
+  //   // console.log(isFormValid, "grretertert");
+  //   console.log(
+  //     "chchhchchchcch",
+  //     isFormValid,
+  //     requiredFieldCount,
+  //     requiredFieldFilledCount
+  //   );
+
+  //   if (isFormValid) {
+  //     // console.log("chchhchchchcch12");
+  //     setAllowSubmit(true); // Allow submission
+  //     onSubmit(formData); // Call submit handler
+  //     setTimeout(() => {
+  //       // setAllowSubmit(true) ; // Reset submit state
+  //       setFilePreviews({});
+  //     }, 100);
+  //   } else {
+  //     setAllowSubmit(false); // Block submission
+  //     console.error({
+  //       requiredFieldCount,
+  //       requiredFieldFilledCount,
+  //       emailValid,
+  //       mobileValid,
+  //       pancardValid,
+  //       formData,
+  //     }); // Log detailed debug info
+  //   }
+  // };
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true); // 🔹 Start loading
+
+    let requiredFieldCount = 0;
+    let requiredFieldFilledCount = 0;
+    let emailValid = true;
+    let mobileValid = true;
+    let pancardValid = true;
+    let gstValid = true;
 
     formStructure?.forEach((field) => {
-      console.log(field.required, formStructure, "Hiii Parth Check THis");
       if (field.required && field.display !== "none") {
-        requiredFieldCount++; // Count all required fields
-        const fieldValue = String(formData[field.name] || "").trim(); // Ensure the field value is a string
-        // console.log(fieldValue, "dsfdfsdd");
-        // General required field check
+        requiredFieldCount++;
+        const fieldValue = String(formData[field.name] || "").trim();
+
         if (fieldValue) {
           // Email validation
           if (field?.isEmail) {
             const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-            if (!emailRegex.test(fieldValue)) {
-              emailValid = false; // Email is invalid
-            } else {
-              requiredFieldFilledCount++; // Increment count for valid email
-            }
+            if (!emailRegex.test(fieldValue)) emailValid = false;
+            else requiredFieldFilledCount++;
           }
 
           // Mobile validation
-          if (field?.isMobile) {
-            const digits = fieldValue.replace(/\D/g, "").slice(2); // Extract digits after +91
-            if (digits.length === 10) {
-              requiredFieldFilledCount++; // Increment count for valid mobile number
-            } else {
-              mobileValid = false; // Mobile number is invalid
-            }
+          else if (field?.isMobile) {
+            const digits = fieldValue.replace(/\D/g, "").slice(2);
+            if (digits.length === 10) requiredFieldFilledCount++;
+            else mobileValid = false;
           }
 
           // PAN validation
-          if (field?.isPancard) {
+          else if (field?.isPancard) {
             const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
-            if (!panRegex.test(fieldValue)) {
-              pancardValid = false; // PAN is invalid
-            } else {
-              requiredFieldFilledCount++; // Increment count for valid PAN
-            }
+            if (!panRegex.test(fieldValue)) pancardValid = false;
+            else requiredFieldFilledCount++;
           }
 
           // GST validation
-          if (field?.isGst) {
+          else if (field?.isGst) {
             const gstRegex =
               /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[A-Z0-9]{1}[Z]{1}[A-Z0-9]{1}$/;
-            if (!gstRegex.test(fieldValue)) {
-              gstValid = false; // PAN is invalid
-            } else {
-              requiredFieldFilledCount++; // Increment count for valid PAN
-            }
+            if (!gstRegex.test(fieldValue)) gstValid = false;
+            else requiredFieldFilledCount++;
           }
 
-          // For other fields
-          if (
-            !field.isEmail &&
-            !field.isMobile &&
-            !field?.isGst &&
-            !field?.isPancard
-          ) {
-            requiredFieldFilledCount++; // Increment count if field is filled
-          }
+          // Other fields
+          else requiredFieldFilledCount++;
         }
       }
     });
 
-    // Validate the form
     const isFormValid =
       requiredFieldCount === requiredFieldFilledCount &&
       emailValid &&
       mobileValid &&
       pancardValid &&
       gstValid;
-    // console.log(isFormValid, "grretertert");
-    console.log(
-      "chchhchchchcch",
-      isFormValid,
-      requiredFieldCount,
-      requiredFieldFilledCount
-    );
 
     if (isFormValid) {
-      // console.log("chchhchchchcch12");
-      setAllowSubmit(true); // Allow submission
-      onSubmit(formData); // Call submit handler
-      setTimeout(() => {
-        // setAllowSubmit(true) ; // Reset submit state
-        setFilePreviews({});
-      }, 100);
+      setAllowSubmit(true);
+      try {
+        await onSubmit(formData); // 🔹 Run submission (supports async)
+        setTimeout(() => {
+          setFilePreviews({});
+        }, 100);
+      } catch (err) {
+        console.error("Error submitting form:", err);
+      }
     } else {
-      setAllowSubmit(false); // Block submission
+      setAllowSubmit(false);
       console.error({
         requiredFieldCount,
         requiredFieldFilledCount,
         emailValid,
         mobileValid,
         pancardValid,
+        gstValid,
         formData,
-      }); // Log detailed debug info
+      });
     }
-  };
 
+    setLoading(false); // 🔹 Stop loading
+  };
   // Theme-based styles
   const dialogStyles = {
     "& .MuiDialog-container": {
@@ -988,7 +1073,7 @@ const DynamicFormModal = ({
           })}
         </Grid>
       </DialogContent>
-      <DialogActions
+      {/* <DialogActions
         sx={{
           backgroundColor: "var(--themeColor)",
           borderTop: darkMode
@@ -1025,6 +1110,53 @@ const DynamicFormModal = ({
           }}
         >
           {isEdit ? "Update" : "Submit"}
+        </Button>
+      </DialogActions> */}
+      <DialogActions
+        sx={{
+          backgroundColor: "var(--themeColor)",
+          borderTop: darkMode
+            ? "1px solid rgba(255, 255, 255, 0.12)"
+            : "1px solid rgba(0, 0, 0, 0.12)",
+        }}
+      >
+        {/* 🔹 Cancel Button */}
+        <Button
+          onClick={handleClose}
+          disabled={loading} // disable while loading
+          sx={{
+            color: "var(--gradientColor2)",
+            border: "1px solid var(--gradientColor2)",
+            "&:hover": {
+              backgroundColor: "var(--gradientColor2)",
+              color: "#fff",
+            },
+          }}
+        >
+          Cancel
+        </Button>
+
+        {/* 🔹 Submit / Update Button */}
+        <Button
+          onClick={(e) => handleFormSubmit(e)}
+          variant="contained"
+          disabled={loading} // disable while loading
+          sx={{
+            background: "var(--gradientColor2)",
+            color: "#fff",
+            padding: "0.5rem 1rem",
+            "&:hover": {
+              backgroundColor: "var(--gradientColor2)",
+              opacity: "70%",
+            },
+            minWidth: "100px", // keeps size consistent when spinner shows
+          }}
+        >
+          {loading ? (
+            <CircularProgress size={20} sx={{ color: "#fff" }} />
+          ) : (
+            <>{isEdit ? "Update" : "Submit"}</>
+          )}
         </Button>
       </DialogActions>
     </Dialog>

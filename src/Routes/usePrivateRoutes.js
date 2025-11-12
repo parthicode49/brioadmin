@@ -151,18 +151,19 @@ export const usePrivateRoutes = () => {
   const reduxRights = useSelector((state) => state?.layout?.rights);
   const rights = reduxRights || loginedDetails?.master_rights;
   const role = reduxRole || loginedDetails?.role;
-  const getAccessLevel = (contentName) => {
-    if (!rights || !Array.isArray(rights)) {
-      console.log("Rights is not an array or undefined");
-      return role === "Admin" ? "All Access" : "No Access";
-    }
+  // const getAccessLevel = (contentName) => {
+  //   if (!rights || !Array.isArray(rights)) {
+  //     console.log("Rights is not an array or undefined");
+  //     return role === "Admin" ? "All Access" : "No Access";
+  //   }
 
-    const right = rights?.find((r) => r.content === contentName);
-    const accessLevel =
-      right?.content_value || (role === "Admin" ? "All Access" : "No Access");
-    console.log(`Access for ${contentName}:`, accessLevel);
-    return accessLevel;
-  };
+  //   const right = rights?.find((r) => r.content === contentName);
+  //   const accessLevel =
+  //     right?.content_value || (role === "Admin" ? "All Access" : "No Access");
+  //   console.log(`Access for ${contentName}:`, accessLevel);
+  //   return accessLevel;
+  // };
+  console.log(role ,)
 
   if (role == "Admin" || role == "Sub Admin") {
     return [

@@ -7,6 +7,7 @@ import {
   Autocomplete,
   Button,
   Chip,
+  CircularProgress,
   FormControl,
   FormControlLabel,
   Grid,
@@ -80,6 +81,7 @@ const NewForm = ({
   const [formAudioFile, setFormAudioFile] = useState({});
   const [formCountry, setFormCountry] = useState({});
   const [imageDimensions, setImageDimensions] = useState({});
+  const [loading, setLoading] = useState(false);
 
   // const [formData, setFormData] = useState({});
 
@@ -470,111 +472,111 @@ const NewForm = ({
     const newData = tableData1.filter((_, i) => i !== index);
     setTableData1(newData);
   };
-  const handleFormSubmit = (e, isConfirmBtn) => {
-    e.preventDefault(); // Prevent default submission
+  // const handleFormSubmit = (e, isConfirmBtn) => {
+  //   e.preventDefault(); // Prevent default submission
 
-    let requiredFieldCount = 0; // Total required fields count
-    let requiredFieldFilledCount = 0; // Filled required fields count
-    let emailValid = true; // Email validity flag
-    let mobileValid = true; // Mobile number validity flag
-    let pancardValid = true; // PAN validity flag
-    let gstValid = true; // GST validity flag
+  //   let requiredFieldCount = 0; // Total required fields count
+  //   let requiredFieldFilledCount = 0; // Filled required fields count
+  //   let emailValid = true; // Email validity flag
+  //   let mobileValid = true; // Mobile number validity flag
+  //   let pancardValid = true; // PAN validity flag
+  //   let gstValid = true; // GST validity flag
 
-    formStructure?.forEach((section, id) => {
-      section?.fields?.forEach((field) => {
-        if (field.required && field.display !== "none") {
-          requiredFieldCount++; // Count all required fields
-          const fieldValue = String(formData[field.name] || "").trim(); // Ensure the field value is a string
-          // console.log(fieldValue, "dsfdfsdd");
-          // General required field check
-          if (fieldValue) {
-            // Email validation
-            if (field?.isEmail) {
-              const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-              if (!emailRegex.test(fieldValue)) {
-                emailValid = false; // Email is invalid
-              } else {
-                requiredFieldFilledCount++; // Increment count for valid email
-              }
-            }
+  //   formStructure?.forEach((section, id) => {
+  //     section?.fields?.forEach((field) => {
+  //       if (field.required && field.display !== "none") {
+  //         requiredFieldCount++; // Count all required fields
+  //         const fieldValue = String(formData[field.name] || "").trim(); // Ensure the field value is a string
+  //         // console.log(fieldValue, "dsfdfsdd");
+  //         // General required field check
+  //         if (fieldValue) {
+  //           // Email validation
+  //           if (field?.isEmail) {
+  //             const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+  //             if (!emailRegex.test(fieldValue)) {
+  //               emailValid = false; // Email is invalid
+  //             } else {
+  //               requiredFieldFilledCount++; // Increment count for valid email
+  //             }
+  //           }
 
-            // Mobile validation
-            if (field?.isMobile) {
-              const digits = fieldValue.replace(/\D/g, "").slice(2); // Extract digits after +91
-              if (digits.length === 10) {
-                requiredFieldFilledCount++; // Increment count for valid mobile number
-              } else {
-                mobileValid = false; // Mobile number is invalid
-              }
-            }
+  //           // Mobile validation
+  //           if (field?.isMobile) {
+  //             const digits = fieldValue.replace(/\D/g, "").slice(2); // Extract digits after +91
+  //             if (digits.length === 10) {
+  //               requiredFieldFilledCount++; // Increment count for valid mobile number
+  //             } else {
+  //               mobileValid = false; // Mobile number is invalid
+  //             }
+  //           }
 
-            // PAN validation
-            if (field?.isPancard) {
-              const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
-              if (!panRegex.test(fieldValue)) {
-                pancardValid = false; // PAN is invalid
-              } else {
-                requiredFieldFilledCount++; // Increment count for valid PAN
-              }
-            }
+  //           // PAN validation
+  //           if (field?.isPancard) {
+  //             const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+  //             if (!panRegex.test(fieldValue)) {
+  //               pancardValid = false; // PAN is invalid
+  //             } else {
+  //               requiredFieldFilledCount++; // Increment count for valid PAN
+  //             }
+  //           }
 
-            // GST validation
-            if (field?.isGst) {
-              const gstRegex =
-                /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[A-Z0-9]{1}[Z]{1}[A-Z0-9]{1}$/;
-              if (!gstRegex.test(fieldValue)) {
-                gstValid = false; // PAN is invalid
-              } else {
-                requiredFieldFilledCount++; // Increment count for valid PAN
-              }
-            }
+  //           // GST validation
+  //           if (field?.isGst) {
+  //             const gstRegex =
+  //               /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[A-Z0-9]{1}[Z]{1}[A-Z0-9]{1}$/;
+  //             if (!gstRegex.test(fieldValue)) {
+  //               gstValid = false; // PAN is invalid
+  //             } else {
+  //               requiredFieldFilledCount++; // Increment count for valid PAN
+  //             }
+  //           }
 
-            // For other fields
-            if (
-              !field.isEmail &&
-              !field.isMobile &&
-              !field?.isGst &&
-              !field?.isPancard
-            ) {
-              requiredFieldFilledCount++; // Increment count if field is filled
-            }
-          }
-        }
-      });
-      // console.log(field.required ,formStructure,"Hiii Parth Check THis")
-    });
+  //           // For other fields
+  //           if (
+  //             !field.isEmail &&
+  //             !field.isMobile &&
+  //             !field?.isGst &&
+  //             !field?.isPancard
+  //           ) {
+  //             requiredFieldFilledCount++; // Increment count if field is filled
+  //           }
+  //         }
+  //       }
+  //     });
+  //     // console.log(field.required ,formStructure,"Hiii Parth Check THis")
+  //   });
 
-    // Validate the form
-    const isFormValid =
-      requiredFieldCount === requiredFieldFilledCount &&
-      emailValid &&
-      mobileValid &&
-      pancardValid &&
-      gstValid;
-    // console.log(isFormValid, "grretertert");
-    console.log(
-      "chchhchchchcch",
-      isFormValid,
-      requiredFieldCount,
-      requiredFieldFilledCount
-    );
+  //   // Validate the form
+  //   const isFormValid =
+  //     requiredFieldCount === requiredFieldFilledCount &&
+  //     emailValid &&
+  //     mobileValid &&
+  //     pancardValid &&
+  //     gstValid;
+  //   // console.log(isFormValid, "grretertert");
+  //   console.log(
+  //     "chchhchchchcch",
+  //     isFormValid,
+  //     requiredFieldCount,
+  //     requiredFieldFilledCount
+  //   );
 
-    if (isFormValid) {
-      console.log("chchhchchchcch12");
-      setAllowSubmit(true); // Allow submission
-      isConfirmBtn ? handleConfirmSubmit(e) : handleSubmit(e); // Call submit handler
-    } else {
-      setAllowSubmit(false); // Block submission
-      console.error({
-        requiredFieldCount,
-        requiredFieldFilledCount,
-        emailValid,
-        mobileValid,
-        pancardValid,
-        formData,
-      }); // Log detailed debug info
-    }
-  };
+  //   if (isFormValid) {
+  //     console.log("chchhchchchcch12");
+  //     setAllowSubmit(true); // Allow submission
+  //     isConfirmBtn ? handleConfirmSubmit(e) : handleSubmit(e); // Call submit handler
+  //   } else {
+  //     setAllowSubmit(false); // Block submission
+  //     console.error({
+  //       requiredFieldCount,
+  //       requiredFieldFilledCount,
+  //       emailValid,
+  //       mobileValid,
+  //       pancardValid,
+  //       formData,
+  //     }); // Log detailed debug info
+  //   }
+  // };
 
   // useMemo(() => {
   //   if (tableData1) {
@@ -585,7 +587,92 @@ const NewForm = ({
   //   }
   // }, [tableData1]);
 
-  console.log(tableData1 , "tableData1123")
+  const handleFormSubmit = async (e, isConfirm = false) => {
+    e.preventDefault();
+
+    setLoading(true); // 🔹 Start loader
+    setAllowSubmit(false);
+
+    let requiredFieldCount = 0;
+    let requiredFieldFilledCount = 0;
+    let emailValid = true;
+    let mobileValid = true;
+    let pancardValid = true;
+    let gstValid = true;
+
+    formStructure?.forEach((section) => {
+      section?.fields?.forEach((field) => {
+        if (field.required && field.display !== "none") {
+          requiredFieldCount++;
+          const fieldValue = String(formData[field.name] || "").trim();
+
+          if (fieldValue) {
+            // Email validation
+            if (field?.isEmail) {
+              const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+              if (!emailRegex.test(fieldValue)) emailValid = false;
+              else requiredFieldFilledCount++;
+            }
+
+            // Mobile validation
+            else if (field?.isMobile) {
+              const digits = fieldValue.replace(/\D/g, "").slice(2);
+              if (digits.length === 10) requiredFieldFilledCount++;
+              else mobileValid = false;
+            }
+
+            // PAN validation
+            else if (field?.isPancard) {
+              const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+              if (!panRegex.test(fieldValue)) pancardValid = false;
+              else requiredFieldFilledCount++;
+            }
+
+            // GST validation
+            else if (field?.isGst) {
+              const gstRegex =
+                /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[A-Z0-9]{1}[Z]{1}[A-Z0-9]{1}$/;
+              if (!gstRegex.test(fieldValue)) gstValid = false;
+              else requiredFieldFilledCount++;
+            }
+
+            // Other fields
+            else requiredFieldFilledCount++;
+          }
+        }
+      });
+    });
+
+    const isFormValid =
+      requiredFieldCount === requiredFieldFilledCount &&
+      emailValid &&
+      mobileValid &&
+      pancardValid &&
+      gstValid;
+
+    if (isFormValid) {
+      setAllowSubmit(true);
+      try {
+        if (isConfirm) await handleConfirmSubmit(e);
+        else await handleSubmit(e);
+      } catch (error) {
+        console.error("Submission error:", error);
+      }
+    } else {
+      console.error({
+        requiredFieldCount,
+        requiredFieldFilledCount,
+        emailValid,
+        mobileValid,
+        pancardValid,
+        gstValid,
+        formData,
+      });
+    }
+
+    setLoading(false); // 🔹 Stop loader
+  };
+
   useEffect(() => {
     if (tableData1?.length > 0 && casts?.data) {
       const updatedCast = tableData1?.map((item) => {
@@ -609,7 +696,7 @@ const NewForm = ({
       setTableData1(formData?.cast);
       setTableDataCountry(formData?.countrys);
     }
-  }, [isEdit , open]);
+  }, [isEdit, open]);
   useMemo(() => {
     if (tableDataCountry && countries?.data) {
       const updatedCountry = tableDataCountry?.map((item) => {
@@ -617,7 +704,7 @@ const NewForm = ({
           (c) => c.country_name === item.country
         );
 
-        console.log( matchedCountry, "dfdsfdfsdfdsfd")
+        console.log(matchedCountry, "dfdsfdfsdfdsfd");
         return {
           ...item,
           country_id: matchedCountry?.id || null, // Assign null if not found
@@ -852,9 +939,9 @@ const NewForm = ({
                                       Invalid GST number format
                                     </p>
                                   )) ||
-                                  (value?.displayText && 
-                                    <p>{value?.displayText}</p>
-                                  )
+                                (value?.displayText && (
+                                  <p>{value?.displayText}</p>
+                                ))
                               }
                               onChange={(event) => {
                                 const updatedValue = event.target.value;
@@ -2515,7 +2602,6 @@ const NewForm = ({
                             <InputLabel
                               shrink
                               style={{
-                              
                                 marginBottom: "12px",
                                 color: "#151515",
                                 fontSize: "16px",
@@ -2537,7 +2623,6 @@ const NewForm = ({
                                 name={value?.name}
                                 style={{ width: "100%" }}
                                 disabled={value.disabled || false}
-
                                 value={
                                   formData?.[value.name]
                                     ? dayjs(
@@ -2545,7 +2630,6 @@ const NewForm = ({
                                       )
                                     : null
                                 }
-            
                                 onChange={(newValue) => {
                                   setFormData({
                                     ...formData,
@@ -2730,7 +2814,7 @@ const NewForm = ({
           </Box>
 
           {/* Fixed footer */}
-          <Box
+          {/* <Box
             sx={{
               height: "60px", // fixed height for footer
               color: "var(--themeFontColor)",
@@ -2785,6 +2869,91 @@ const NewForm = ({
                   fontWeight: "400",
                 }}
                 onClick={() => (handleClose(), onClose())}
+              >
+                <ChevronLeftIcon />{" "}
+                <ChevronLeftIcon style={{ marginLeft: "-10px" }} />{" "}
+                <span style={{ paddingLeft: "5px" }}>Back</span>
+              </Button>
+            </div>
+          </Box> */}
+          <Box
+            sx={{
+              height: "60px",
+              color: "var(--themeFontColor)",
+              display: "flex",
+              alignItems: "center",
+              borderTop: "1px solid var(--themeColorLightestShade)",
+              padding: "1rem",
+              marginTop: "10px",
+              flexShrink: 0,
+            }}
+          >
+            <div
+              style={{ display: "flex", alignContent: "center", gap: "15px" }}
+            >
+              {/* 🔹 Submit / Update button */}
+              <Button
+                disableFocusRipple={false}
+                sx={{
+                  background: "var(--gradientColor2)",
+                  color: "#fff",
+                  padding: "0.5rem 1rem",
+                  fontSize: "14px",
+                  fontWeight: "400",
+                  minWidth: "100px",
+                }}
+                onClick={(e) => handleFormSubmit(e)}
+                disabled={loading} // disable when loading
+              >
+                {loading ? (
+                  <CircularProgress size={20} sx={{ color: "#fff" }} />
+                ) : (
+                  <>
+                    <SaveIcon />{" "}
+                    <span style={{ paddingLeft: "5px" }}>
+                      {isEdit ? "Update" : "Submit"}
+                    </span>
+                  </>
+                )}
+              </Button>
+
+              {/* 🔹 Confirm button (if exists) */}
+              {isConfirmBtn && (
+                <Button
+                  disableFocusRipple={false}
+                  sx={{
+                    background: "green",
+                    color: "#fff",
+                    padding: "0.5rem 1rem",
+                    fontSize: "14px",
+                    fontWeight: "400",
+                  }}
+                  onClick={(e) => handleFormSubmit(e, true)}
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <CircularProgress size={20} sx={{ color: "#fff" }} />
+                  ) : (
+                    <>
+                      <ThumbUpOffAltIcon />{" "}
+                      <span style={{ paddingLeft: "5px" }}>Confirm</span>
+                    </>
+                  )}
+                </Button>
+              )}
+
+              {/* 🔹 Back button */}
+              <Button
+                disableFocusRipple
+                sx={{
+                  border: "1px solid var(--gradientColor2)",
+                  color: "var(--gradientColor2)",
+                  padding: "0.5rem 1rem",
+                  fontSize: "14px",
+                  fontWeight: "400",
+                }}
+                onClick={() => (handleClose(), onClose())}
+                disabled={loading} // disable while loading
               >
                 <ChevronLeftIcon />{" "}
                 <ChevronLeftIcon style={{ marginLeft: "-10px" }} />{" "}

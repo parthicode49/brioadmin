@@ -1,10 +1,10 @@
 import axios from 'axios';
 
-const API = axios.create({ baseURL: 'https://bridge.brionow.online/api/' });
-export const IMAGE = 'https://bridge.brionow.online/'
+// const API = axios.create({ baseURL: 'https://bridge.brionow.online/api/' });
+// export const IMAGE = 'https://bridge.brionow.online/'
 
-// const API = axios.create({ baseURL: 'http://164.52.202.121:1341/api/' });
-// export const IMAGE = 'http://164.52.202.121:1341/'
+const API = axios.create({ baseURL: 'http://209.145.49.67:7500/api/' });
+export const IMAGE = 'http://209.145.49.67:7500/'
 
 // const API = axios.create({ baseURL: 'http://ec2-15-206-35-104.ap-south-1.compute.amazonaws.com:8000/api/' });
 // export const IMAGE = 'http://ec2-15-206-35-104.ap-south-1.compute.amazonaws.com:8000/'
@@ -185,6 +185,7 @@ export const all_promocode_list_distributor = (formData) => API.post('/all_promo
 
 // Master->Advertisor
 export const advertiser_create = (formData) => API.post('/advertiser_register/', formData); // Pending
+export const admin_advertisement_create = (formData) => API.post('/admin_advertisement_create/', formData); // Pending
 export const advertiser_update = (formData) => API.post('/advertiser_update/', formData); // Pending
 export const advertiser_status_update = (formData) => API.post('/advertiser_status_update/', formData); // Pending
 export const advertiser_delete = (formData) => API.post('/advertiser_delete/', formData); // Pending
