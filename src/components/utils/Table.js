@@ -830,7 +830,7 @@ export default function ListTable({
       setChangeValue({ ...value });
     }
   };
-  useMemo(() => {
+  useEffect(() => {
     if (popupType == "Delete") {
       if (result) {
         const tempTableData = tableData;
@@ -839,22 +839,30 @@ export default function ListTable({
         tempTableData.tableBody.map((value) => {
           if (selected.includes(value.id)) {
             if (tableData?.deletePayload) {
-              var temp = {};
-              tableData?.deletePayload?.map(
-                (ele) => (temp[ele?.id] = value[ele?.value_id] || ele?.constant)
-              );
-              dispatch(tableData.deleteRecord(temp));
-              setTimeout(() => {
-                setSave(!save);
-              }, 1000);
+              const dataDisplay = async () =>{
+
+                var temp = {};
+                tableData?.deletePayload?.map(
+                  (ele) => (temp[ele?.id] = value[ele?.value_id] || ele?.constant)
+                );
+                await dispatch(tableData.deleteRecord(temp));
+                setTimeout(() => {
+                  setSave(!save);
+                }, 1000);
+              }
+              dataDisplay()
             } else {
-              const data = new FormData();
-              data.append("user", user?.id);
-              data.append("id", value.id);
-              dispatch(tableData.deleteRecord({ id: value?.id }));
-              setTimeout(() => {
-                setSave(!save);
-              }, 1000);
+              const dataDisplay = async () =>{
+
+                const data = new FormData();
+                data.append("user", user?.id);
+                data.append("id", value.id);
+                await dispatch(tableData.deleteRecord({ id: value?.id }));
+                setTimeout(() => {
+                  setSave(!save);
+                }, 1000);
+              }
+              dataDisplay()
             }
           } else tempTableBody.push(value);
         });

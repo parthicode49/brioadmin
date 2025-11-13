@@ -27,6 +27,8 @@ export const update_live_stream_category = (formData) => API.post('/update_live_
 export const delete_live_stream_category = (formData) => API.post('/delete_live_stream_category/', formData);
 export const update_live_stream_category_status = (formData) => API.post("/update_live_stream_category_status/" ,formData)  
 export const live_stream_category_list = (formData) => API.post('/live_stream_category_list/', formData);
+export const live_stream_start = (formData) => API.post('/live_stream_start/', formData);
+export const make_live_stream_complete = (formData) => API.post('/make_live_stream_complete/', formData);
 
 // Master -> complaint
 export const complaint_type_create = (formData) => API.post('/complaint_type_create/', formData);

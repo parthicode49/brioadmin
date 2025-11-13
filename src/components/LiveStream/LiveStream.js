@@ -7,7 +7,8 @@ import Export from "../utils/Export";
 import { live_stream_category_list } from "../../actions/Masters/livestremcategory";
 import { useAccessControl } from "../utils/useAccessControl";
 import { all_country_list } from "../../actions/Masters/country";
-import FileCopyIcon from "@mui/icons-material/FileCopy";  
+import FileCopyIcon from "@mui/icons-material/FileCopy";
+import { Button, CircularProgress } from "@mui/material";
 
 const LiveStream = () => {
   const { canView, canEdit, isReadOnly } = useAccessControl("Live Stream");
@@ -19,14 +20,18 @@ const LiveStream = () => {
   const [drawer, setDrawer] = useState(false);
   const user = useSelector((state) => state.layout.profile);
   const [usedCountries, setUsedCountries] = useState([]);
+  const [loadingStreams, setLoadingStreams] = useState({});
+
   const categories = useSelector(
     (state) => state?.masters?.live_stream_category
   );
   const livestream = useSelector((state) => state?.live_stream?.live_stream);
-  const { create_live_stream, update_live_stream } = bindActionCreators(
-    Action,
-    dispatch
-  );
+  const {
+    create_live_stream,
+    update_live_stream,
+    live_stream_start,
+    make_live_stream_complete,
+  } = bindActionCreators(Action, dispatch);
 
   useEffect(() => {
     dispatch(Action.live_stream_list_admin());
@@ -50,7 +55,7 @@ const LiveStream = () => {
       {
         id: "channel_name",
         label: "Title",
-        subText : "category_name"
+        subText: "category_name",
       },
       {
         id: "stream_type",
@@ -92,7 +97,12 @@ const LiveStream = () => {
         isSpecial: true,
         align: "left",
       },
-
+      {
+        id: "start_end_btn",
+        label: "Controller",
+        isSpecial: true,
+        align: "left",
+      },
 
       {
         id: "status",
@@ -163,7 +173,7 @@ const LiveStream = () => {
           placeholder: "Select Stream Type here",
           options: [
             { value: "FREE", label: "FREE" },
-            { value: "TVOD", label: "Rent" },
+            { value: "TVOD", label: "Pay Per View" },
             { value: "SVOD", label: "SVOD" },
           ],
           required: true,
@@ -383,116 +393,240 @@ const LiveStream = () => {
       );
     }
   }, [categories]);
-    const handleCopyText = (textToCopy) => {
-    // console.log(textToCopy ,"fgf")
-    // if (!textToCopy) {
-    //   console.error('No text to copy');
-    //   alert('No text to copy!');
-    //   return;
-    // }
+  // const handleCopyText = (textToCopy) => {
+  //   // console.log(textToCopy ,"fgf")
+  //   // if (!textToCopy) {
+  //   //   console.error('No text to copy');
+  //   //   alert('No text to copy!');
+  //   //   return;
+  //   // }
 
-    navigator.clipboard.writeText(textToCopy).then(
-      () => {
-        // console.log("Number copied to clipboard:", textToCopy);
-        // alert(`${textToCopy} copied to clipboard!`);
-      },
-      (err) => {
-        console.error("Failed to copy text:", err);
+  //   navigator.clipboard.writeText(textToCopy).then(
+  //     () => {
+  //       // console.log("Number copied to clipboard:", textToCopy);
+  //       // alert(`${textToCopy} copied to clipboard!`);
+  //     },
+  //     (err) => {
+  //       console.error("Failed to copy text:", err);
+  //       alert("Failed to copy text. Please try again.");
+  //     }
+  //   );
+  // };
+
+  const handleCopyText = (textToCopy) => {
+    if (navigator.clipboard && window.isSecureContext) {
+      // Modern, secure method
+      navigator.clipboard
+        .writeText(textToCopy)
+        .then(() => {
+          console.log("Text copied to clipboard!");
+        })
+        .catch((err) => {
+          console.error("Failed to copy text:", err);
+          alert("Failed to copy text. Please try again.");
+        });
+    } else {
+      // Fallback for older browsers or insecure contexts
+      const textArea = document.createElement("textarea");
+      textArea.value = textToCopy;
+      textArea.style.position = "fixed"; // avoid scrolling to bottom
+      textArea.style.left = "-999999px";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand("copy");
+        console.log("Text copied using fallback method!");
+      } catch (err) {
+        console.error("Fallback: Failed to copy text:", err);
         alert("Failed to copy text. Please try again.");
       }
-    );
+      document.body.removeChild(textArea);
+    }
+  };
+
+
+  const liveStreamStart = async (live_asset_id) => {
+    setLoadingStreams((prev) => ({ ...prev, [live_asset_id]: true }));
+    try {
+      const resData = await live_stream_start({ live_asset_id: live_asset_id });
+      if (resData?.status === 200) {
+        setSave(!save);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoadingStreams((prev) => ({ ...prev, [live_asset_id]: false }));
+    }
+  };
+  const liveStreamEnd = async (live_asset_id) => {
+    setLoadingStreams((prev) => ({ ...prev, [live_asset_id]: true }));
+    try {
+      const resData = await make_live_stream_complete({
+        live_asset_id: live_asset_id,
+      });
+      if (resData?.status === 200) {
+        setSave(!save);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoadingStreams((prev) => ({ ...prev, [live_asset_id]: false }));
+    }
   };
 
   useEffect(() => {
     if (livestream?.data) {
       const temp = tableData;
-      temp.tableBody = livestream?.data?.map((ele)=>({
-        ...ele,
-        stream_key_0 : <>
-        <p
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-             color: "var(--gradientColor2)"
-            }}
-          >
-            { ele?.stream_key?.length > 30  ? ele?.stream_key?.substring(0,30) + "..." : ele?.stream_key }
-            <span
-              style={{
-                color: "var(--gradientColor2)",
-                width: "40%",
-                paddingLeft: "5px",
-                cursor: "pointer",
-              }}
-              onClick={() =>
-                handleCopyText(
-                  ele?.stream_key
-                )
-              }
-            >
-              <FileCopyIcon color="inherit" />{" "}
-            </span>
-            </p>
-        </>,
-        stream_server_0 : <>
-        <p
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-             color: "var(--gradientColor2)"
-            }}
-          >
-            { ele?.stream_server?.length > 20  ? ele?.stream_server?.substring(0,20) + "..." : ele?.stream_server }
-            <span
-              style={{
-                color: "var(--gradientColor2)",
-                width: "40%",
-                paddingLeft: "5px",
-                cursor: "pointer",
-              }}
-              onClick={() =>
-                handleCopyText(
-                  ele?.stream_server
-                )
-              }
-            >
-              <FileCopyIcon color="inherit" />{" "}
-            </span>
-            </p>
-        </>,
-        channel_live_url_0 : <>
-        <p
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-             color: "var(--gradientColor2)"
-            }}
-          >
-            { ele?.channel_live_url?.length > 20  ? ele?.channel_live_url?.substring(0,20) + "..." : ele?.channel_live_url }
-            <span
-              style={{
-                color: "var(--gradientColor2)",
-                width: "40%",
-                paddingLeft: "5px",
-                cursor: "pointer",
-              }}
-              onClick={() =>
-                handleCopyText(
-                  ele?.channel_live_url
-                )
-              }
-            >
-              <FileCopyIcon color="inherit" />{" "}
-            </span>
-            </p>
-        </>,
-      })) || [];
+      temp.tableBody =
+        livestream?.data?.map((ele) => ({
+          ...ele,
+          stream_key_0: (
+            <>
+              <p
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  color: "var(--gradientColor2)",
+                }}
+              >
+                {ele?.stream_key?.length > 30
+                  ? ele?.stream_key?.substring(0, 30) + "..."
+                  : ele?.stream_key}
+                <span
+                  style={{
+                    color: "var(--gradientColor2)",
+                    width: "40%",
+                    paddingLeft: "5px",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => handleCopyText(ele?.stream_key)}
+                >
+                  <FileCopyIcon color="inherit" />{" "}
+                </span>
+              </p>
+            </>
+          ),
+          stream_server_0: (
+            <>
+              <p
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  color: "var(--gradientColor2)",
+                }}
+              >
+                {ele?.stream_server?.length > 20
+                  ? ele?.stream_server?.substring(0, 20) + "..."
+                  : ele?.stream_server}
+                <span
+                  style={{
+                    color: "var(--gradientColor2)",
+                    width: "40%",
+                    paddingLeft: "5px",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => handleCopyText(ele?.stream_server)}
+                >
+                  <FileCopyIcon color="inherit" />{" "}
+                </span>
+              </p>
+            </>
+          ),
+          channel_live_url_0: (
+            <>
+              <p
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  color: "var(--gradientColor2)",
+                }}
+              >
+                {ele?.channel_live_url?.length > 20
+                  ? ele?.channel_live_url?.substring(0, 20) + "..."
+                  : ele?.channel_live_url}
+                <span
+                  style={{
+                    color: "var(--gradientColor2)",
+                    width: "40%",
+                    paddingLeft: "5px",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => handleCopyText(ele?.channel_live_url)}
+                >
+                  <FileCopyIcon color="inherit" />{" "}
+                </span>
+              </p>
+            </>
+          ),
+          start_end_btn: (
+            <>
+              {ele?.stream_status === "created" ? (
+                <Button
+                  variant="contained"
+                disabled={loadingStreams[ele?.live_asset_id]}
+                  style={{
+                    backgroundColor: "#4caf50",
+                    color: "white",
+                    textTransform: "none",
+                    padding: "6px 16px",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                  }}
+                  onClick={() => liveStreamStart(ele?.live_asset_id)}
+                >
+                  {loadingStreams[ele?.live_asset_id] ? (
+                    <CircularProgress
+                      size={20}
+                      style={{ color: "themeFontColor" }}
+                    />
+                  ) : (
+                    "Start"
+                  )}
+                </Button>
+              ) : ele?.stream_status === "complete" ? (
+                <span
+                  style={{
+                    color: "#757575",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                  }}
+                >
+                  Complete
+                </span>
+              ) : (
+                <Button
+                  variant="contained"
+                  disabled={loadingStreams[ele?.live_asset_id]}
+                  style={{
+                    backgroundColor: "#f44336",
+                    color: "white",
+                    textTransform: "none",
+                    padding: "6px 16px",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                  }}
+                  onClick={() => liveStreamEnd(ele?.live_asset_id)}
+                >
+                  {loadingStreams[ele?.live_asset_id] ? (
+                    <CircularProgress
+                      size={20}
+                      style={{ color: "themeFontColor" }}
+                    />
+                  ) : (
+                    "End"
+                  )}
+                </Button>
+              )}
+            </>
+          ),
+        })) || [];
       setTableData({ ...temp });
     }
-  }, [livestream]);
+  }, [livestream , loadingStreams]);
 
   // useEffect(() => {
   //   if (form?.stream_type === "TVOD") {

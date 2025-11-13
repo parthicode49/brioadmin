@@ -55,3 +55,25 @@ export const live_stream_list_admin = (formData) => async (dispatch) => {
     return error?.response?.data;
   }
 };
+
+export const live_stream_start = (formData) => async (dispatch) => {
+  try {
+    const data = await api.live_stream_start(formData);
+    dispatch({ type: MESSAGE, payload: data?.data });
+    return data;
+  } catch (error) {
+    dispatch({ type: MESSAGE, payload: error?.response?.data });
+    return error?.response?.data;
+  }
+};
+
+export const make_live_stream_complete = (formData) => async (dispatch) => {
+  try {
+    const data = await api.make_live_stream_complete(formData);
+    dispatch({ type: MESSAGE, payload: data?.data });
+    return data;
+  } catch (error) {
+    dispatch({ type: MESSAGE, payload: error?.response?.data });
+    return error?.response?.data;
+  }
+};
