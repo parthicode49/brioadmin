@@ -1,10 +1,10 @@
 import axios from 'axios';
 
-// const API = axios.create({ baseURL: 'https://bridge.brionow.online/api/' });
-// export const IMAGE = 'https://bridge.brionow.online/'
+const API = axios.create({ baseURL: 'https://bridge.brionow.online/api/' });
+export const IMAGE = 'https://bridge.brionow.online/'
 
-const API = axios.create({ baseURL: 'http://209.145.49.67:7500/api/' });
-export const IMAGE = 'http://209.145.49.67:7500/'
+// const API = axios.create({ baseURL: 'http://209.145.49.67:7500/api/' });
+// export const IMAGE = 'http://209.145.49.67:7500/'
 
 // const API = axios.create({ baseURL: 'http://ec2-15-206-35-104.ap-south-1.compute.amazonaws.com:8000/api/' });
 // export const IMAGE = 'http://ec2-15-206-35-104.ap-south-1.compute.amazonaws.com:8000/'
