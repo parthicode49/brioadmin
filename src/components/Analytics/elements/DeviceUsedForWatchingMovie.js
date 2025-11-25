@@ -17,7 +17,7 @@ const DeviceUsedForWatchingMovie = () => {
     dispatch(device_used_for_watching());
   }, []);
 
- 
+  
   
   const data = useSelector(
     (state) => state.analytics?.device_used_for_watching

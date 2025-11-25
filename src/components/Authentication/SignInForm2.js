@@ -800,7 +800,7 @@ const SignInForm2 = () => {
                 >
                   Sign in
                 </Button>
-                <FormControl sx={{ width: '100%', padding: '20px 30px' }}>
+                {/* <FormControl sx={{ width: '100%', padding: '20px 30px' }}>
                   <RadioGroup
                     row
                     aria-labelledby="role-selection-label"
@@ -830,7 +830,7 @@ const SignInForm2 = () => {
                       label="Advertiser"
                     />
                   </RadioGroup>
-                </FormControl>
+                </FormControl> */}
               </form>
             </div>
           </div>

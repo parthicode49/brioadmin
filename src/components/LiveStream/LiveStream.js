@@ -10,9 +10,9 @@ import { all_country_list } from "../../actions/Masters/country";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
 import { Button, CircularProgress } from "@mui/material";
 
+
 const LiveStream = () => {
   const { canView, canEdit, isReadOnly } = useAccessControl("Live Stream");
-  console.log(canEdit, "llllllll");
   const dispatch = useDispatch();
   const [form, setForm] = useState({});
   const [isEdit, setIsEdit] = useState(false);
@@ -60,6 +60,10 @@ const LiveStream = () => {
       {
         id: "stream_type",
         label: "Type",
+      },
+      {
+        id: "platform_type",
+        label: "Platform",
       },
 
       {
@@ -179,12 +183,14 @@ const LiveStream = () => {
           required: true,
         },
         {
-          type: "inputBox",
-          name: "amount",
-          title: "Amount",
-          display: "none",
-          regex: /^[0-9\.]+$/,
-          placeholder: "Enter Amount",
+          type: "select",
+          name: "platform_type",
+          title: "Platform Type",
+          placeholder: "Select Platform Type",
+          options: [
+            { value: "Tv Stream", label: "Tv Stream" },
+            { value: "Live Stream", label: "Live Stream" },
+          ],
           required: true,
         },
         {
@@ -273,6 +279,16 @@ const LiveStream = () => {
         //   required: true,
         //   size: "9",
         // },
+
+        {
+          type: "inputBox",
+          name: "channel_live_url",
+          title: "Live Url",
+          placeholder: "Paste Live Url Link (.M3U8)",
+          required: true,
+          size: "9",
+        },
+
         {
           type: "image",
           name: "poster",
@@ -305,6 +321,83 @@ const LiveStream = () => {
     { title: "Price", field: "price" },
     // { title: "Final Price", field: "discount_price" },
   ];
+
+  useEffect(() => {
+    if (form?.platform_type === "Tv Stream") {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 6) {
+                return {
+                  ...field,
+                  display: "none",
+                };
+              }
+              if (index === 7) {
+                return {
+                  ...field,
+                  display: "none",
+                };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          if (section.title === "Media") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 0) {
+                return {
+                  ...field,
+                  display: "block",
+                };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    } else {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 6) {
+                return {
+                  ...field,
+                  display: "block",
+                };
+              }
+              if (index === 7) {
+                return {
+                  ...field,
+                  display: "block",
+                };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          if (section.title === "Media") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 0) {
+                return {
+                  ...field,
+                  display: "none",
+                };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    }
+  }, [form?.platform_type]);
+
   useMemo(() => {
     if (countries?.data) {
       const temp = [...countryFormStructure];
@@ -445,7 +538,6 @@ const LiveStream = () => {
     }
   };
 
-
   const liveStreamStart = async (live_asset_id) => {
     setLoadingStreams((prev) => ({ ...prev, [live_asset_id]: true }));
     try {
@@ -483,14 +575,16 @@ const LiveStream = () => {
           ...ele,
           stream_key_0: (
             <>
-              <p
+              { ele?.platform_type === "Tv Stream" ? <p style={{color: "var(--themeFontColor)"}}>
+                -
+              </p> : <p
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
                   color: "var(--gradientColor2)",
                 }}
-              >
+              > 
                 {ele?.stream_key?.length > 30
                   ? ele?.stream_key?.substring(0, 30) + "..."
                   : ele?.stream_key}
@@ -505,12 +599,21 @@ const LiveStream = () => {
                 >
                   <FileCopyIcon color="inherit" />{" "}
                 </span>
-              </p>
+              </p>}
             </>
           ),
+
+          stream_start_date: ele?.stream_start_date
+            ? ele?.stream_start_date
+            : "-",
+          stream_start_time: ele?.stream_start_time
+            ? ele?.stream_start_time
+            : "-",
           stream_server_0: (
             <>
-              <p
+             {ele?.platform_type === "Tv Stream" ? <p style={{color: "var(--themeFontColor)"}}>
+                -
+              </p> : <p
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
@@ -532,12 +635,14 @@ const LiveStream = () => {
                 >
                   <FileCopyIcon color="inherit" />{" "}
                 </span>
-              </p>
+              </p>}
             </>
           ),
           channel_live_url_0: (
             <>
-              <p
+             {ele?.platform_type === "Tv Stream" ? <p style={{color: "var(--themeFontColor)"}}>
+                -
+              </p> : <p
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
@@ -559,15 +664,17 @@ const LiveStream = () => {
                 >
                   <FileCopyIcon color="inherit" />{" "}
                 </span>
-              </p>
+              </p>}
             </>
           ),
           start_end_btn: (
             <>
-              {ele?.stream_status === "created" ? (
+               { ele?.platform_type === "Tv Stream" ? <p style={{color: "var(--themeFontColor)"}}>
+                -
+              </p> : ele?.stream_status === "created" ? (
                 <Button
                   variant="contained"
-                disabled={loadingStreams[ele?.live_asset_id]}
+                  disabled={loadingStreams[ele?.live_asset_id]}
                   style={{
                     backgroundColor: "#4caf50",
                     color: "white",
@@ -626,7 +733,7 @@ const LiveStream = () => {
         })) || [];
       setTableData({ ...temp });
     }
-  }, [livestream , loadingStreams]);
+  }, [livestream, loadingStreams]);
 
   // useEffect(() => {
   //   if (form?.stream_type === "TVOD") {

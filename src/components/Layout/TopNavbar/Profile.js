@@ -202,6 +202,16 @@ const Profile = (props) => {
             sessionStorage.setItem("loginDetails", null);
             sessionStorage.setItem("loggedInDetails", null);
             // sessionStorage.setItem(null)
+            if(role == "Admin" ){
+            setTimeout(()=>{
+              navigate("/", { state: { message: "Logged Out Successfully" } });
+            },100)
+          }else{
+              setTimeout(()=>{
+                navigate("/login", { state: { message: "Logged Out Successfully" } });
+              },100)
+
+            }
             dispatch({ type: PROFILE, payload: {} });
             dispatch({ type: ADVERTISER, payload: {} });
             dispatch({ type: DISTRIBUTOR, payload: {} });
@@ -209,9 +219,6 @@ const Profile = (props) => {
             dispatch({ type: ROLE, payload: "" });
             dispatch({ type: LOGGEDIN, payload: false });
             props?.setDarkMode(false)
-            setTimeout(()=>{
-              navigate("/", { state: { message: "Logged Out Successfully" } });
-            },100)
           }}
         >
           <ListItemIcon sx={{ mr: "-8px", mt: "-3px" }}>
