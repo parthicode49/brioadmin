@@ -3,6 +3,7 @@ import axios from 'axios';
 const API = axios.create({ baseURL: 'https://bridge.brionow.online/api/' });
 export const IMAGE = 'https://bridge.brionow.online/'
 
+
 // const API = axios.create({ baseURL: 'http://209.145.49.67:7500/api/' });
 // export const IMAGE = 'http://209.145.49.67:7500/'
 
