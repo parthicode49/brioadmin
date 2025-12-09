@@ -660,18 +660,50 @@ const Advertisement = () => {
       setIsModalOpenSub(false);
     }
   };
+  // useEffect(() => {
+  //   if (form?.payable_amount) {
+  //     const amount = Number(form?.payable_amount) / parseFloat(adPrice);
+  //     console.log(amount , "chechkkkkkk")
+  //     setForm({ ...form, views_required: amount });
+  //   }
+  // }, [form?.payable_amount]);
   useEffect(() => {
-    if (form?.payable_amount) {
-      const amount = Number(form?.payable_amount) / parseFloat(adPrice);
-      setForm({ ...form, views_required: amount });
+  const payable = Number(form?.payable_amount);
+  const price = parseFloat(adPrice);
+
+  if (price > 0 && payable > 0) {
+    const amount = payable / price;
+
+    if (form.views_required !== amount) {
+      setForm(prev => ({ ...prev, views_required: amount }));
     }
-  }, [form?.payable_amount]);
-  useEffect(() => {
-    if (formSub?.payable_amount) {
-      const amount = Number(formSub?.payable_amount) / parseFloat(adPrice);
-      setFormSub({ ...formSub, views_required: amount });
+  }
+}, [form?.payable_amount, adPrice]);
+
+  // useEffect(() => {
+  //   if (formSub?.payable_amount) {
+  //     const amount = Number(formSub?.payable_amount) / parseFloat(adPrice);
+  //     console.log(amount , "chechkkkkkk12")
+  //     setFormSub({ ...formSub, views_required: amount });
+  //   }
+  // }, [formSub?.payable_amount]);
+useEffect(() => {
+  const payable = Number(formSub?.payable_amount); 
+  const price = parseFloat(adPrice);
+  console.log(payable , price ,adPrice, "chchchchchc")
+  // Only run if both numbers are valid and price > 0
+  if (!isNaN(payable) && !isNaN(price) && price > 0) {
+    const amount = payable / price;
+
+    // Prevent infinite loop
+    if (formSub.views_required !== amount) {
+      setFormSub(prev => ({ ...prev, views_required: amount }));
     }
-  }, [formSub?.payable_amount]);
+  }
+}, [formSub?.payable_amount, adPrice]);
+
+
+
   const [formStructureSub, setFormStructureSub] = useState(
     [
       {

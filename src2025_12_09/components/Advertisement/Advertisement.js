@@ -1,0 +1,752 @@
+import React, { useEffect, useState } from "react";
+import ListTable from "../utils/Table";
+import Export from "../utils/Export";
+import { useDispatch, useSelector } from "react-redux";
+import * as Action from "../../actions/Advertiser/advertisement";
+import { bindActionCreators } from "redux";
+import DynamicFormModal from "../utils/NewFormStructure/DynamicFormModal";
+import { useAccessControl } from "../utils/useAccessControl";
+import InfoIcone from "../../images/info.png";
+import { useNavigate } from "react-router-dom";
+import { all_category_list } from "../../actions/Masters/category";
+const Advertisement = () => {
+  const { canEdit } = useAccessControl("Ad Master");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [form, setForm] = useState({});
+  const [drawer, setDrawer] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const user = useSelector((state) => state.layout.profile);
+  const [advertisementList, setAdvertisementList] = useState([]);
+  const [save, setSave] = useState(false);
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formSub, setFormSub] = useState({});
+  const [isModalOpenSub, setIsModalOpenSub] = useState(false);
+  const [adPrice, setAdPrice] = useState(null);
+  const categories = useSelector((state) => state.masters.categories);
+  const {
+    all_advertisement_list_admin,
+    advertisement_update,
+    advertisement_charge_list,
+    advertisement_payment_create,
+    admin_advertisement_create,
+  } = bindActionCreators(Action, dispatch);
+
+  useEffect(() => {
+    const adData = async () => {
+      const resData = await all_advertisement_list_admin();
+      if (resData?.data) {
+        console.log(resData?.data, "resData------");
+        setAdvertisementList(resData?.data);
+      }
+    };
+    adData();
+  }, [save]);
+  useEffect(() => {
+    const dailyAdPrice = async () => {
+      const resData = await advertisement_charge_list();
+      console.log(resData, "resData123654");
+      if (resData?.data) {
+        setAdPrice(resData?.data?.ad_charge);
+      }
+    };
+    dispatch(all_category_list());
+    dailyAdPrice();
+  }, []);
+
+  const [tableData, setTableData] = useState({
+    tableTitle: "Advertisements",
+    // deleteRecord: Action.top_ten_delete,
+    updateRecord: Action.advertisement_status_update,
+    customisedStatusUpdateMessage: true,
+    disableDelete: true,
+    onDeleteText: "Are you sure want to delete ?",
+    onActiveText: "Are you Sure want to Activate Advertisement ?",
+    onInactiveText: "Are you Sure want to Inactivate Advertisement ?",
+    tableHead: [
+      {
+        id: "advertiser_name",
+        label: "Advertiser",
+        subText: "advertiser_company_name",
+      },
+      {
+        id: "advertiser_mobile_number",
+        label: "Contact",
+        subText: "advertiser_email",
+      },
+      {
+        id: "product_name",
+        label: "Product Name",
+      },
+      {
+        id: "ad_view",
+        label: "Views",
+      },
+      {
+        id: "views_required",
+        label: "Required Views",
+      },
+      {
+        id: "remaining_view",
+        label: "Remaining View",
+      },
+      {
+        id: "payable_amount1",
+        label: "Payable Amount ($)",
+      },
+      {
+        id: "payment_status1",
+        label: "Payment Status",
+        isSpecial: true,
+        align: "left",
+      },
+      {
+        id: "top_up",
+        label: "Top Up",
+        isSpecial: true,
+        align: "left",
+      },
+      {
+        id: "status",
+        label: "Status",
+        // isButtonDisplay: true,
+      },
+      {
+        id: "approval_status",
+        label: "Approval Status",
+        isButtonDisplay: true,
+      },
+      {
+        id: "created_at",
+        label: "Created At",
+        isDate: true,
+      },
+      {
+        id: "info",
+        label: "View",
+        isSpecial: true,
+        align: "left",
+      },
+      {
+        id: "edit",
+        label: "Update",
+        isNewForm: true,
+      },
+    ],
+    tableBody: [],
+    filterColumn: [
+      {
+        id: "2",
+        title: "Approval Status",
+        name: "approval_status",
+        options: ["Pending", "Approved", "Rejected"],
+      },
+      {
+        id: "3",
+        title: "Status",
+        name: "status",
+        options: ["Active", "Inactive"],
+      },
+      {
+        id: "3",
+        title: "Payment Status",
+        name: "payment_status",
+        options: ["Paid", "Unpaid"],
+      },
+    ],
+  });
+
+  const [formStructure, setFormStructure] = useState([
+    {
+      title: "Details",
+      fields: [
+        {
+          type: "inputBox",
+          name: "product_name",
+          title: "Product Name",
+          placeholder: "Enter Product Name",
+          required: true,
+        },
+        {
+          type: "inputBox",
+          name: "payable_amount",
+          title: "Payable Amount ($)",
+          regex: /^[0-9\s]+$/,
+          placeholder: "Enter Amount",
+          symbol: "$",
+
+          required: true,
+        },
+        {
+          type: "inputBox",
+          name: "views_required",
+          title: "Guaranteed Views",
+          regex: /^[0-9\s]+$/,
+          placeholder: "Enter No Of Views",
+          required: true,
+          disabled: true,
+        },
+
+        {
+          type: "toggle",
+          title: "Approval Status",
+          name: "approval_status",
+          // required: true,
+          display: "none",
+          size: "3",
+          options: [
+            { value: "Pending", color: "danger" },
+            { value: "Approved", color: "success" },
+            { value: "Rejected", color: "danger" },
+          ],
+        },
+        {
+          type: "inputBox",
+          name: "reject_reason",
+          title: "Reject Reason",
+          // regex: /^[0-9\s]+$/,
+          placeholder: "Enter Amount",
+          display: "none",
+          required: true,
+        },
+        {
+          type: "inputBox",
+          name: "advertise_url_m3u8",
+          title: "Advertise URL ( .m3u8 )",
+          // regex: /^[0-9\s]+$/,
+          placeholder: "Enter M3u8 URL",
+          display: "none",
+          required: true,
+        },
+        {
+          type: "select_multiple",
+          name: "prefered_category",
+          title: "Prefered Category",
+          placeholder: "Select Prefered Category",
+          maxSelections: "3",
+          // disabled: true,
+          options: [],
+          required: true,
+        },
+      ],
+    },
+    {
+      title: "Media",
+      fields: [
+        {
+          type: "inputBox",
+          name: "advertise_url",
+          title: "Advertise Link",
+          placeholder: "Paste Advertise Link",
+          required: true,
+          display: "none",
+          size: "12",
+        },
+        {
+          type: "inputBox",
+          name: "advertise_url_m3u8",
+          title: "Advertise URL ( .m3u8 )",
+          // regex: /^[0-9\s]+$/,
+          placeholder: "Enter M3u8 URL",
+          display: "none",
+          required: true,
+          size: "12",
+        },
+        {
+          type: "inputBox",
+          name: "website_url",
+          title: "Redirection Url",
+          placeholder: "Paste Link",
+          // required: true,
+          size: "12",
+        },
+      ],
+    },
+  ]);
+
+  useEffect(() => {
+    if (advertisementList?.length > 0) {
+      const temp = tableData;
+      temp.tableBody = advertisementList?.map((ele) => ({
+        ...ele,
+        advertiser_name:
+          ele?.ownership === "In House" ? "In House" : ele?.advertiser_name,
+        advertiser_company_name:
+          ele?.ownership === "In House" ? <p style={{ color: "var(--themeFontColor)" }}> - </p> : ele?.advertiser_company_name,
+        info: (
+          <img
+            src={InfoIcone}
+            width="20px"
+            height="20px"
+            style={{ cursor: "pointer" }}
+            onClick={() => navigate("detail", { state: { id: ele?.id } })}
+          />
+        ),
+        payment_status1:
+          ele?.ownership == "In House" ? (
+            <p style={{ color: "var(--themeFontColor)" }}> - </p>
+          ) : ele?.payment_status === "Paid" ? (
+            <button
+              disabled
+              style={{
+                padding: "10px 24px",
+                color: "#10b981",
+                background: "#ecfdf5",
+                border: "1px solid #10b981",
+                borderRadius: "6px",
+                fontSize: "14px",
+                fontWeight: "500",
+                cursor: "not-allowed",
+                opacity: "0.9",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+              }}
+            >
+              Paid
+            </button>
+          ) : (
+            <button
+              disabled
+              style={{
+                padding: "10px 24px",
+                color: "#ff6b00",
+                background: "#fdf1ecff",
+                border: "1px solid #ff6b00",
+                borderRadius: "6px",
+                fontSize: "14px",
+                fontWeight: "500",
+                cursor: "not-allowed",
+                opacity: "0.9",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+              }}
+            >
+              Unpaid
+            </button>
+          ),
+        payment_status: ele?.payment_status === "Paid" ? "Paid" : "Unpaid",
+        payable_amount1: "$ " + ele?.payable_amount,
+        top_up:   ele?.ownership === "In House" ?  (
+          <div>
+            <button
+              style={{
+                padding: "5px 15px",
+                color: "rgb(238, 127, 37)",
+                background: "transparent",
+                border: "1px solid rgb(238, 127, 37)",
+                borderRadius: "5px",
+              }}
+              onClick={() => handleFormSub(ele?.id)}
+            >
+              Top Up
+            </button>
+          </div>
+        ) : <p style={{ color: "var(--themeFontColor)" }}> - </p> ,
+      }));
+      setTableData({ ...temp });
+      // setForm({ ...form, sequence: Number(tableData.tableBody[tableData.tableBody.length - 1]?.["sequence"]) + 1 })
+    }
+  }, [advertisementList]);
+
+  useEffect(() => {
+    if (
+      isEdit &&
+      form?.advertiser !== null &&
+      form?.advertiser !== "null" &&
+      form?.advertiser !== "" &&
+      form?.advertiser !== undefined
+    ) {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 3) {
+                return {
+                  ...field,
+                  display: "block",
+                };
+              }
+
+              if (index === 6) {
+                return {
+                  ...field,
+                  disabled: true,
+                };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    } else {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 3) {
+                return {
+                  ...field,
+                  display: "none",
+                };
+              }
+              if (index === 5) {
+                return {
+                  ...field,
+                  display: "none",
+                };
+              }
+              if (index === 6) {
+                return {
+                  ...field,
+                  disabled: false,
+                };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    }
+  }, [isEdit]);
+  useEffect(() => {
+    if (
+      form?.advertiser !== null &&
+      form?.advertiser !== "null" &&
+      form?.advertiser !== "" &&
+      form?.advertiser !== undefined
+    ) {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Media") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 0) {
+                return {
+                  ...field,
+                  display: "block",
+                };
+              }
+              if (index === 1) {
+                return {
+                  ...field,
+                  display: "none",
+                };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 1) {
+                return {
+                  ...field,
+                  disabled: true,
+                };
+              }
+
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    } else {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Media") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 0) {
+                return {
+                  ...field,
+                  display: "none",
+                };
+              }
+              if (index === 1) {
+                return {
+                  ...field,
+                  display: "block",
+                };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 1) {
+                return {
+                  ...field,
+                  disabled: false,
+                };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    }
+  }, [form?.advertiser]);
+
+  useEffect(() => {
+    if (categories?.data) {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 6) {
+                return {
+                  ...field,
+                  options: categories?.data?.map((ele) => ({
+                    label: ele.category_name,
+                    value: ele.id,
+                  })),
+                };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    } else {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 6) {
+                return {
+                  ...field,
+                  options: [],
+                };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    }
+  }, [categories]);
+  useEffect(() => {
+    if (form?.approval_status == "Rejected") {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 4) {
+                return { ...field, display: "block" };
+              }
+              if (index === 5) {
+                return { ...field, display: "none" };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    } else if (form?.approval_status == "Approved") {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 4) {
+                return { ...field, display: "none" };
+              }
+              if (index === 5) {
+                return { ...field, display: "block" };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    } else {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 4) {
+                return { ...field, display: "none" };
+              }
+              if (index === 5) {
+                return { ...field, display: "none" };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    }
+  }, [form?.approval_status]);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const data = new FormData();
+    Object.keys(form)?.map((key) => data.append(key, form?.[key]));
+    if (
+      form?.advertiser == null ||
+      form?.advertiser == "null" ||
+      form?.advertiser == "" ||
+      form?.advertiser == undefined
+    ) {
+      data.append("ownership", "In House");
+      data.append("master", user?.id);
+      data.append("approval_status", "Approved");
+    }
+    if (isEdit) {
+      const resData = await advertisement_update(data);
+      if (resData?.status === 200) {
+        // setForm({});
+        setForm({});
+        setSave(!save);
+        setDrawer(false);
+      } else {
+        setForm(form);
+      }
+    } else {
+      const resData = await admin_advertisement_create(data);
+      if (resData?.status === 200) {
+        // setForm({});
+        setForm({});
+        setSave(!save);
+        setDrawer(false);
+      } else {
+        setForm(form);
+      }
+    }
+  };
+  const handleFormSub = (id) => {
+    setEditingIndex(null);
+    setIsModalOpenSub(true);
+    setIsEdit(false);
+    setFormSub({
+      id: id,
+    });
+  };
+
+  const handleSubmit2 = async () => {
+    const resData = await advertisement_payment_create({...formSub , flag : true });
+    if (resData?.status === 200) {
+      setSave(!save);
+      setFormSub({});
+      setIsModalOpenSub(false);
+    }
+  };
+  useEffect(() => {
+    if (form?.payable_amount) {
+      const amount = Number(form?.payable_amount) / parseFloat(adPrice);
+      setForm({ ...form, views_required: amount });
+    }
+  }, [form?.payable_amount]);
+  useEffect(() => {
+    if (formSub?.payable_amount) {
+      const amount = Number(formSub?.payable_amount) / parseFloat(adPrice);
+      setFormSub({ ...formSub, views_required: amount });
+    }
+  }, [formSub?.payable_amount]);
+  const [formStructureSub, setFormStructureSub] = useState(
+    [
+      {
+        type: "inputBox",
+        name: "payable_amount",
+        title: "Payable Amount",
+        regex: /^[0-9\s]+$/,
+        placeholder: "Enter Amount",
+        required: true,
+      },
+      {
+        type: "inputBox",
+        name: "views_required",
+        title: "Guaranteed Views",
+        regex: /^[0-9\s]+$/,
+        placeholder: "Enter No Of Views",
+        required: true,
+        disabled: true,
+      },
+    ].filter((e) => e)
+  );
+
+  return (
+    <>
+      <DynamicFormModal
+        open={isModalOpenSub}
+        onClose={() => {
+          setIsModalOpenSub(false);
+          setFormSub({});
+          setIsEdit(false);
+        }}
+        formStructure={formStructureSub}
+        onSubmit={handleSubmit2}
+        formData={formSub}
+        setFormData={setFormSub}
+        title={"Ad Top Up"}
+        initialData={editingIndex !== null ? tableData[editingIndex] : {}}
+        save={save}
+        setSave={setSave}
+      />
+      <ListTable
+        tableData={tableData}
+        key={"ListTable"}
+        form={form}
+        setForm={setForm}
+        setTableData={setTableData}
+        setIsEdit={setIsEdit}
+        view="view_all"
+        save={save}
+        setSave={setSave}
+        isDrawerForm={true}
+        openDrawer={drawer}
+        setOpenDrawer={setDrawer}
+        formStructure={formStructure}
+        handleSubmit={handleSubmit}
+        // hideAddBtn={true}
+        isEdit={isEdit}
+        canEdit={canEdit}
+        formTitle={isEdit ? "Edit Advertisement" : "Add Advertisement"}
+        exportButton={
+          <Export
+            fileName={"Category"}
+            isClubed={true}
+            access={"true"}
+            exportData={tableData?.exportData || tableData?.tableBody}
+            headings={tableData.tableHead?.map((value) => value.label)}
+            // api = {"export_episode_list"}
+            // api_data = {episodes?.filter_condition}
+          />
+        }
+        // setForm = {se}
+        // setIsEdit(true)
+      />
+    </>
+  );
+};
+
+export default Advertisement;

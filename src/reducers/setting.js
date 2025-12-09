@@ -16,6 +16,8 @@ const mastersReducer = (state = { mastersData: null }, action) => {
 			return {...state,privacypolicy: action.payload};
 			case actionType.APPSETTING:
 			return {...state,appsetting: action.payload};
+			case actionType.APP_DYANMIC:
+			return {...state,app_dyanmic: action.payload};
 			case actionType.LOGS:
 				return {...state,logs: action.payload};
 				case actionType.LOGSDEC:

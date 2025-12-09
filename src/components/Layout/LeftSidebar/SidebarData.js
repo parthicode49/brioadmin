@@ -512,11 +512,11 @@ export const SidebarData = (darkMode) => {
             access: getAccessLevel("Setting"),
             contentName: "Setting",
           },
-          // {
-          //   title: "User Logs",
-          //   path: "/Settings/UserLogs/UserLogs",
-          //   access: rights?.["User Logs"]?.["view"],
-          // },
+          {
+            title: "Release Note",
+            path: "/setting/appdyaminc/",
+            access: rights?.["User Logs"]?.["view"],
+          },
           // {
           //   title: "User Subscription",
           //   path: "/Settings/UserSubscription/",
