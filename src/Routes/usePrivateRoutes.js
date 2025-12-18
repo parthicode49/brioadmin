@@ -20,6 +20,9 @@ const Episode = React.lazy(() =>
 const Slider = React.lazy(() =>
   import("../components/SliderBanner/SliderBanner")
 );
+const AdSlider = React.lazy(() =>
+  import("../components/SliderBanner/AdSliderBanner")
+);
 const Subscription = React.lazy(() =>
   import("../components/Subscription/Subscriptions")
 );
@@ -245,6 +248,14 @@ export const usePrivateRoutes = () => {
         Component: (
           <ProtectedRoute requiredAccess="Slider">
             <Slider />{" "}
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: `/adslider`,
+        Component: (
+          <ProtectedRoute requiredAccess="Slider">
+            <AdSlider />{" "}
           </ProtectedRoute>
         ),
       },

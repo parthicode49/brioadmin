@@ -45,7 +45,6 @@ export const sliderbanner_delete = (formData) => async (dispatch) => {
 export const all_sliderbanner_list = (formData) => async (dispatch) => {
   try {
     const { data } = await api.all_sliderbanner_list(formData);
-
     dispatch({ type: SLIDER_BANNERS, payload: data });
   } catch (error) {
     console.log(error);

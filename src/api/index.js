@@ -1,10 +1,10 @@
 import axios from 'axios';
 
-const API = axios.create({ baseURL: 'https://bridge.brionow.online/api/' });
-export const IMAGE = 'https://bridge.brionow.online/'
+// const API = axios.create({ baseURL: 'https://bridge.brionow.online/api/' });
+// export const IMAGE = 'https://bridge.brionow.online/'
 
-// const API = axios.create({ baseURL: 'https://api-test.brionow.online/api/' });
-// export const IMAGE = 'https://api-test.brionow.online/'
+const API = axios.create({ baseURL: 'https://api-test.brionow.online/api/' });
+export const IMAGE = 'https://api-test.brionow.online/'
 
 // const API = axios.create({ baseURL: 'http://ec2-15-206-35-104.ap-south-1.compute.amazonaws.com:8000/api/' });
 // export const IMAGE = 'http://ec2-15-206-35-104.ap-south-1.compute.amazonaws.com:8000/'
@@ -125,6 +125,14 @@ export const sub_ott_create = (formData) => API.post('/sub_ott_create/' ,formDat
 export const sub_ott_update = (formData) => API.post('/sub_ott_update/' ,formData)
 export const sub_ott_delete = (formData) => API.post('/sub_ott_delete/' ,formData)
 export const all_sub_ott_list = (formData) => API.post('/all_sub_ott_list/' ,formData)
+
+// Advertisement Banner
+
+export const advertisement_banner_create = (formData) => API.post('/advertisement_banner_create/' ,formData)
+export const advertisement_banner_update = (formData) => API.post('/advertisement_banner_update/' ,formData)
+export const advertisement_banner_status_update = (formData) => API.post('/advertisement_banner_status_update/' ,formData)
+export const advertisement_banner_delete = (formData) => API.post('/advertisement_banner_delete/' ,formData)
+export const advertisement_banner_list_admin = (formData) => API.post('/advertisement_banner_list_admin/' ,formData)
 
 // Highlight 
 

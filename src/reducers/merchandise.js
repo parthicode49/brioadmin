@@ -14,6 +14,8 @@ const merchandiseReducer = (state = { merchandiseData: null }, action) => {
       return { ...state, notification_read: action.payload };
     case actionType.SLIDER_BANNERS:
       return { ...state, slider_banners: action.payload };
+    case actionType.ADSLIDER_BANNERS:
+      return { ...state, ad_slider_banners: action.payload };
     case actionType.SONG_SLIDER_BANNERS:
       return { ...state, song_slider_banners: action.payload };
     case actionType.COUPONS_MOVIE:

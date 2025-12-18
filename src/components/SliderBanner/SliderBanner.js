@@ -15,6 +15,7 @@ import Export from "../utils/Export";
 import dayjs from "dayjs";
 import { bindActionCreators } from "redux";
 import { useAccessControl } from "../utils/useAccessControl";
+import { live_stream_list_admin } from "../../actions/livestream";
 
 const SliderBanner = () => {
     const { canEdit } = useAccessControl("Slider");
@@ -24,6 +25,8 @@ const SliderBanner = () => {
   const series = useSelector((state) => state?.webseries?.series_name);
   const rights = useSelector((state) => state.layout.rights);
   const movie = useSelector((state) => state?.movies?.movie_name);
+  const livestream = useSelector((state) => state?.live_stream?.live_stream);
+  console.log(livestream , "sdfdsfsdf")
   const { sliderbanner_create, sliderbanner_update } = bindActionCreators(
     Action,
     dispatch
@@ -94,7 +97,7 @@ const SliderBanner = () => {
         id: "2",
         title: "Slider Type",
         name: "content_type",
-        options: ["Movie", "Series"],
+        options: ["Movie", "Series" , "LiveStream"],
       },
     ],
   });
@@ -114,6 +117,7 @@ const SliderBanner = () => {
       dispatch(only_series_name(data));
       // dispatch(all_season_list(data))
       dispatch(all_movie_name_list(data));
+      dispatch(live_stream_list_admin(data));
     }
   }, [user?.id]);
   useEffect(() => {
@@ -170,6 +174,7 @@ const SliderBanner = () => {
           options: [
             { value: "Movie", label: "Movie" },
             { value: "Series", label: "Series" },
+            { value: "LiveStream", label: "LiveStream" },
           ],
           required: true,
         },
@@ -193,6 +198,17 @@ const SliderBanner = () => {
           options: [
             { value: "Movie", label: "Movie" },
             { value: "Series", label: "Series" },
+          ],
+          display: "none",
+          required: true,
+        },
+        {
+          type: "select",
+          name: "live_stream",
+          title: "Select Live Stream",
+          placeholder: "Select Live Stream here",
+          options: [
+
           ],
           display: "none",
           required: true,
@@ -259,6 +275,9 @@ const SliderBanner = () => {
               if (index === 2) {
                 return { ...field, display: "none" };
               }
+              if (index === 3) {
+                return { ...field, display: "none" };
+              }
               return field;
             });
             return { ...section, fields: updatedFields };
@@ -277,6 +296,9 @@ const SliderBanner = () => {
               if (index === 2) {
                 return { ...field, display: "block" };
               }
+              if (index === 3) {
+                return { ...field, display: "none" };
+              }
               return field;
             });
             return { ...section, fields: updatedFields };
@@ -284,12 +306,33 @@ const SliderBanner = () => {
           return section;
         })
       );
-    } else {
+    } else if (form?.content_type === "LiveStream") {
       setFormStructure((prevFormStructure) =>
         prevFormStructure.map((section) => {
           if (section.title === "Details") {
             const updatedFields = section.fields.map((field, index) => {
-              if (index === 1 || index === 2) {
+              if (index === 1) {
+                return { ...field, display: "none" };
+              }
+              if (index === 2) {
+                return { ...field, display: "none" };
+              }
+              if (index === 3) {
+                return { ...field, display: "block" };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    }  else {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 1 || index === 2 || index === 3) {
                 return { ...field, display: "none" };
               }
               return field;
@@ -307,7 +350,7 @@ const SliderBanner = () => {
         prevFormStructure.map((section) => {
           if (section.title === "Details") {
             const updatedFields = section.fields.map((field, index) => {
-              if (index === 4) {
+              if (index === 5) {
                 return { ...field, display: "block" };
               }
               return field;
@@ -322,7 +365,7 @@ const SliderBanner = () => {
         prevFormStructure.map((section) => {
           if (section.title === "Details") {
             const updatedFields = section.fields.map((field, index) => {
-              if (index === 4) {
+              if (index === 5) {
                 return { ...field, display: "none" };
               }
               return field;
@@ -392,6 +435,35 @@ const SliderBanner = () => {
       );
     }
   }, [series]);
+  useEffect(() => {
+    if (livestream?.data) {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 3) {
+                return {
+                  ...field,
+                  options: livestream?.data
+                    ?.map(
+                      (ele) =>
+                        ele?.status == "Active" && {
+                          label: ele?.channel_name,
+                          value: ele?.id,
+                        }
+                    )
+                    .filter((e) => e),
+                };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    }
+  }, [livestream]);
   // useMemo(()=>{
   //   if(series?.statuscode == 200){
   //     // const temp = formStructure

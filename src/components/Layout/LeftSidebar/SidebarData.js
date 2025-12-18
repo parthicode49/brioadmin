@@ -186,11 +186,12 @@ export const SidebarData = (darkMode) => {
             access: getAccessLevel("Slider"),
             contentName: "Slider",
           },
-          // {
-          //   title: "Song Slider",
-          //   path: "/songslider",
-          //   access: rights?.["Web Series"]?.["view"],
-          // },
+          {
+            title: "Ad Slider",
+            path: "/adslider",
+            access: getAccessLevel("Slider"),
+            contentName: "Slider",
+          },
           {
             title: "Promotion",
             path: "/promotion",
