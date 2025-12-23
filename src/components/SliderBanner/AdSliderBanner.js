@@ -135,9 +135,9 @@ const AdSliderBanner = () => {
         {
           type: "image",
           name: "poster",
-          title: "Portrait",
+          title: "App View",
           description: "Image size",
-          image_size: "980 * 1300 PX",
+          image_size: "1400 * 400 PX",
           accept: "image/*",
           size: 6,
           required: true,
@@ -145,7 +145,7 @@ const AdSliderBanner = () => {
         {
           type: "image",
           name: "thumbnail",
-          title: "Landscape",
+          title: "Web View",
           description: "Image size",
           image_size: "1584 * 270 PX",
           accept: "image/*",

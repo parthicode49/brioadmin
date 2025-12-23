@@ -25,7 +25,7 @@ const Advertisement = () => {
   const [formSub, setFormSub] = useState({});
   const [open, setOpen] = useState(false);
   const [content, setContent] = useState("");
-    const categories = useSelector((state) => state.masters.categories);
+  const categories = useSelector((state) => state.masters.categories);
   const {
     advertisement_create,
     advertisement_update,
@@ -44,7 +44,7 @@ const Advertisement = () => {
       }
     };
     dailyAdPrice();
-          dispatch(all_category_list());
+    dispatch(all_category_list());
   }, []);
 
   console.log(adPrice, "adPrice44444");
@@ -344,18 +344,46 @@ const Advertisement = () => {
     },
   ]);
 
+  // useEffect(() => {
+  //   if (form?.payable_amount) {
+  //     const amount = Number(form?.payable_amount) / parseFloat(adPrice);
+  //     setForm({ ...form, views_required: amount });
+  //   }
+  // }, [form?.payable_amount]);
+  // useEffect(() => {
+  //   if (formSub?.payable_amount) {
+  //     const amount = Number(formSub?.payable_amount) / parseFloat(adPrice);
+  //     setFormSub({ ...formSub, views_required: amount });
+  //   }
+  // }, [formSub?.payable_amount]);
+
   useEffect(() => {
-    if (form?.payable_amount) {
-      const amount = Number(form?.payable_amount) / parseFloat(adPrice);
-      setForm({ ...form, views_required: amount });
+    const payable = Number(form?.payable_amount);
+    const price = parseFloat(adPrice);
+
+    if (price > 0 && payable > 0) {
+      const amount = payable / price;
+
+      if (form.views_required !== amount) {
+        setForm((prev) => ({ ...prev, views_required: amount }));
+      }
     }
-  }, [form?.payable_amount]);
+  }, [form?.payable_amount, adPrice]);
+
   useEffect(() => {
-    if (formSub?.payable_amount) {
-      const amount = Number(formSub?.payable_amount) / parseFloat(adPrice);
-      setFormSub({ ...formSub, views_required: amount });
+    const payable = Number(formSub?.payable_amount);
+    const price = parseFloat(adPrice);
+    console.log(payable, price, adPrice, "chchchchchc");
+    // Only run if both numbers are valid and price > 0
+    if (!isNaN(payable) && !isNaN(price) && price > 0) {
+      const amount = payable / price;
+
+      // Prevent infinite loop
+      if (formSub.views_required !== amount) {
+        setFormSub((prev) => ({ ...prev, views_required: amount }));
+      }
     }
-  }, [formSub?.payable_amount]);
+  }, [formSub?.payable_amount, adPrice]);
 
   const [formStructureSub, setFormStructureSub] = useState(
     [
@@ -413,57 +441,65 @@ const Advertisement = () => {
       );
     }
   }, [form?.approval_status]);
-    useEffect(() => {
-      if (categories?.data) {
-        setFormStructure((prevFormStructure) =>
-          prevFormStructure.map((section) => {
-            if (section.title === "Details") {
-              const updatedFields = section.fields.map((field, index) => {
-                if (index === 4) {
-                  return {
-                    ...field,
-                    options: categories?.data?.map((ele) => ({
-                      label: ele.category_name,
-                      value: ele.id,
-                    })),
-                  };
-                }
-                return field;
-              });
-              return { ...section, fields: updatedFields };
-            }
-            return section;
-          })
-        );
-      } else {
-        setFormStructure((prevFormStructure) =>
-          prevFormStructure.map((section) => {
-           if (section.title === "Details") {
-              const updatedFields = section.fields.map((field, index) => {
-                if (index === 4) {
-                  return {
-                    ...field,
-                    options: []
-                  };
-                }
-                return field;
-              });
-              return { ...section, fields: updatedFields };
-            }
-            return section;
-          })
-        );
-      }
-    }, [categories]);
+  useEffect(() => {
+    if (categories?.data) {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 4) {
+                return {
+                  ...field,
+                  options: categories?.data?.map((ele) => ({
+                    label: ele.category_name,
+                    value: ele.id,
+                  })),
+                };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    } else {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 4) {
+                return {
+                  ...field,
+                  options: [],
+                };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    }
+  }, [categories]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (Number(form?.payable_amount) < 49) {
+      alert("Payable amount must be greater than $49");
+       setForm({...form ,payable_amount : "" })
+      return; // stop execution
+    }
+
     const data = new FormData();
-    Object.keys(form)?.map((key) => data.append(key, form?.[key]));
+    Object.keys(form)?.forEach((key) => data.append(key, form?.[key]));
     data.append("advertiser", user?.id);
+
     if (isEdit) {
       data.append("approval_status", "Pending");
       data.append("reject_reason", "");
+
       const resData = await advertisement_update(data);
       if (resData?.status === 200) {
         setForm({});
@@ -475,7 +511,6 @@ const Advertisement = () => {
     } else {
       const resData = await advertisement_create(data);
       if (resData?.status === 200) {
-        // setForm({});
         setForm({});
         setSave(!save);
         setDrawer(false);
@@ -486,7 +521,11 @@ const Advertisement = () => {
   };
 
   const handleSubmit2 = async () => {
-    console.log(formSub, "formSub123");
+    if (Number(formSub?.payable_amount) < 49) {
+      alert("Payable amount must be greater than $49");
+      setFormSub({...formSub ,payable_amount : "" })
+      return; // stop execution
+    }
     navigate("/stripe-payment", {
       state: {
         price: Number(formSub?.payable_amount),
@@ -498,12 +537,12 @@ const Advertisement = () => {
         flag: true,
       },
     });
-    // const resData = await advertisement_payment_create(formSub);
-    // if (resData?.status === 200) {
-    //   setSave(!save);
-    //   setFormSub({});
-    //   setIsModalOpenSub(false);
-    // }
+    const resData = await advertisement_payment_create(formSub);
+    if (resData?.status === 200) {
+      setSave(!save);
+      setFormSub({});
+      setIsModalOpenSub(false);
+    }
   };
 
   return (
