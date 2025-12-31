@@ -8,7 +8,7 @@ import { bindActionCreators } from "redux";
 import { useAccessControl } from "../utils/useAccessControl";
 
 const AdSliderBanner = () => {
-  const { canEdit } = useAccessControl("Slider");
+  const { canEdit } = useAccessControl("Ad Banner");
   const dispatch = useDispatch();
   const user = useSelector((state) => state.layout.profile);
   const rights = useSelector((state) => state.layout.rights);
@@ -32,6 +32,10 @@ const AdSliderBanner = () => {
     onInactiveText: "Are you Sure want to Inactivate Ad Slider Banner?",
     tableHead: [
       {
+        id: "start_date",
+        label: "Start Date",
+      },
+      {
         id: "expired_on",
         label: "Expiring On",
         isSpecial: true,
@@ -46,6 +50,10 @@ const AdSliderBanner = () => {
       {
         id: "redirection_link",
         label: "Redirection Link",
+      },
+      {
+        id: "sequence",
+        label: "Sequence",
       },
 
       {
@@ -112,6 +120,17 @@ const AdSliderBanner = () => {
         {
           type: "date",
           variant: "date",
+          title: "Start Date",
+          min: new Date().toISOString().split("T")[0],
+          name: "start_date",
+          default: new Date().toISOString().split("T")[0],
+          required: true,
+          placeholder: "Select Start Date",
+          // size: "3",
+        },
+        {
+          type: "date",
+          variant: "date",
           title: "Expire Date",
           min: new Date().toISOString().split("T")[0],
           name: "expire_date",
@@ -126,6 +145,17 @@ const AdSliderBanner = () => {
           title: "Redirection Link",
           placeholder: "Paste link",
           // required: true,
+        },
+        {
+          type: "inputBox",
+          name: "sequence",
+          title: "Sequence",
+          display: "none",
+          regex: /^[0-9\.]+$/,
+          // maxLength: "2",
+          // size: "3",
+          placeholder: "Type Sequence",
+          required: true,
         },
       ],
     },
@@ -183,6 +213,39 @@ const AdSliderBanner = () => {
       }
     }
   };
+   useEffect(() => {
+      if (isEdit) {
+        setFormStructure((prevFormStructure) =>
+          prevFormStructure.map((section) => {
+            if (section.title === "Details") {
+              const updatedFields = section.fields.map((field, index) => {
+                if (index === 3) {
+                  return { ...field, display: "block" };
+                }
+                return field;
+              });
+              return { ...section, fields: updatedFields };
+            }
+            return section;
+          })
+        );
+      } else {
+        setFormStructure((prevFormStructure) =>
+          prevFormStructure.map((section) => {
+            if (section.title === "Details") {
+              const updatedFields = section.fields.map((field, index) => {
+                if (index === 3) {
+                  return { ...field, display: "none" };
+                }
+                return field;
+              });
+              return { ...section, fields: updatedFields };
+            }
+            return section;
+          })
+        );
+      }
+    }, [isEdit]);
   return (
     <div>
       <ListTable

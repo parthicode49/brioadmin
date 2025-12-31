@@ -28,6 +28,8 @@ import adpanel from "../../../images/SliderBanner/ad-panel.png";
 import adpanelDark from "../../../images/SliderBanner/ad-panel_dark.png";
 import payment from "../../../images/SliderBanner/payment.png";
 import paymentDark from "../../../images/SliderBanner/payment_dark.png";
+import adBanner from "../../../images/SliderBanner/ad_banner.png"
+import adBannerDark from "../../../images/SliderBanner/ad_banner_dark.png"
 import { useSelector } from "react-redux";
 export const SidebarData = (darkMode) => {
   const reduxRole = useSelector((state) => state.layout.role);
@@ -35,6 +37,8 @@ export const SidebarData = (darkMode) => {
   const role = reduxRole || loginedDetails?.role;
   const reduxRights = useSelector((state) => state?.layout?.rights);
   const rights = reduxRights || loginedDetails?.master_rights;
+
+  console.log(rights , "rights123")
 
   const getAccessLevel = (contentName) => {
     if (!rights || !Array.isArray(rights)) {
@@ -49,6 +53,8 @@ export const SidebarData = (darkMode) => {
     );
     return right?.content_value || "All Access";
   };
+
+  console.log(getAccessLevel("Ad Banner") , "dddddddddddddddddd")
   // console.log(getAccessLevel("Movies"), "getAccessLevel77");
   // Helper function to check if route is accessible
   const isAccessible = (contentName) => {
@@ -186,12 +192,12 @@ export const SidebarData = (darkMode) => {
             access: getAccessLevel("Slider"),
             contentName: "Slider",
           },
-          {
-            title: "Ad Slider",
-            path: "/adslider",
-            access: getAccessLevel("Slider"),
-            contentName: "Slider",
-          },
+          // {
+          //   title: "Ad Slider",
+          //   path: "/adslider",
+          //   access: getAccessLevel("Slider"),
+          //   contentName: "Slider",
+          // },
           {
             title: "Promotion",
             path: "/promotion",
@@ -205,6 +211,15 @@ export const SidebarData = (darkMode) => {
             contentName: "Top Ten Video",
           },
         ].filter((e) => e),
+      },
+      {
+        title: "Ad Banner",
+        path: "/adslider",
+        icon: <img src={darkMode ? adBanner : adBannerDark} height={"20px"} />,
+        iconClosed: <KeyboardArrowRightIcon />,
+        iconOpened: <KeyboardArrowDownIcon />,
+        access: getAccessLevel("Ad Banner"),
+        contentName: "Ad Banner",
       },
       {
         title: "Customers",
@@ -238,31 +253,31 @@ export const SidebarData = (darkMode) => {
           // },
         ].filter((e) => e),
       },
-      {
-        title: "All Transactions",
-        path: "/transaction",
-        icon: (
-          <img src={darkMode ? transition : transitionDark} height={"20px"} />
-        ),
-        iconClosed: <KeyboardArrowRightIcon />,
-        iconOpened: <KeyboardArrowDownIcon />,
-        access: getAccessLevel("Transactions"),
-        contentName: "Transactions",
-      },
-      {
-        title: "Subscription",
-        path: "/subscription",
-        icon: (
-          <img
-            src={darkMode ? subscription : subscriptionDark}
-            height={"20px"}
-          />
-        ),
-        iconClosed: <KeyboardArrowRightIcon />,
-        iconOpened: <KeyboardArrowDownIcon />,
-        access: getAccessLevel("Subscriptions"),
-        contentName: "Subscriptions",
-      },
+      // {
+      //   title: "All Transactions",
+      //   path: "/transaction",
+      //   icon: (
+      //     <img src={darkMode ? transition : transitionDark} height={"20px"} />
+      //   ),
+      //   iconClosed: <KeyboardArrowRightIcon />,
+      //   iconOpened: <KeyboardArrowDownIcon />,
+      //   access: getAccessLevel("Transactions"),
+      //   contentName: "Transactions",
+      // },
+      // {
+      //   title: "Subscription",
+      //   path: "/subscription",
+      //   icon: (
+      //     <img
+      //       src={darkMode ? subscription : subscriptionDark}
+      //       height={"20px"}
+      //     />
+      //   ),
+      //   iconClosed: <KeyboardArrowRightIcon />,
+      //   iconOpened: <KeyboardArrowDownIcon />,
+      //   access: getAccessLevel("Subscriptions"),
+      //   contentName: "Subscriptions",
+      // },
       // {
       //   title: "Promotion",
       //   path: "/promotion",
@@ -452,7 +467,7 @@ export const SidebarData = (darkMode) => {
             access: getAccessLevel("Control Panel"),
             contentName: "Control Panel",
           },
-         role == "Admin" && {
+          role == "Admin" && {
             title: "Sub Admin",
             path: "/masters/subadmin",
             access: getAccessLevel("Control Panel"),

@@ -91,16 +91,16 @@ const SubAdmin = () => {
           name: "email",
           required: true,
         },
-        // {
-        //   id: "4",
-        //   type: "mobile",
-        //   title: "Mobile Number",
-        //   // maxLength: 12,
-        //   placeholder: "Enter Mobile Number",
-        //   name: "mobile_number",
-        //   isMobile: true,
-        //   required: true,
-        // },
+        {
+          id: "4",
+          type: "inputBox",
+          title: "Password",
+          // maxLength: 12,
+          placeholder: "Enter password",
+          name: "password",
+          required: true,
+          display : "none"
+        },
       ],
     },
     {
@@ -546,9 +546,64 @@ const SubAdmin = () => {
             { value: "No Access", color: "danger" },
           ],
         },
+        {
+          type: "headind_ad",
+          title: "Ad Banner",
+          margin: "25px",
+          size: "3",
+        },
+        {
+          type: "toggle",
+          // title: "Audio Language",
+          name: "content_value_22",
+          default: "No Access",
+          size: "9",
+          //   required: true,
+          noHeading: true,
+          options: [
+            { value: "All Access", color: "success" },
+            { value: "Only View", color: "danger" },
+            { value: "No Access", color: "danger" },
+          ],
+        },
       ],
     },
   ]);
+
+ useEffect(() => {
+    if (isEdit) {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 2) {
+                return { ...field, display: "block" };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    } else {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 2) {
+                return { ...field, display: "none" };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    }
+  }, [isEdit]);
+
   useMemo(() => {
     if (subadmins?.data) {
       const temp = tableData;
@@ -595,6 +650,7 @@ const SubAdmin = () => {
       content_19: "Subscriptions",
       content_20: "Control Panel",
       content_21: "Setting",
+      content_22: "Ad Banner",
     };
     setForm(updatedForm);
     console.log(updatedForm, "New Form Chech");

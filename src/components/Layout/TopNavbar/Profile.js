@@ -42,7 +42,7 @@ const Profile = (props) => {
   const role = useSelector((state) => state.layout.role);
   const advertiser = useSelector((state) => state.layout.advertiser);
   const distributor = useSelector((state) => state.layout.distributor);
-
+// console.log(role , "localStorage")
   return (
     <>
       <Tooltip title="Account settings">
@@ -202,7 +202,7 @@ const Profile = (props) => {
             sessionStorage.setItem("loginDetails", null);
             sessionStorage.setItem("loggedInDetails", null);
             // sessionStorage.setItem(null)
-            if(role == "Admin" ){
+            if(role == "Admin" || role == "Sub Admin" ){
             setTimeout(()=>{
               navigate("/", { state: { message: "Logged Out Successfully" } });
             },100)

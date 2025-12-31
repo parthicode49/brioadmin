@@ -254,7 +254,7 @@ export const usePrivateRoutes = () => {
       {
         path: `/adslider`,
         Component: (
-          <ProtectedRoute requiredAccess="Slider">
+          <ProtectedRoute requiredAccess="Ad Banner">
             <AdSlider />{" "}
           </ProtectedRoute>
         ),
