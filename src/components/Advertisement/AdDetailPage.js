@@ -9,7 +9,6 @@ import { useLocation } from "react-router-dom";
 
 const AdDetailPage = () => {
   const location = useLocation()
-  console.log(location , "location44444")
   const { canEdit } = useAccessControl("Ad Master");
   const dispatch = useDispatch();
   const user = useSelector((state) => state.layout.profile);

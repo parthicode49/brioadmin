@@ -537,12 +537,12 @@ const Advertisement = () => {
         flag: true,
       },
     });
-    const resData = await advertisement_payment_create(formSub);
-    if (resData?.status === 200) {
-      setSave(!save);
-      setFormSub({});
-      setIsModalOpenSub(false);
-    }
+    // const resData = await advertisement_payment_create(formSub);
+    // if (resData?.status === 200) {
+    //   setSave(!save);
+    //   setFormSub({});
+    //   setIsModalOpenSub(false);
+    // }
   };
 
   return (

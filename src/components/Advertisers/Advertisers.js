@@ -19,7 +19,7 @@ const Advertisers = () => {
   const rights = useSelector((state) => state.layout.rights);
   const user = useSelector((state) => state.layout.profile);
   const [save, setSave] = useState(false);
-  const [form, setForm] = useState({});
+  const [form, setForm] = useState({country : "United States"});
   const [isEdit, setIsEdit] = useState(false);
   const dispatch = useDispatch();
   const location = useLocation();
@@ -271,7 +271,7 @@ const Advertisers = () => {
     if (isEdit) {
       const resData = await advertiser_update(form);
       if (resData?.status === 200) {
-        setForm({});
+        setForm({country : "United States"});
         setSave(!save);
         setDrawer(false);
       } else {
@@ -281,7 +281,7 @@ const Advertisers = () => {
       const resData = await advertiser_create(form);
       if (resData?.status === 200) {
         // setForm({});
-        setForm({});
+        setForm({country : "United States"});
         setSave(!save);
         setDrawer(false);
       } else {

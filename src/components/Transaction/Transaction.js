@@ -4,9 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import styles from "./../../styles/PageTitle.module.css";
 import ListTable from "../utils/Table";
-import {
-  all_transaction_list,
-} from "./../../actions/transaction";
+import { all_transaction_list } from "./../../actions/transaction";
 import { useDispatch, useSelector } from "react-redux";
 import Export from "./../utils/Export";
 import { all_subscription_list } from "../../actions/subscription";
@@ -86,13 +84,13 @@ export default function Transaction() {
         id: "location",
         label: "Location",
       },
-     canEdit&& {
+      canEdit && {
         id: "whatsapp",
         label: "WhatsApp",
         isSpecial: true,
         align: "left",
       },
-     canEdit&& {
+      canEdit && {
         id: "notification",
         label: "Notification",
         isSpecial: true,
@@ -227,7 +225,7 @@ export default function Transaction() {
             : " - ",
         location: ele?.location ? ele?.location : " - ",
         payment_amount: (
-          <div style={{color: "var(--themeFontColor)"}}>
+          <div style={{ color: "var(--themeFontColor)" }}>
             {ele?.usd_payment_amount ? (
               <>
                 <p>
@@ -284,13 +282,13 @@ export default function Transaction() {
             </p>
           ) : (
             <>
-              <p style={{ color: "var(--themeFontColor)" }}>
-                {"Rent"}
-              </p>
+              <p style={{ color: "var(--themeFontColor)" }}>{"Rent"}</p>
               <span style={{ color: "#dd5107" }}>
                 (
                 {ele?.content_type == "Series"
                   ? ele?.series?.title
+                  : ele?.content_type == "LiveStream"
+                  ? ele?.livestream?.channel_name
                   : ele?.movie?.title}
                 )
               </span>

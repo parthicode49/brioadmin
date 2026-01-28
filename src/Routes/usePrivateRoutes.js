@@ -84,7 +84,9 @@ const Analytics = React.lazy(() => import("../components/Analytics/Analytics"));
 const Complaints = React.lazy(() =>
   import("../components/Complaint/Complaint")
 );
-const AdDetails = React.lazy(() => import("../components/Advertisement/AdDetailPage") )
+const AdDetails = React.lazy(() =>
+  import("../components/Advertisement/AdDetailPage")
+);
 const SongDetail = React.lazy(() =>
   import("../components/Song/SongDetail/SongDetailsContent")
 );
@@ -166,7 +168,6 @@ export const usePrivateRoutes = () => {
   //   console.log(`Access for ${contentName}:`, accessLevel);
   //   return accessLevel;
   // };
-  console.log(role ,)
 
   if (role == "Admin" || role == "Sub Admin") {
     return [
@@ -336,11 +337,7 @@ export const usePrivateRoutes = () => {
       },
       {
         path: `/advertisement/detail`,
-        Component: (
-          
-            <AdDetails />
-          
-        ),
+        Component: <AdDetails />,
       },
       {
         path: `/adpayment`,
