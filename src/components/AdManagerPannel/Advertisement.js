@@ -1,0 +1,694 @@
+import React, { useEffect, useState } from "react";
+import ListTable from "../utils/Table";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import * as Action from "../../actions/Advertiser/advertisement";
+import { bindActionCreators } from "redux";
+import Export from "../utils/Export";
+import DynamicFormModal from "../utils/NewFormStructure/DynamicFormModal";
+import StripePayment from "../Advertisement/Stripe/StripePayment";
+import { useNavigate } from "react-router-dom";
+import EnlargedView from "../utils/EnlargedView";
+import { all_category_list } from "../../actions/Masters/category";
+import { all_advertiser_list } from "../../actions/Advertiser/advertiser";
+
+const Advertisement = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [form, setForm] = useState({});
+  const [isEdit, setIsEdit] = useState(false);
+  const [save, setSave] = useState(false);
+  const [drawer, setDrawer] = useState(false);
+  const [isModalOpenSub, setIsModalOpenSub] = useState(false);
+  const [adPrice, setAdPrice] = useState(null);
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formSub, setFormSub] = useState({});
+  const [open, setOpen] = useState(false);
+  const [content, setContent] = useState("");
+  const [advertisementList, setAdvertisementList] = useState([]);
+  const categories = useSelector((state) => state.masters.categories);
+  const {
+    advertisement_create,
+    advertisement_update,
+    advertisement_charge_list,
+    advertisement_payment_create,
+    all_advertisement_list_admin,
+  } = bindActionCreators(Action, dispatch);
+
+  const user = useSelector((state) => state.layout.profile);
+  const adv_list = useSelector((state) => state?.advertisement?.ad_list_adv);
+  const advertisers_list = useSelector(
+    (state) => state?.advertisers?.advertisers,
+  );
+  useEffect(() => {
+    const dailyAdPrice = async () => {
+      const resData = await advertisement_charge_list();
+      if (resData?.data) {
+        setAdPrice(resData?.data?.ad_charge);
+      }
+    };
+    dailyAdPrice();
+    dispatch(all_category_list());
+    dispatch(all_advertiser_list());
+  }, []);
+  useEffect(() => {
+    const adData = async () => {
+      const resData = await all_advertisement_list_admin();
+      if (resData?.data) {
+        setAdvertisementList(resData?.data);
+        console.log(resData?.data, advertisementList, "resData------");
+      }
+    };
+    adData();
+  }, [save]);
+
+  // console.log(advertisementList, "sssssssssssss");
+
+  const handleFormSub = (id, product_name) => {
+    setEditingIndex(null);
+    setIsModalOpenSub(true);
+    setIsEdit(false);
+    setFormSub({
+      id: id,
+      ad_name: product_name,
+    });
+  };
+  const newPaymentGateway = (data) => {
+    navigate("/stripe-payment", {
+      state: {
+        price: Number(data?.payable_amount),
+        currency_code: "USD",
+        email: user?.email,
+        ad_name: data?.product_name,
+        required_view: data?.views_required,
+        ad_id: data?.id,
+        flag: false,
+      },
+    });
+  };
+  console.log(advertisementList?.data, "advertisementList?.data");
+  useEffect(() => {
+    if (advertisementList) {
+      const temp = tableData;
+
+      temp.tableBody = advertisementList
+        ?.map(
+          (ele) =>
+            ele?.advertiser && {
+              ...ele,
+              edit: ele?.approval_status === "Approved",
+              top_up: (
+                <div>
+                  <button
+                    style={{
+                      padding: "5px 15px",
+                      color: "rgb(238, 127, 37)",
+                      background: "transparent",
+                      border: "1px solid rgb(238, 127, 37)",
+                      borderRadius: "5px",
+                    }}
+                    onClick={() =>
+                      ele?.approval_status === "Approved"
+                        ? ele?.payment_status === "Paid"
+                          ? handleFormSub(ele?.id, ele?.product_name)
+                          : (setOpen(true),
+                            setContent(
+                              "First Pay For Advertisement before adding Top Up",
+                            ))
+                        : (setOpen(true),
+                          setContent(
+                            "Advertisement should be Approved before adding extra views",
+                          ))
+                    }
+                  >
+                    Top Up
+                  </button>
+                </div>
+              ),
+              payment: (
+                <div>
+                  {ele?.payment_status === "Paid" ? (
+                    <button
+                      disabled
+                      style={{
+                        padding: "10px 24px",
+                        color: "#10b981",
+                        background: "#ecfdf5",
+                        border: "1px solid #10b981",
+                        borderRadius: "6px",
+                        fontSize: "14px",
+                        fontWeight: "500",
+                        cursor: "not-allowed",
+                        opacity: "0.9",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "6px",
+                      }}
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M20 6L9 17l-5-5" />
+                      </svg>
+                      Paid
+                    </button>
+                  ) : (
+                    <button
+                      style={{
+                        padding: "10px 24px",
+                        color: "#ff6b00",
+                        background: "transparent",
+                        border: "1px solid #ff6b00",
+                        borderRadius: "6px",
+                        fontSize: "14px",
+                        fontWeight: "550",
+                        cursor: "pointer",
+                        transition: "all 0.3s ease",
+                      }}
+                      onClick={() =>
+                        ele?.approval_status === "Approved"
+                          ? newPaymentGateway(ele)
+                          : (setOpen(true),
+                            setContent(
+                              "Payment Cannot be done until your Advertisement is Approved",
+                            ))
+                      }
+                      onMouseEnter={(e) => {
+                        e.target.style.background = "#ff6b00";
+                        e.target.style.color = "white";
+                        e.target.style.transform = "translateY(-1px)";
+                        e.target.style.boxShadow =
+                          "0 4px 12px rgba(255, 107, 0, 0.25)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.background = "transparent";
+                        e.target.style.color = "#ff6b00";
+                        e.target.style.transform = "translateY(0)";
+                        e.target.style.boxShadow = "none";
+                      }}
+                    >
+                      Pay Now & Activate Ad
+                    </button>
+                  )}
+                </div>
+              ),
+            },
+        )
+        .filter(Boolean);
+
+      setTableData({ ...temp });
+    }
+  }, [advertisementList]);
+
+  const [tableData, setTableData] = useState({
+    tableTitle: "Advertisements",
+    // deleteRecord: Action.top_ten_delete,
+    updateRecord: Action.advertisement_status_update,
+    customisedStatusUpdateMessage: true,
+    disableDelete: true,
+    onDeleteText: "Are you sure want to delete ?",
+    onActiveText: "Are you Sure want to Activate Advertisement ?",
+    onInactiveText: "Are you Sure want to Inactivate Advertisement ?",
+    tableHead: [
+      {
+        id: "advertiser_name",
+        label: "Advertiser",
+        subText: "advertiser_company_name",
+      },
+      {
+        id: "product_name",
+        label: "Product Name",
+      },
+      {
+        id: "no_of_views",
+        label: "No Of Views",
+      },
+      {
+        id: "remaining_view",
+        label: "Remaining View",
+      },
+      {
+        id: "views_required",
+        label: "Required Views",
+      },
+      {
+        id: "payable_amount",
+        label: "Payable Amount",
+      },
+      {
+        id: "payment",
+        label: "Payment",
+        isSpecial: true,
+        align: "left",
+      },
+      {
+        id: "top_up",
+        label: "Top Up",
+        isSpecial: true,
+        align: "left",
+      },
+      {
+        id: "created_at",
+        label: "Created At",
+      },
+      {
+        id: "status",
+        label: "Status",
+        // isButtonDisplay: true,
+      },
+      {
+        id: "approval_status",
+        label: "Approval Status",
+        isButtonDisplay: true,
+      },
+      {
+        id: "edit",
+        label: "Update",
+        // access: rights?.["Slider Banner"]?.["edit"] == "true",
+        isNewForm: true,
+      },
+    ],
+    tableBody: [],
+    filterColumn: [
+      {
+        id: "2",
+        title: "Approval Status",
+        name: "approval_status",
+        options: ["Pending", "Approved", "Rejected"],
+      },
+      {
+        id: "3",
+        title: "Status",
+        name: "status",
+        options: ["Active", "Inactive"],
+      },
+      {
+        id: "3",
+        title: "Payment Status",
+        name: "payment_status",
+        options: ["Paid", "Unpaid"],
+      },
+    ],
+  });
+  const [formStructure, setFormStructure] = useState([
+    {
+      title: "Details",
+      fields: [
+        {
+          type: "select",
+          name: "advertiser",
+          title: "Select Advertiser",
+          placeholder: "Select advertiser",
+          // size: "3",
+          options: [],
+          required: true,
+        },
+        {
+          type: "inputBox",
+          name: "product_name",
+          title: "Product Name",
+          placeholder: "Enter Product Name",
+          required: true,
+        },
+        {
+          type: "inputBox",
+          name: "payable_amount",
+          title: "Payable Amount",
+          regex: /^[0-9\s]+$/,
+          placeholder: "Enter Amount ($)",
+          symbol: "$",
+          required: true,
+        },
+        {
+          type: "inputBox",
+          name: "views_required",
+          title: "Guaranteed Views",
+          regex: /^[0-9\s]+$/,
+          placeholder: "Enter No Of Views",
+          required: true,
+          disabled: true,
+        },
+        {
+          type: "inputBox",
+          name: "adsManager_commision",
+          title: "Commision",
+          regex: /^[0-9\s]+$/,
+          symbol: "$",
+          placeholder: "Enter your commision",
+          required: true,
+        },
+        {
+          type: "inputBox",
+          name: "reject_reason",
+          title: "Reject Reason",
+          // regex: /^[0-9\s]+$/,
+          placeholder: "Enter Amount",
+          display: "none",
+          required: true,
+        },
+        {
+          type: "select_multiple",
+          name: "prefered_category",
+          title: "Prefered Category",
+          placeholder: "Select Prefered Category",
+          maxSelections: "3",
+          options: [],
+          required: true,
+        },
+      ],
+    },
+    {
+      title: "Media",
+      fields: [
+        {
+          type: "inputBox",
+          name: "advertise_url",
+          title: "Advertise Link",
+          placeholder: "Paste Advertise Link",
+          required: true,
+          size: "12",
+          displayText:
+            "Please upload all video links, trailer links, posters, and thumbnails to the Google Drive / Dropbox folder and share the drive link once done.",
+        },
+        {
+          type: "inputBox",
+          name: "website_url",
+          title: "Redirection Url",
+          placeholder: "Paste Link",
+          // required: true,
+          size: "12",
+          displayText:
+            "If you wish for customers to easily view your site, you can include your website link (not required).",
+        },
+      ],
+    },
+  ]);
+
+  // useEffect(() => {
+  //   if (form?.payable_amount) {
+  //     const amount = Number(form?.payable_amount) / parseFloat(adPrice);
+  //     setForm({ ...form, views_required: amount });
+  //   }
+  // }, [form?.payable_amount]);
+  // useEffect(() => {
+  //   if (formSub?.payable_amount) {
+  //     const amount = Number(formSub?.payable_amount) / parseFloat(adPrice);
+  //     setFormSub({ ...formSub, views_required: amount });
+  //   }
+  // }, [formSub?.payable_amount]);
+
+  useEffect(() => {
+    const payable = Number(form?.payable_amount);
+    const price = parseFloat(adPrice);
+
+    if (price > 0 && payable > 0) {
+      const amount = payable / price;
+
+      if (form.views_required !== amount) {
+        setForm((prev) => ({ ...prev, views_required: amount }));
+      }
+    }
+  }, [form?.payable_amount, adPrice]);
+
+  useEffect(() => {
+    const payable = Number(formSub?.payable_amount);
+    const price = parseFloat(adPrice);
+    console.log(payable, price, adPrice, "chchchchchc");
+    // Only run if both numbers are valid and price > 0
+    if (!isNaN(payable) && !isNaN(price) && price > 0) {
+      const amount = payable / price;
+
+      // Prevent infinite loop
+      if (formSub.views_required !== amount) {
+        setFormSub((prev) => ({ ...prev, views_required: amount }));
+      }
+    }
+  }, [formSub?.payable_amount, adPrice]);
+
+  const [formStructureSub, setFormStructureSub] = useState(
+    [
+      {
+        type: "inputBox",
+        name: "payable_amount",
+        title: "Payable Amount",
+        regex: /^[0-9\s]+$/,
+        placeholder: "  Enter Amount ($)",
+        symbol: "$",
+        required: true,
+      },
+      {
+        type: "inputBox",
+        name: "views_required",
+        title: "Guaranteed Views",
+        regex: /^[0-9\s]+$/,
+        placeholder: "Enter No Of Views",
+        required: true,
+        disabled: true,
+      },
+    ].filter((e) => e),
+  );
+
+  useEffect(() => {
+    if (isEdit && form?.approval_status === "Rejected") {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 5) {
+                return { ...field, display: "block" };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        }),
+      );
+    } else {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 5) {
+                return { ...field, display: "none" };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        }),
+      );
+    }
+  }, [form?.approval_status]);
+
+  useEffect(() => {
+    if (advertisers_list?.data) {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 0) {
+                return {
+                  ...field,
+                  options: advertisers_list?.data?.map((ele) => ({
+                    label: ele.name + " ( " + ele?.company_name + " ) ",
+                    value: ele.id,
+                  })),
+                };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        }),
+      );
+    } else {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 0) {
+                return {
+                  ...field,
+                  options: [],
+                };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        }),
+      );
+    }
+  }, [advertisers_list]);
+
+  useEffect(() => {
+    if (categories?.data) {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 6) {
+                return {
+                  ...field,
+                  options: categories?.data?.map((ele) => ({
+                    label: ele.category_name,
+                    value: ele.id,
+                  })),
+                };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        }),
+      );
+    } else {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 6) {
+                return {
+                  ...field,
+                  options: [],
+                };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        }),
+      );
+    }
+  }, [categories]);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (Number(form?.payable_amount) < 49) {
+      alert("Payable amount must be greater than $49");
+      setForm({ ...form, payable_amount: "" });
+      return; // stop execution
+    }
+
+    const data = new FormData();
+    Object.keys(form)?.forEach((key) => data.append(key, form?.[key]));
+    // data.append("advertiser", user?.id);
+
+    if (isEdit) {
+      data.append("approval_status", "Pending");
+      data.append("reject_reason", "");
+
+      const resData = await advertisement_update(data);
+      if (resData?.status === 200) {
+        setForm({});
+        setSave(!save);
+        setDrawer(false);
+      } else {
+        setForm(form);
+      }
+    } else {
+      const resData = await advertisement_create(data);
+      if (resData?.status === 200) {
+        setForm({});
+        setSave(!save);
+        setDrawer(false);
+      } else {
+        setForm(form);
+      }
+    }
+  };
+
+  const handleSubmit2 = async () => {
+    if (Number(formSub?.payable_amount) < 49) {
+      alert("Payable amount must be greater than $49");
+      setFormSub({ ...formSub, payable_amount: "" });
+      return; // stop execution
+    }
+    navigate("/stripe-payment", {
+      state: {
+        price: Number(formSub?.payable_amount),
+        currency_code: "USD",
+        email: user?.email,
+        ad_name: formSub?.ad_name,
+        required_view: formSub?.views_required,
+        ad_id: formSub?.id,
+        flag: true,
+      },
+    });
+    // const resData = await advertisement_payment_create(formSub);
+    // if (resData?.status === 200) {
+    //   setSave(!save);
+    //   setFormSub({});
+    //   setIsModalOpenSub(false);
+    // }
+  };
+
+  return (
+    <div>
+      {" "}
+      <EnlargedView open={open} setOpen={setOpen} content={content} />
+      <DynamicFormModal
+        open={isModalOpenSub}
+        onClose={() => {
+          setIsModalOpenSub(false);
+          setFormSub({});
+          setIsEdit(false);
+        }}
+        formStructure={formStructureSub}
+        onSubmit={handleSubmit2}
+        formData={formSub}
+        setFormData={setFormSub}
+        title={"Ad Top Up"}
+        initialData={editingIndex !== null ? tableData[editingIndex] : {}}
+        save={save}
+        setSave={setSave}
+      />
+      <ListTable
+        tableData={tableData}
+        key={"ListTable"}
+        setForm={setForm}
+        setTableData={setTableData}
+        setIsEdit={setIsEdit}
+        view="view_all"
+        save={save}
+        setSave={setSave}
+        canEdit={true}
+        isDrawerForm={true}
+        openDrawer={drawer}
+        setOpenDrawer={setDrawer}
+        formStructure={formStructure}
+        handleSubmit={handleSubmit}
+        form={form}
+        isEdit={isEdit}
+        formTitle={isEdit ? "Edit Advertisement" : "Add Advertisement"}
+        exportButton={
+          <Export
+            fileName={"Advertisement"}
+            isClubed={true}
+            access={"true"}
+            exportData={tableData?.exportData || tableData?.tableBody}
+            headings={tableData.tableHead?.map((value) => value.label)}
+            // api = {"export_episode_list"}
+            // api_data = {episodes?.filter_condition}
+          />
+        }
+      />
+    </div>
+  );
+};
+
+export default Advertisement;

@@ -28,8 +28,8 @@ import adpanel from "../../../images/SliderBanner/ad-panel.png";
 import adpanelDark from "../../../images/SliderBanner/ad-panel_dark.png";
 import payment from "../../../images/SliderBanner/payment.png";
 import paymentDark from "../../../images/SliderBanner/payment_dark.png";
-import adBanner from "../../../images/SliderBanner/ad_banner.png"
-import adBannerDark from "../../../images/SliderBanner/ad_banner_dark.png"
+import adBanner from "../../../images/SliderBanner/ad_banner.png";
+import adBannerDark from "../../../images/SliderBanner/ad_banner_dark.png";
 import { useSelector } from "react-redux";
 export const SidebarData = (darkMode) => {
   const reduxRole = useSelector((state) => state.layout.role);
@@ -38,7 +38,7 @@ export const SidebarData = (darkMode) => {
   const reduxRights = useSelector((state) => state?.layout?.rights);
   const rights = reduxRights || loginedDetails?.master_rights;
 
-  console.log(rights , "rights123")
+  console.log(rights, "rights123");
 
   const getAccessLevel = (contentName) => {
     if (!rights || !Array.isArray(rights)) {
@@ -49,12 +49,12 @@ export const SidebarData = (darkMode) => {
     const right = rights?.find((r) => r.content === contentName);
     console.log(
       `Access for ${contentName}:`,
-      right?.content_value || "Not Found"
+      right?.content_value || "Not Found",
     );
     return right?.content_value || "All Access";
   };
 
-  console.log(getAccessLevel("Ad Banner") , "dddddddddddddddddd")
+  console.log(getAccessLevel("Ad Banner"), "dddddddddddddddddd");
   // console.log(getAccessLevel("Movies"), "getAccessLevel77");
   // Helper function to check if route is accessible
   const isAccessible = (contentName) => {
@@ -541,6 +541,49 @@ export const SidebarData = (darkMode) => {
         ].filter((e) => e),
       },
     ].filter((e) => e);
+  } else if (role == "AdsManager") {
+    return [
+      {
+        title: "Dashboard",
+        path: "/dashboard",
+        icon: (
+          <img src={darkMode ? dashboard : dashboardDark} height={"20px"} />
+        ),
+        iconClosed: <KeyboardArrowRightIcon />,
+        iconOpened: <KeyboardArrowDownIcon />,
+        access: getAccessLevel("Dashboard"),
+        contentName: "Dashboard",
+      },
+      {
+        title: "Advertisers",
+        path: "/advertiser",
+        icon: <img src={darkMode ? customer : customerDark} height={"20px"} />,
+        iconClosed: <KeyboardArrowRightIcon />,
+        iconOpened: <KeyboardArrowDownIcon />,
+        access: getAccessLevel("Ad Master"),
+        contentName: "Advertisers",
+      },
+      {
+        title: "Advertisements",
+        path: "/advertisement",
+        icon: <img src={darkMode ? adpanel : adpanelDark} height={"20px"} />,
+        iconClosed: <KeyboardArrowRightIcon />,
+        iconOpened: <KeyboardArrowDownIcon />,
+        access: getAccessLevel("Ad Master"),
+        contentName: "Advertisement",
+      },
+      {
+        title: "Ad Payment",
+        path: "/adpayment",
+        icon: (
+          <img src={darkMode ? transition : transitionDark} height={"20px"} />
+        ),
+        iconClosed: <KeyboardArrowRightIcon />,
+        iconOpened: <KeyboardArrowDownIcon />,
+        access: getAccessLevel("Ad Master"),
+        contentName: "Advertisement",
+      },
+    ];
   } else if (role == "Distributor") {
     return [
       {

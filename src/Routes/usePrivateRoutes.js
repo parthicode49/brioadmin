@@ -149,6 +149,12 @@ const DistributorSeries = React.lazy(() =>
 const AdPayment = React.lazy(() =>
   import("../components/Advertisement/AdHistory")
 );
+const AdsManagerDashboard = React.lazy(() =>
+  import("../components/Dashboard/AdsManager")
+)
+const AdsManagerAdvertisement = React.lazy(() => 
+  import("../components/AdManagerPannel/Advertisement")
+) 
 
 export const usePrivateRoutes = () => {
   const reduxRole = useSelector((state) => state.layout.role);
@@ -169,7 +175,7 @@ export const usePrivateRoutes = () => {
   //   return accessLevel;
   // };
 
-  if (role == "Admin" || role == "Sub Admin") {
+  if (role == "Admin" || role == "Sub Admin" ) {
     return [
       {
         path: `/Dashboard`,
@@ -432,7 +438,34 @@ export const usePrivateRoutes = () => {
         ),
       },
     ];
-  } else if (role == "Distributor") {
+  }else if(role == "AdsManager" ){
+    return[
+      {
+        path: `/Dashboard`,
+        Component: <AdsManagerDashboard />,
+        
+      },
+           {
+        path: `/advertiser`,
+        Component: (
+            <Advertiser />
+        ),
+      },
+      {
+        path: `/advertisement`,
+        Component: (
+            <AdsManagerAdvertisement />
+        ),
+      },
+      {
+        path: `/adpayment`,
+        Component: (
+            <AdPayment />
+        ),
+      },
+    ]
+  }
+   else if (role == "Distributor") {
     return [
       {
         path: `/Dashboard`,
