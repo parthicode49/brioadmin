@@ -1,0 +1,838 @@
+import React, { useEffect, useMemo, useState } from "react";
+import ListTable from "../utils/Table";
+import * as Action from "../../actions/livestream";
+import { bindActionCreators } from "redux";
+import { useDispatch, useSelector } from "react-redux";
+import Export from "../utils/Export";
+import { live_stream_category_list } from "../../actions/Masters/livestremcategory";
+import { useAccessControl } from "../utils/useAccessControl";
+import { all_country_list } from "../../actions/Masters/country";
+import FileCopyIcon from "@mui/icons-material/FileCopy";
+import { Button, CircularProgress } from "@mui/material";
+
+
+const LiveStream = () => {
+  const { canView, canEdit, isReadOnly } = useAccessControl("Live Stream");
+  const dispatch = useDispatch();
+  const [form, setForm] = useState({});
+  const [isEdit, setIsEdit] = useState(false);
+  const [save, setSave] = useState(false);
+  const [drawer, setDrawer] = useState(false);
+  const user = useSelector((state) => state.layout.profile);
+  const [usedCountries, setUsedCountries] = useState([]);
+  const [loadingStreams, setLoadingStreams] = useState({});
+
+  const categories = useSelector(
+    (state) => state?.masters?.live_stream_category
+  );
+  const livestream = useSelector((state) => state?.live_stream?.live_stream);
+  const {
+    create_live_stream,
+    update_live_stream,
+    live_stream_start,
+    make_live_stream_complete,
+  } = bindActionCreators(Action, dispatch);
+
+  useEffect(() => {
+    dispatch(Action.live_stream_list_admin());
+  }, [save]);
+
+  useEffect(() => {
+    dispatch(live_stream_category_list());
+    dispatch(all_country_list());
+  }, []);
+
+  const [tableData, setTableData] = useState({
+    tableTitle: "Live Stream",
+    deleteRecord: Action.delete_live_stream,
+    updateRecord: Action.live_stream_status_update,
+    deleteAccess: "true",
+    customisedStatusUpdateMessage: true,
+    onDeleteText: "Are you sure want to delete Live Stream?",
+    onActiveText: "Are you Sure want to Activate Live Stream?",
+    onInactiveText: "Are you Sure want to Inactivate Live Stream?",
+    tableHead: [
+      {
+        id: "channel_name",
+        label: "Title",
+        subText: "category_name",
+      },
+      {
+        id: "stream_type",
+        label: "Type",
+      },
+      {
+        id: "platform_type",
+        label: "Platform",
+      },
+
+      {
+        id: "thumbnail",
+        label: "Web View",
+        isImage: true,
+      },
+      {
+        id: "publish_date",
+        label: "Publish Time",
+        subText: "publish_time",
+        // isImage: true,
+      },
+      {
+        id: "stream_start_date",
+        label: "Stream Start",
+        subText: "stream_start_time",
+        // isImage: true,
+      },
+      {
+        id: "stream_key_0",
+        label: "Stream Key",
+        isSpecial: true,
+        align: "left",
+      },
+      {
+        id: "stream_server_0",
+        label: "Stream URL",
+        isSpecial: true,
+        align: "left",
+      },
+      {
+        id: "channel_live_url_0",
+        label: "Playback URL",
+        isSpecial: true,
+        align: "left",
+      },
+      {
+        id: "start_end_btn",
+        label: "Controller",
+        isSpecial: true,
+        align: "left",
+      },
+
+      {
+        id: "status",
+        label: "Status",
+        // isButtonDisplay: true,
+      },
+      // {
+      //   id: "edit",
+      //   label: "Update",
+      //   access: "true",
+      //   isNewForm: true,
+      // },
+    ],
+    tableBody: [],
+    filterColumn: [
+      //   {
+      //     id: "2",
+      //     title: "Slider Type",
+      //     name: "content_type",
+      //     options: ["Movie", "Series"],
+      //   },
+    ],
+  });
+  const [countryFormStructure, setCountryFormStructure] = useState([
+    {
+      type: "select",
+      name: "country",
+      title: "Country",
+      placeholder: "Select Country",
+      options: [],
+      required: true,
+    },
+    {
+      type: "inputBox",
+      name: "price",
+      title: "price",
+      placeholder: "Enter price",
+      required: true,
+      regex: /^[0-9\.]+$/,
+      maxLength: "4",
+    },
+    // {
+    //   type: "inputBox",
+    //   name: "discount_price",
+    //   title: "Discount Price",
+    //   placeholder: "Enter Discount Price",
+    //   required: true,
+    //   regex: /^[0-9\.]+$/,
+    //   maxLength: "3",
+    // },
+  ]);
+  const [formStructure, setFormStructure] = useState([
+    {
+      title: "Details",
+      fields: [
+        {
+          type: "select",
+          name: "category",
+          title: "Select Category",
+          placeholder: "Select Category here",
+          options: [],
+          required: true,
+        },
+        {
+          type: "select",
+          name: "stream_type",
+          title: "Select Stream Type",
+          placeholder: "Select Stream Type here",
+          options: [
+            { value: "FREE", label: "FREE" },
+            { value: "TVOD", label: "Pay Per View" },
+            { value: "SVOD", label: "SVOD" },
+          ],
+          required: true,
+        },
+        {
+          type: "select",
+          name: "platform_type",
+          title: "Platform Type",
+          placeholder: "Select Platform Type",
+          options: [
+            { value: "Tv Stream", label: "Tv Stream" },
+            { value: "Live Stream", label: "Live Stream" },
+          ],
+          required: true,
+        },
+        {
+          type: "inputBox",
+          name: "channel_name",
+          title: "Channel Name",
+          //   regex: /^[0-9\.]+$/,
+          placeholder: "Enter Channel Name",
+          required: true,
+        },
+
+        {
+          type: "date",
+          variant: "date",
+          title: "Publish Date",
+          min: new Date().toISOString().split("T")[0],
+          name: "publish_date",
+          default: new Date().toISOString().split("T")[0],
+          required: true,
+          placeholder: "Select Date",
+          size: "3",
+        },
+        {
+          type: "time",
+          variant: "time",
+          title: "Publish Time",
+          default: new Date().toISOString().split("T")[1],
+          name: "publish_time",
+          placeholder: "Select Time",
+          required: true,
+          size: "3",
+        },
+        {
+          type: "date",
+          variant: "date",
+          title: "Stream Start Date",
+          min: new Date().toISOString().split("T")[0],
+          name: "stream_start_date",
+          default: new Date().toISOString().split("T")[0],
+          required: true,
+          placeholder: "Select Date",
+          size: "3",
+        },
+        {
+          type: "time",
+          variant: "time",
+          title: "Stream Start Time",
+          default: new Date().toISOString().split("T")[1],
+          name: "stream_start_time",
+          placeholder: "Select Time",
+          required: true,
+          size: "3",
+        },
+        {
+          type: "date",
+          title: "Expiry Date",
+          min: new Date(new Date().setDate(new Date().getDate() + 1)),
+          name: "expiry_date",
+          placeholder: "Select Date",
+          // required: true,
+          size: "3",
+        },
+        {
+          type: "inputBox",
+          title: "Description",
+          placeholder: "Type Description",
+          name: "description",
+          required: true,
+          size: "12",
+          isLimit: "Description",
+          showLimit: true,
+          maxLength: "500",
+          row: "4",
+          multiline: true,
+        },
+      ],
+    },
+    {
+      title: "Media",
+      fields: [
+        // {
+        //   type: "inputBox",
+        //   name: "channel_live_url",
+        //   title: "Channel Link",
+        //   placeholder: "Paste Channel Link",
+        //   required: true,
+        //   size: "9",
+        // },
+
+        {
+          type: "inputBox",
+          name: "channel_live_url",
+          title: "Live Url",
+          placeholder: "Paste Live Url Link (.M3U8)",
+          required: true,
+          size: "9",
+        },
+
+        {
+          type: "image",
+          name: "poster",
+          title: "Portrait",
+          description: "Image size",
+          image_size: "980 * 1300 PX",
+          accept: "image/*",
+          size: 6,
+          required: true,
+        },
+        {
+          type: "image",
+          name: "thumbnail",
+          title: "Landscape",
+          description: "Image size",
+          image_size: "1920 * 1080 PX",
+          accept: "image/*",
+          size: 6,
+          required: true,
+        },
+      ],
+    },
+  ]);
+
+  const countries = useSelector((state) => state?.masters?.countries);
+
+  const tableColumnsForCountry = [
+    { title: "Country Name", field: "country" },
+    // { title: "Discount Price", field: "discount_price" },
+    { title: "Price", field: "price" },
+    // { title: "Final Price", field: "discount_price" },
+  ];
+
+  useEffect(() => {
+    if (form?.platform_type === "Tv Stream") {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 6) {
+                return {
+                  ...field,
+                  display: "none",
+                };
+              }
+              if (index === 7) {
+                return {
+                  ...field,
+                  display: "none",
+                };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          if (section.title === "Media") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 0) {
+                return {
+                  ...field,
+                  display: "block",
+                };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    } else {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 6) {
+                return {
+                  ...field,
+                  display: "block",
+                };
+              }
+              if (index === 7) {
+                return {
+                  ...field,
+                  display: "block",
+                };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          if (section.title === "Media") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 0) {
+                return {
+                  ...field,
+                  display: "none",
+                };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    }
+  }, [form?.platform_type]);
+
+  useMemo(() => {
+    if (countries?.data) {
+      const temp = [...countryFormStructure];
+      temp[0]["options"] = countries?.data
+        .filter((ele) => !usedCountries.includes(ele?.id))
+        .map((ele) => ({
+          label: ele.country_name,
+          value: ele.country_name,
+        }));
+      setCountryFormStructure(temp);
+    }
+  }, [countries, usedCountries]);
+
+  useEffect(() => {
+    setFormStructure((prevFormStructure) => {
+      const hasRentSection = prevFormStructure?.some(
+        (section) => section.title === "Country Wise Price"
+      );
+
+      // If TVOD, and Rent section doesn't exist -> add it
+      if (form?.stream_type === "TVOD" && !hasRentSection) {
+        return [
+          ...prevFormStructure,
+          {
+            title: "Country Wise Price",
+            fields: [
+              // {
+              //   id: "10",
+              //   type: "inputBox",
+              //   title: `Available Days`,
+              //   placeholder: "Type Movie Available Days",
+              //   name: "tvod_available_days",
+              //   regex: /^[0-9\.]+$/,
+              //   maxLength: "2",
+              //   required: true,
+              // },
+              {
+                type: "country_table",
+                countryFormStructure: countryFormStructure,
+                tableColumns: tableColumnsForCountry,
+                name: "countrys",
+                formTitle: isEdit ? "Edit Country" : "Add Country",
+                title: "Resume/CV",
+                description: "PDF, DOC, DOCX (Max 5MB)",
+                accept: ".pdf,.doc,.docx",
+                size: 6,
+                required: true,
+              },
+            ],
+          },
+        ];
+      }
+
+      // If not TVOD, and Rent section exists -> remove it
+      if (form?.stream_type !== "TVOD" && hasRentSection) {
+        return prevFormStructure.filter(
+          (section) => section.title !== "Country Wise Price"
+        );
+      }
+
+      return prevFormStructure; // no change needed
+    });
+  }, [form?.stream_type]);
+
+  useEffect(() => {
+    if (categories?.data) {
+      setFormStructure((prevFormStructure) =>
+        prevFormStructure.map((section) => {
+          if (section.title === "Details") {
+            const updatedFields = section.fields.map((field, index) => {
+              if (index === 0) {
+                return {
+                  ...field,
+                  options: categories?.data?.map((ele) => ({
+                    label: ele?.category_name,
+                    value: ele?.id,
+                  })),
+                };
+              }
+              return field;
+            });
+            return { ...section, fields: updatedFields };
+          }
+          return section;
+        })
+      );
+    }
+  }, [categories]);
+  // const handleCopyText = (textToCopy) => {
+  //   // console.log(textToCopy ,"fgf")
+  //   // if (!textToCopy) {
+  //   //   console.error('No text to copy');
+  //   //   alert('No text to copy!');
+  //   //   return;
+  //   // }
+
+  //   navigator.clipboard.writeText(textToCopy).then(
+  //     () => {
+  //       // console.log("Number copied to clipboard:", textToCopy);
+  //       // alert(`${textToCopy} copied to clipboard!`);
+  //     },
+  //     (err) => {
+  //       console.error("Failed to copy text:", err);
+  //       alert("Failed to copy text. Please try again.");
+  //     }
+  //   );
+  // };
+
+  const handleCopyText = (textToCopy) => {
+    if (navigator.clipboard && window.isSecureContext) {
+      // Modern, secure method
+      navigator.clipboard
+        .writeText(textToCopy)
+        .then(() => {
+          console.log("Text copied to clipboard!");
+        })
+        .catch((err) => {
+          console.error("Failed to copy text:", err);
+          alert("Failed to copy text. Please try again.");
+        });
+    } else {
+      // Fallback for older browsers or insecure contexts
+      const textArea = document.createElement("textarea");
+      textArea.value = textToCopy;
+      textArea.style.position = "fixed"; // avoid scrolling to bottom
+      textArea.style.left = "-999999px";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand("copy");
+        console.log("Text copied using fallback method!");
+      } catch (err) {
+        console.error("Fallback: Failed to copy text:", err);
+        alert("Failed to copy text. Please try again.");
+      }
+      document.body.removeChild(textArea);
+    }
+  };
+
+  const liveStreamStart = async (live_asset_id) => {
+    setLoadingStreams((prev) => ({ ...prev, [live_asset_id]: true }));
+    try {
+      const resData = await live_stream_start({ live_asset_id: live_asset_id });
+      if (resData?.status === 200) {
+        setSave(!save);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoadingStreams((prev) => ({ ...prev, [live_asset_id]: false }));
+    }
+  };
+  const liveStreamEnd = async (live_asset_id) => {
+    setLoadingStreams((prev) => ({ ...prev, [live_asset_id]: true }));
+    try {
+      const resData = await make_live_stream_complete({
+        live_asset_id: live_asset_id,
+      });
+      if (resData?.status === 200) {
+        setSave(!save);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoadingStreams((prev) => ({ ...prev, [live_asset_id]: false }));
+    }
+  };
+
+  useEffect(() => {
+    if (livestream?.data) {
+      const temp = tableData;
+      temp.tableBody =
+        livestream?.data?.map((ele) => ({
+          ...ele,
+          stream_key_0: (
+            <>
+              { ele?.platform_type === "Tv Stream" ? <p style={{color: "var(--themeFontColor)"}}>
+                -
+              </p> : <p
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  color: "var(--gradientColor2)",
+                }}
+              > 
+                {ele?.stream_key?.length > 30
+                  ? ele?.stream_key?.substring(0, 30) + "..."
+                  : ele?.stream_key}
+                <span
+                  style={{
+                    color: "var(--gradientColor2)",
+                    width: "40%",
+                    paddingLeft: "5px",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => handleCopyText(ele?.stream_key)}
+                >
+                  <FileCopyIcon color="inherit" />{" "}
+                </span>
+              </p>}
+            </>
+          ),
+
+          stream_start_date: ele?.stream_start_date
+            ? ele?.stream_start_date
+            : "-",
+          stream_start_time: ele?.stream_start_time
+            ? ele?.stream_start_time
+            : "-",
+          stream_server_0: (
+            <>
+             {ele?.platform_type === "Tv Stream" ? <p style={{color: "var(--themeFontColor)"}}>
+                -
+              </p> : <p
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  color: "var(--gradientColor2)",
+                }}
+              >
+                {ele?.stream_server?.length > 20
+                  ? ele?.stream_server?.substring(0, 20) + "..."
+                  : ele?.stream_server}
+                <span
+                  style={{
+                    color: "var(--gradientColor2)",
+                    width: "40%",
+                    paddingLeft: "5px",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => handleCopyText(ele?.stream_server)}
+                >
+                  <FileCopyIcon color="inherit" />{" "}
+                </span>
+              </p>}
+            </>
+          ),
+          channel_live_url_0: (
+            <>
+             {ele?.platform_type === "Tv Stream" ? <p style={{color: "var(--themeFontColor)"}}>
+                -
+              </p> : <p
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  color: "var(--gradientColor2)",
+                }}
+              >
+                {ele?.channel_live_url?.length > 20
+                  ? ele?.channel_live_url?.substring(0, 20) + "..."
+                  : ele?.channel_live_url}
+                <span
+                  style={{
+                    color: "var(--gradientColor2)",
+                    width: "40%",
+                    paddingLeft: "5px",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => handleCopyText(ele?.channel_live_url)}
+                >
+                  <FileCopyIcon color="inherit" />{" "}
+                </span>
+              </p>}
+            </>
+          ),
+          start_end_btn: (
+            <>
+               { ele?.platform_type === "Tv Stream" ? <p style={{color: "var(--themeFontColor)"}}>
+                -
+              </p> : ele?.stream_status === "created" ? (
+                <Button
+                  variant="contained"
+                  disabled={loadingStreams[ele?.live_asset_id]}
+                  style={{
+                    backgroundColor: "#4caf50",
+                    color: "white",
+                    textTransform: "none",
+                    padding: "6px 16px",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                  }}
+                  onClick={() => liveStreamStart(ele?.live_asset_id)}
+                >
+                  {loadingStreams[ele?.live_asset_id] ? (
+                    <CircularProgress
+                      size={20}
+                      style={{ color: "themeFontColor" }}
+                    />
+                  ) : (
+                    "Start"
+                  )}
+                </Button>
+              ) : ele?.stream_status === "complete" ? (
+                <span
+                  style={{
+                    color: "#757575",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                  }}
+                >
+                  Complete
+                </span>
+              ) : (
+                <Button
+                  variant="contained"
+                  disabled={loadingStreams[ele?.live_asset_id]}
+                  style={{
+                    backgroundColor: "#f44336",
+                    color: "white",
+                    textTransform: "none",
+                    padding: "6px 16px",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                  }}
+                  onClick={() => liveStreamEnd(ele?.live_asset_id)}
+                >
+                  {loadingStreams[ele?.live_asset_id] ? (
+                    <CircularProgress
+                      size={20}
+                      style={{ color: "themeFontColor" }}
+                    />
+                  ) : (
+                    "End"
+                  )}
+                </Button>
+              )}
+            </>
+          ),
+        })) || [];
+      setTableData({ ...temp });
+    }
+  }, [livestream, loadingStreams]);
+
+  // useEffect(() => {
+  //   if (form?.stream_type === "TVOD") {
+  //     setFormStructure((prevFormStructure) =>
+  //       prevFormStructure.map((section) => {
+  //         if (section.title === "Details") {
+  //           const updatedFields = section.fields.map((field, index) => {
+  //             if (index === 2) {
+  //               return { ...field, display: "block" };
+  //             }
+  //             return field;
+  //           });
+  //           return { ...section, fields: updatedFields };
+  //         }
+  //         return section;
+  //       })
+  //     );
+  //   } else {
+  //     setFormStructure((prevFormStructure) =>
+  //       prevFormStructure.map((section) => {
+  //         if (section.title === "Details") {
+  //           const updatedFields = section.fields.map((field, index) => {
+  //             if (index === 2) {
+  //               return { ...field, display: "none" };
+  //             }
+  //             return field;
+  //           });
+  //           return { ...section, fields: updatedFields };
+  //         }
+  //         return section;
+  //       })
+  //     );
+  //   }
+  // }, [form?.stream_type]);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const data = new FormData();
+    Object.keys(form)?.map(
+      (key) => key !== "countrys" && data.append(key, form?.[key])
+    );
+    data.append("user", user?.id);
+    data.append("countrys", JSON.stringify(form?.countrys));
+    if (isEdit) {
+      const resData = await update_live_stream(data);
+      if (resData?.status === 200) {
+        setForm({});
+        setSave(!save);
+        setDrawer(false);
+      } else {
+        setForm(form);
+      }
+    } else {
+      const resData = await create_live_stream(data);
+      if (resData?.status === 200) {
+        // setForm({});
+        setForm({});
+        setSave(!save);
+        setDrawer(false);
+      } else {
+        setForm(form);
+      }
+    }
+  };
+  return (
+    <div>
+      <ListTable
+        tableData={tableData}
+        key={"ListTable"}
+        setForm={setForm}
+        setTableData={setTableData}
+        setIsEdit={setIsEdit}
+        view="view_all"
+        save={save}
+        setSave={setSave}
+        isDrawerForm={true}
+        openDrawer={drawer}
+        setOpenDrawer={setDrawer}
+        formStructure={formStructure}
+        setUsedCountries={setUsedCountries}
+        handleSubmit={handleSubmit}
+        form={form}
+        canEdit={canEdit}
+        isEdit={isEdit}
+        formTitle={isEdit ? "Edit Live Stream" : "Add Live Stream"}
+        exportButton={
+          <Export
+            fileName={"Live Stream"}
+            isClubed={true}
+            access={"true"}
+            exportData={tableData?.exportData || tableData?.tableBody}
+            headings={tableData.tableHead?.map((value) => value.label)}
+            // api = {"export_episode_list"}
+            // api_data = {episodes?.filter_condition}
+          />
+        }
+      />
+    </div>
+  );
+};
+
+export default LiveStream;

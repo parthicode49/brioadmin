@@ -1,0 +1,33 @@
+.Notifications {
+  border: 1px solid #E2E8F0;
+  border-radius: 4px;
+  display: block;
+  color:var(--themeFontColor) !important;
+  padding: 10px 20px 10px 20px;
+  font-weight: 500; 
+  font-size: 14px;
+  position: relative;
+}
+.num {
+  position: absolute;
+  left: 34px;
+  top: 3px;
+  color:#ffffff;
+  font-size: 8px;
+  line-height: 8px;
+  font-weight: 500;
+  background-color: #ff0000;
+  border-radius: 100%;
+  padding:  6px;
+}
+
+@media only screen and (max-width: 767px) {
+  .Notifications {
+    display: none;
+  }
+}
+
+/* For dark mode */
+[class="dark"] .Notifications {
+  border: 1px solid #373a40;
+}

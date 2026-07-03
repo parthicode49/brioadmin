@@ -1,0 +1,12 @@
+.mySwiper{
+  height: 100%;
+  display: flex;
+  justify-items: center;
+}
+.mySwiper img{
+  display: block;
+  margin: 0 auto;
+}
+.mySwiper p{
+  text-align: center;
+}

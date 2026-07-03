@@ -154,7 +154,10 @@ const AdsManagerDashboard = React.lazy(() =>
 )
 const AdsManagerAdvertisement = React.lazy(() => 
   import("../components/AdManagerPannel/Advertisement")
-) 
+)
+const PremiumCustomer = React.lazy(() =>
+  import("../components/Customer/PremiumCustomer")
+);
 
 export const usePrivateRoutes = () => {
   const reduxRole = useSelector((state) => state.layout.role);
@@ -271,6 +274,14 @@ export const usePrivateRoutes = () => {
         Component: (
           <ProtectedRoute requiredAccess="Customers">
             <Customer />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: `/premiumCustomer`,
+        Component: (
+          <ProtectedRoute requiredAccess="Customers">
+            <PremiumCustomer />
           </ProtectedRoute>
         ),
       },

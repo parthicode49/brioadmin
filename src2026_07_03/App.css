@@ -1,0 +1,52 @@
+/* .App {
+  text-align: center;
+} */
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color:var(--themeFontColor);
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.css-12k1obj-MuiFormLabel-root-MuiInputLabel-root,.MuiTypography-root,.css-14jccnq-MuiSvgIcon-root-MuiStepIcon-root.Mui-completed,.css-1l7z830-MuiPaper-root-MuiMenu-paper-MuiPopover-paper,.css-1klsplc-MuiStepLabel-label.Mui-completed,.css-1klsplc-MuiStepLabel-label,.css-17xv29d-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root,.css-1klsplc-MuiStepLabel-label.Mui-active,.css-14jccnq-MuiSvgIcon-root-MuiStepIcon-root,.css-14jccnq-MuiSvgIcon-root-MuiStepIcon-root.Mui-active ,.css-1hps5ya-MuiFormLabel-root-MuiInputLabel-root {
+  /* color: black !important; */
+  color: var(--themeFontColor) !important;
+
+  }
+  .MuiTableCell-root{
+    color: var(--tableHeadFontColor) !important;
+  }
+  .css-1klsplc-MuiStepLabel-label.Mui-completed,.css-1klsplc-MuiStepLabel-label.Mui-active{
+    font-weight: 400!important;
+  }
+  .css-14jccnq-MuiSvgIcon-root-MuiStepIcon-root.Mui-active,.css-14jccnq-MuiSvgIcon-root-MuiStepIcon-root{
+    color: rgba(0, 0, 0, 0.504) !important;
+  }

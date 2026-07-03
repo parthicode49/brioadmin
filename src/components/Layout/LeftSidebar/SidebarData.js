@@ -235,11 +235,12 @@ export const SidebarData = (darkMode) => {
             access: getAccessLevel("Customers"),
             contentName: "Customers",
           },
-          // {
-          //   title: "Premium Customer",
-          //   path: "/Customer/PremiumCustomer/",
-          //   access:  rights?.["Premium Customers"]?.["view"],
-          // },
+          {
+            title: "Premium Customer",
+            path: "/premiumCustomer",
+            access: getAccessLevel("Customers"),
+            contentName: "Customers",
+          },
           {
             title: "Complaints",
             path: "/complaints",

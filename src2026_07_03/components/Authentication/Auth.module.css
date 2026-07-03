@@ -1,0 +1,217 @@
+.leftContainer {
+    width: 100%;
+    height: 100%;
+    background-color: #333;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    border-radius: 14px;
+}
+
+.leftContainerHeading {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.leftContainerHeading span {
+    text-transform: uppercase;
+    font-size: 26px;
+    color: #FFFFFFCC;
+    font-weight: 700;
+    font-family: 'Satoshi', sans-serif;
+    letter-spacing: 10px;
+}
+
+.strikedThrough {
+    width: 250px;
+    height: 1px;
+    background-color: #FFFFFFCC;
+}
+
+.leftContainerImage {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    overflow: hidden;
+}
+
+.leftContainerImage img {
+    width: auto;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.leftContainerCaption {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    color: #FFFFFFCC;
+    font-family: 'Noto Serif', serif;
+    flex-shrink: 0;
+}
+
+.leftContainerCaption .CaptionOne {
+    font-size: 34px;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.leftContainerCaption .CaptionTwo {
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+}
+
+.rightContainer {
+    background: #fff;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 48px;
+    gap: 3rem;
+    box-sizing: border-box;
+}
+
+.rightContainer .logoImg {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.rightContainer .logoImg img {
+    width: 10rem;
+}
+
+.loginText {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.loginText span {
+    text-align: center;
+    color: #000;
+}
+
+.loginText span:first-of-type {
+    font-size: 34px;
+}
+
+.loginText span:nth-of-type(2) {
+    font-size: 14px;
+}
+
+/* 130% */
+@media (max-width: 1224px) {
+    .rightContainer {
+        transform: scale(0.85);
+    }
+
+    .leftContainerHeading span {
+        font-size: 22px;
+    }
+
+    .strikedThrough {
+        width: 200px;
+    }
+
+    .leftContainerCaption .CaptionOne {
+        font-size: 26px;
+    }
+
+    .leftContainerCaption .CaptionTwo {
+        font-size: 12px;
+    }
+
+    .loginText span:first-of-type {
+        font-size: 28px;
+    }
+
+    .loginText span:nth-of-type(2) {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .rightContainer {
+        transform: scale(0.7);
+    }
+}
+
+/* 160% */
+@media (max-width: 960px) {
+    .rightContainer {
+        transform: scale(0.75);
+    }
+
+    .rightContainer {
+        padding: 0 18px;
+        gap: 1.4rem;
+    }
+
+    .leftContainerHeading span {
+        font-size: 12px;
+    }
+
+    .strikedThrough {
+        width: 150px;
+    }
+
+    .leftContainerCaption .CaptionOne {
+        font-size: 22px;
+    }
+
+    .leftContainerCaption .CaptionTwo {
+        font-size: 8px;
+    }
+}
+
+/* 180% */
+@media (max-width: 850px) {
+    .rightContainer {
+        transform: scale(0.6);
+    }
+
+    .strikedThrough {
+        width: 150px;
+    }
+
+    .leftContainerCaption .CaptionOne {
+        font-size: 20px;
+    }
+
+    .leftContainerCaption .CaptionTwo {
+        font-size: 8px;
+    }
+}
+
+@media (max-width: 750px) {
+    .rightContainer {
+        transform: scale(0.55);
+    }
+
+    .strikedThrough {
+        width: 150px;
+    }
+
+    .leftContainerCaption .CaptionOne {
+        font-size: 20px;
+    }
+
+    .leftContainerCaption .CaptionTwo {
+        font-size: 8px;
+    }
+}
